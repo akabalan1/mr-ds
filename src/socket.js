@@ -1,7 +1,7 @@
 
 import { io } from 'socket.io-client';
 
-const socket = io('https://mr-ds-3.onrender.com', {
+const socket = io('https://mr-ds.onrender.com', {
   transports: ['websocket']
 });
 
