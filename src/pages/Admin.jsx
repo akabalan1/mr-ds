@@ -1,67 +1,119 @@
-
-import React, { useState } from "react";
-
-const questions = [
-  {
-    text: "What’s the best date night activity?",
-    options: ["Dinner", "Netflix & Chill", "Game Night", "Long Walk"]
-  },
-  {
-    text: "Who usually says 'I love you' first?",
-    options: ["Her", "Him", "Neither", "At the same time"]
-  }
-];
+import React, { useEffect, useState } from "react";
+import { useGame } from "../GameContext";
+import socket from "../socket";
+import VoteChart from "../components/VoteChart";
+import startSound from "../assets/sounds/start.mp3";
+import resultSound from "../assets/sounds/result.mp3";
 
 export default function Admin() {
-  const [step, setStep] = useState(-1);
-  const [tally, setTally] = useState({});
-  const [votes, setVotes] = useState({});
+  const {
+    step,
+    setStep,
+    questionIndex,
+    questions,
+    tally,
+    calculateTally,
+    nextQuestion,
+    players,
+    votes
+  } = useGame();
 
-  const startGame = () => setStep(0);
+  const [timer, setTimer] = useState(15);
+  const [active, setActive] = useState(false);
+  const [showChart, setShowChart] = useState(false);
 
-  const calculateTally = (qIndex) => {
-    const currentVotes = votes[qIndex] || [];
-    const counts = {};
-    currentVotes.forEach((v) => {
-      counts[v] = (counts[v] || 0) + 1;
-    });
-    setTally(counts);
+  const playSound = (sound) => {
+    const audio = new Audio(sound);
+    audio.play();
   };
 
-  const nextQuestion = () => {
-    if (step + 1 < questions.length) {
-      setStep(step + 1);
-    } else {
-      setStep("done");
+  useEffect(() => {
+    let countdown;
+    if (active && timer > 0) {
+      countdown = setTimeout(() => setTimer(timer - 1), 1000);
+    } else if (active && timer === 0) {
+      calculateTally();
+      playSound(resultSound);
+      setShowChart(true);
+      setActive(false);
     }
-  };
+    return () => clearTimeout(countdown);
+  }, [timer, active]);
+
+  useEffect(() => {
+    socket.on("gameState", (state) => {
+      console.log("Received game state:", state);
+    });
+    socket.on("voteUpdate", (voteData) => {
+      console.log("Vote update:", voteData);
+    });
+    socket.on("nextQuestion", (index) => {
+      console.log("Next question index:", index);
+      setTimer(15);
+      setActive(true);
+      setShowChart(false);
+      playSound(startSound);
+    });
+  }, []);
 
   if (step === -1) {
     return (
-      <div style={{ padding: 20 }}>
+      <div className="container">
         <h1>Admin Panel</h1>
-        <button onClick={startGame}>Start Game</button>
+        <img src="/assets/images/intro.jpg" alt="Welcome" style={{ maxWidth: '100%', borderRadius: '16px' }} />
+        <button onClick={() => {
+          setStep(0);
+          socket.emit("nextQuestion");
+          setActive(true);
+          playSound(startSound);
+        }}>Start Game</button>
       </div>
     );
   }
 
   if (step === "done") {
     return (
-      <div style={{ padding: 20 }}>
+      <div className="container">
         <h2>Game Over!</h2>
-        <pre>{JSON.stringify(tally, null, 2)}</pre>
+        <img src="/assets/images/closing.jpg" alt="Thanks" style={{ maxWidth: '100%', borderRadius: '16px', marginBottom: '20px' }} />
+        <h3>Leaderboard:</h3>
+        <ul>
+          {players
+            .sort((a, b) => b.score - a.score)
+            .map((p, i) => (
+              <li key={i}>{p.name}: {p.score} pts</li>
+            ))}
+        </ul>
+        <img src="https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif" alt="celebration" style={{ marginTop: '20px', maxWidth: '80%' }} />
       </div>
     );
   }
 
-  const q = questions[step];
+  const q = questions[questionIndex];
   return (
-    <div style={{ padding: 20 }}>
+    <div className="container">
       <h2>Q: {q.text}</h2>
-      <button onClick={() => calculateTally(step)}>Show Results</button>
-      <button onClick={nextQuestion} style={{ marginLeft: 10 }}>Next</button>
+      <div>
+        <img src="/assets/images/sarah.png" alt="Sarah" style={{ height: '80px', margin: '10px' }} />
+        <img src="/assets/images/danish.png" alt="Danish" style={{ height: '80px', margin: '10px' }} />
+      </div>
+      <div style={{ fontSize: 24, fontWeight: 'bold', margin: '10px 0' }}>⏳ Time Left: {timer}s</div>
+      <button onClick={() => {
+        calculateTally();
+        playSound(resultSound);
+        setShowChart(true);
+        setActive(false);
+      }}>Show Results</button>
+      <button onClick={() => {
+        nextQuestion();
+        socket.emit("nextQuestion");
+        setTimer(15);
+        setActive(true);
+        setShowChart(false);
+        playSound(startSound);
+      }} style={{ marginLeft: 10 }}>Next</button>
       <div style={{ marginTop: 20 }}>
-        <pre>{JSON.stringify(tally, null, 2)}</pre>
+        {showChart && <VoteChart tally={tally} />}
       </div>
     </div>
   );

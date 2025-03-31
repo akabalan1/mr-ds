@@ -1,37 +1,40 @@
 
-import React, { useState } from "react";
-
-const questions = [
-  {
-    text: "What’s the best date night activity?",
-    options: ["Dinner", "Netflix & Chill", "Game Night", "Long Walk"]
-  },
-  {
-    text: "Who usually says 'I love you' first?",
-    options: ["Her", "Him", "Neither", "At the same time"]
-  }
-];
+import React, { useEffect, useState } from "react";
+import { useGame } from "../GameContext";
+import socket from "../socket";
 
 export default function Player() {
+  const {
+    players,
+    addPlayer,
+    step,
+    questions,
+    questionIndex,
+    submitVote,
+    setStep
+  } = useGame();
+
   const [name, setName] = useState("");
   const [joined, setJoined] = useState(false);
-  const [step, setStep] = useState(0);
+  const [voted, setVoted] = useState(false);
 
   const handleJoin = () => {
     if (name.trim()) {
+      addPlayer(name.trim());
+      socket.emit("join", name.trim());
       setJoined(true);
     }
   };
 
-  const vote = (option) => {
-    console.log(`${name} voted: ${option}`);
-    // Simulate advancing after vote
-    if (step + 1 < questions.length) {
-      setStep(step + 1);
-    } else {
-      setStep("done");
-    }
-  };
+  useEffect(() => {
+    socket.on("nextQuestion", (index) => {
+      setVoted(false);
+      setStep(index);
+    });
+    socket.on("voteUpdate", (votes) => {
+      console.log("Player received vote update:", votes);
+    });
+  }, [setStep]);
 
   if (!joined) {
     return (
@@ -48,20 +51,41 @@ export default function Player() {
     );
   }
 
+  if (step === -1) {
+    return <div style={{ padding: 20 }}><h2>Waiting for admin to start the game...</h2></div>;
+  }
+
   if (step === "done") {
+    const player = players.find(p => p.name === name);
     return (
       <div style={{ padding: 20 }}>
         <h2>Thanks for playing, {name}!</h2>
+        <p>Your final score: {player?.score || 0}</p>
       </div>
     );
   }
 
-  const q = questions[step];
+  const q = questions[questionIndex];
   return (
     <div style={{ padding: 20 }}>
       <h2>{q.text}</h2>
       {q.options.map((opt, i) => (
-        <button key={i} onClick={() => vote(opt)} style={{ display: "block", margin: "10px 0" }}>
+        <button
+          key={i}
+          onClick={() => {
+            if (!voted) {
+              submitVote(name, opt);
+              socket.emit("vote", { name, option: opt });
+              setVoted(true);
+            }
+          }}
+          style={{
+            display: "block",
+            margin: "10px 0",
+            backgroundColor: voted ? "#ccc" : "#f06292"
+          }}
+          disabled={voted}
+        >
           {opt}
         </button>
       ))}
