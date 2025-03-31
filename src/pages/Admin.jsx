@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useGame } from "../GameContext";
 import socket from "../socket";
 import VoteChart from "../components/VoteChart";
-import startSound from "/assets/sounds/start.mp3";
-import resultSound from "/assets/sounds/result.mp3";
+const startSound = "/assets/sounds/start.mp3";
+const resultSound = "/assets/sounds/result.mp3";
 
 export default function Admin() {
   const {
@@ -22,7 +22,7 @@ export default function Admin() {
   const [active, setActive] = useState(false);
   const [showChart, setShowChart] = useState(false);
 
-  const playSound = (sound) => {
+  const playSound = (url) => {
     const audio = new Audio(url);
     audio.play();
   };
