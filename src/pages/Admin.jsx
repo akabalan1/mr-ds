@@ -22,10 +22,12 @@ export default function Admin() {
   const [active, setActive] = useState(false);
   const [showChart, setShowChart] = useState(false);
 
-  const playSound = (url) => {
-    const audio = new Audio(url);
-    audio.play();
-  };
+ const playSound = (url) => {
+  const audio = new Audio(url);
+  audio.play().catch((err) => {
+    console.warn("Audio play failed:", err);
+  });
+};
 
   useEffect(() => {
     let countdown;
