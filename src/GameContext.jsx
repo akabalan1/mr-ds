@@ -22,22 +22,34 @@ export const GameProvider = ({ children }) => {
     }
   ];
 
-  useEffect(() => {
-    socket.on("gameState", (state) => {
-      console.log("↪ Game state received from server:", state);
-      setPlayers(state.players || []);
-      setVotes(state.votes || {});
-      setQuestionIndex(state.questionIndex || 0);
+ useEffect(() => {
+  socket.on("gameState", (state) => {
+    console.log("↪ Game state received from server:", state);
+    setPlayers(state.players || []);
+    setVotes(state.votes || {});
 
-      // Adjust step depending on state
+    if (typeof state.questionIndex === "number") {
+      setQuestionIndex(state.questionIndex);
       if (state.questionIndex >= questions.length) {
         setStep("done");
-      } else if (state.questionIndex === 0) {
-        setStep(-1);
       } else {
-        setStep(state.questionIndex);
+        setStep(state.questionIndex); // always match question index
       }
+    }
+  });
+
+  socket.on("voteUpdate", (voteArray) => {
+    console.log("↪ Vote update from server:", voteArray);
+    setVotes(prev => {
+      const updated = { ...prev };
+      updated[questionIndex] = voteArray;
+      return updated;
     });
+  });
+
+  socket.emit("getGameState");
+}, []);
+
 
     socket.on("voteUpdate", (voteArray) => {
       console.log("↪ Vote update from server:", voteArray);
