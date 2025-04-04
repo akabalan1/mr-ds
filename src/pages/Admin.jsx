@@ -33,13 +33,16 @@ export default function Admin() {
     socket.on("voteUpdate", (voteData) => {
       console.log("Vote update:", voteData);
     });
-    socket.on("nextQuestion", (index) => {
-      setStep(index); // ← this updates the admin state to reflect the current question
-      console.log("Next question index:", index);
-      setTimer(15);
-      setActive(true);
-      setShowChart(false);
-      playSound(startSound);
+   socket.on("nextQuestion", (index) => {
+  console.log("Next question index:", index);
+  setQuestionIndex(index);      // ← sync question index manually
+  setStep(index);               // ← advance admin view
+  setTimer(15);
+  setActive(true);
+  setShowChart(false);
+  playSound(startSound);
+});
+
     });
   }, []);
 
