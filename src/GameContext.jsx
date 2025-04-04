@@ -31,7 +31,14 @@ export const GameProvider = ({ children }) => {
         if (state.questionIndex >= questions.length) {
           setStep("done");
         } else {
-          setStep(state.questionIndex);
+          if (state.questionIndex === 0 && (!state.votes || Object.keys(state.votes).length === 0)) {
+  setStep(-1); // intro screen
+} else if (state.questionIndex >= questions.length) {
+  setStep("done");
+} else {
+  setStep(state.questionIndex);
+}
+
         }
       }
     });
