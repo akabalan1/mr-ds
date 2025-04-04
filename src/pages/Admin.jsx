@@ -34,6 +34,7 @@ export default function Admin() {
       console.log("Vote update:", voteData);
     });
     socket.on("nextQuestion", (index) => {
+      setStep(index); // ← this updates the admin state to reflect the current question
       console.log("Next question index:", index);
       setTimer(15);
       setActive(true);
