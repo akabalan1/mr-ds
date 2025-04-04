@@ -17,12 +17,16 @@ export default function Player() {
   const [name, setName] = useState("");
   const [selected, setSelected] = useState("");
 
-  useEffect(() => {
-    const savedName = localStorage.getItem("playerName");
-    if (savedName) {
-      setName(savedName);
-      addPlayer(savedName); // re-join silently
-    }
+ useEffect(() => {
+  const savedName = localStorage.getItem("playerName");
+  if (savedName) {
+    setName(savedName);
+    setTimeout(() => {
+      addPlayer(savedName); // wait for context to hydrate before joining
+    }, 100); // slight delay ensures GameContext is ready
+  }
+}, []);
+
   }, []);
 
   const handleJoin = () => {
