@@ -44,7 +44,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('getGameState', () => {
-    socket.emit('gameState', gameState);
+    socket.broadcast.emit("gameState", gameState); // ← NEW, tells others a player rejoined
+
   });
 
   socket.on('resetGame', () => {
