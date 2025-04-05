@@ -10,6 +10,7 @@ export default function AdminMajority() {
     { question: "What is your favorite fruit?", options: ["Apple", "Banana", "Orange", "Grapes"] },
   ]);
   const [currentVotes, setCurrentVotes] = useState({});
+  const [gameStarted, setGameStarted] = useState(false); // Track game start status
   
   useEffect(() => {
     socket.on("updateVotes", (newVotes) => {
@@ -24,7 +25,8 @@ export default function AdminMajority() {
 
   const handleStartGame = () => {
     setStep(1);
-    socket.emit("gameStart", questions);
+    setGameStarted(true); // Mark the game as started
+    socket.emit("gameStart", questions); // Send the questions to all players
   };
 
   // Calculate scores for players based on majority rules
@@ -57,8 +59,12 @@ export default function AdminMajority() {
   return (
     <Layout>
       <h1>Admin Majority Rules</h1>
-      <button onClick={handleStartGame} className="game-mode-btn bg-blue-600 text-white p-3 rounded">
-        Start Majority Rules
+      <button
+        onClick={handleStartGame}
+        className="game-mode-btn bg-blue-600 text-white p-3 rounded"
+        disabled={gameStarted}  // Disable the button once the game has started
+      >
+        {gameStarted ? "Game Started" : "Start Majority Rules"}
       </button>
       {/* Display current votes */}
       <div className="mt-6">
