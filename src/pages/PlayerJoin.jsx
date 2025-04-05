@@ -11,23 +11,24 @@ export default function PlayerJoin() {
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
     if (stored) {
-      setName(stored);
-      setPlayerName(stored);  // Set player name using context
-      socket.emit("player-join", stored);  // Emit to server
+      setName(stored);               // Set name from localStorage
+      setPlayerName(stored);         // Set player name using context
+      socket.emit("player-join", stored);  // Emit to server that player joined
     }
   }, [setPlayerName, socket]);
 
+  // Handle player name input and joining
   const handleJoin = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) return;  // Don't allow empty name
     localStorage.setItem("playerName", name);  // Save name to localStorage
     setPlayerName(name);  // Set player name using context
-    socket.emit("player-join", name);  // Emit to server
+    socket.emit("player-join", name);  // Emit to server that player joined
   };
 
   // Redirect when game starts and step is updated
   useEffect(() => {
     if (step >= 0 && gameMode) {
-      navigate(`/play/${gameMode}`);
+      navigate(`/play/${gameMode}`);  // Navigate to the correct game page
     }
   }, [step, gameMode, navigate]);
 
@@ -37,7 +38,7 @@ export default function PlayerJoin() {
       <input
         type="text"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setName(e.target.value)}  // Update name input
         placeholder="Your name..."
         className="border rounded px-4 py-2"
       />
