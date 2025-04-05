@@ -3,37 +3,68 @@ import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
 export default function AdminMajority() {
-  const { setStep, socket } = useGame();
+  const { setStep, socket, setPlayers, players } = useGame();
   const [questions] = useState([
     { question: "What is your favorite color?", options: ["Red", "Blue", "Green", "Yellow"] },
     { question: "What is the best type of music?", options: ["Rock", "Pop", "Classical", "Jazz"] },
     { question: "What is your favorite fruit?", options: ["Apple", "Banana", "Orange", "Grapes"] },
   ]);
+  const [currentVotes, setCurrentVotes] = useState({});
+  
+  useEffect(() => {
+    socket.on("updateVotes", (newVotes) => {
+      setCurrentVotes(newVotes);
+      calculateScores(newVotes); // Recalculate scores whenever votes change
+    });
+
+    return () => {
+      socket.off("updateVotes");
+    };
+  }, [socket]);
 
   const handleStartGame = () => {
-    setStep(1); // Start the game (move to the first question)
+    setStep(1);
     socket.emit("gameStart", questions);
+  };
+
+  // Calculate scores for players based on majority rules
+  const calculateScores = (votes) => {
+    const optionCounts = {}; // Track how many players chose each option
+    for (let player in votes) {
+      const vote = votes[player];
+      optionCounts[vote] = (optionCounts[vote] || 0) + 1;
+    }
+
+    // Determine the majority and minority votes
+    const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
+    const majorityVote = sortedOptions[0][0];
+    const leastCommonVote = sortedOptions[sortedOptions.length - 1][0];
+
+    // Assign points
+    let updatedPlayers = [...players];
+    updatedPlayers.forEach((player) => {
+      const playerVote = votes[player.name];
+      if (playerVote === majorityVote) {
+        player.points += 3; // Majority gets 3 points
+      } else if (playerVote === leastCommonVote) {
+        player.points += 1; // Least common gets 1 point
+      }
+    });
+
+    setPlayers(updatedPlayers); // Update players with their points
   };
 
   return (
     <Layout>
-      <h1>Admin Majority Rules Game</h1>
+      <h1>Admin Majority Rules</h1>
       <button onClick={handleStartGame} className="game-mode-btn bg-blue-600 text-white p-3 rounded">
         Start Majority Rules
       </button>
-
-      {/* Placeholder Questions */}
+      {/* Display current votes */}
       <div className="mt-6">
-        <h2 className="font-bold">Questions:</h2>
-        {questions.map((q, index) => (
-          <div key={index}>
-            <p><strong>Q{index + 1}: </strong>{q.question}</p>
-            <ul>
-              {q.options.map((option, i) => (
-                <li key={i}>{option}</li>
-              ))}
-            </ul>
-          </div>
+        <h2>Current Votes:</h2>
+        {Object.entries(currentVotes).map(([player, vote]) => (
+          <p key={player}>{player} voted for: {vote}</p>
         ))}
       </div>
     </Layout>
