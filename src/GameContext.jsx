@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 
-// Initialize socket
-const socket = io("https://mr-ds.onrender.com");  // Ensure this is the correct server URL
+// Initialize the socket (ensure the URL is correct)
+const socket = io("https://mr-ds.onrender.com");
 
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
   const [players, setPlayers] = useState([]);
-  const [playerName, setPlayerName] = useState(""); // Ensure this is initialized
+  const [playerName, setPlayerName] = useState("");
   const [votes, setVotes] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [step, setStep] = useState(-1);
@@ -17,35 +17,33 @@ export function GameProvider({ children }) {
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
 
-  // Handle socket connection and game state updates
+  // Listen for game state updates from the server
   useEffect(() => {
-    // Listen for game state updates from the server
     socket.on("gameState", (state) => {
-      console.log("↪ Game state received from server:", state);
+      console.log("Game state received from server:", state);
       setPlayers(state.players || []);
       setVotes(state.votes || {});
       setQuestionIndex(state.questionIndex || 0);
-      setMode(state.mode || "majority");
+      setMode(state.gameMode || "majority");
       setLeaderboard(state.leaderboard || []);
-      
+
       if (state.questionIndex >= questions.length) {
         setStep("done");
       } else if (state.questionIndex === 0 && (!state.votes || Object.keys(state.votes).length === 0)) {
-        setStep(-1);  // Start screen
+        setStep(-1);
       } else {
         setStep(state.questionIndex);
       }
     });
 
-    // Cleanup: disconnect socket when the component unmounts
     return () => {
       socket.disconnect();
     };
-  }, [questions]); // You might want to trigger it on different dependencies if needed
+  }, [questions]);
 
   // Functions for interacting with the socket
   const addPlayer = (name) => {
-    socket.emit("join", name); // Send the player's name to the server
+    socket.emit("join", name);
   };
 
   const submitVote = (name, option) => {
@@ -69,14 +67,13 @@ export function GameProvider({ children }) {
   };
 
   const changeMode = (newMode) => {
-    setMode(newMode); // Update local state to reflect the mode change
-    socket.emit("changeMode", newMode); // Notify the server
+    setMode(newMode);
+    socket.emit("changeMode", newMode);
   };
 
- return (
-  <GameContext.Provider
-    value={{
-      socket, // add this line
+  return (
+    <GameContext.Provider value={{
+      socket,
       players,
       playerName,
       setPlayerName,
@@ -99,11 +96,10 @@ export function GameProvider({ children }) {
       resetGame,
       changeMode,
       showResults,
-    }}
-  >
-    {children}
-  </GameContext.Provider>
-);
+    }}>
+      {children}
+    </GameContext.Provider>
+  );
 }
 
 export const useGame = () => useContext(GameContext);
