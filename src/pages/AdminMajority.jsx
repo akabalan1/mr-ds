@@ -1,1 +1,0 @@
-// Admin controls for Majority Rules game mode

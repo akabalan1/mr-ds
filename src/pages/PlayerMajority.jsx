@@ -1,1 +1,0 @@
-// Player page for Majority Rules mode

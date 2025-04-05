@@ -1,1 +1,0 @@
-// React Router setup for dual mode navigation
