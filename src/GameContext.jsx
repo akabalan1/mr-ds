@@ -14,7 +14,8 @@ export function GameProvider({ children }) {
   const [tally, setTally] = useState({});
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
-
+  
+  // Sync game state with the server
   useEffect(() => {
     socket.on("gameState", (state) => {
       console.log("↪ Game state received from server:", state);
