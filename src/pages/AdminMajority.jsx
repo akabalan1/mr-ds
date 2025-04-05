@@ -26,19 +26,17 @@ export default function AdminMajority() {
   }, [socket]);
 
   const handleStartGame = () => {
-    setStep(1); // Move to next step (start the game)
-    setGameStarted(true); // Mark the game as started
-    socket.emit("gameStart", questions); // Send the questions to all players
+    setStep(1); // Start the game (move to the first question)
+    setGameStarted(true);
+    socket.emit("gameStart", questions);
   };
 
-  // Calculate scores for players based on majority rules
   const calculateScores = (votes) => {
     const optionCounts = {};
     for (let player in votes) {
       const vote = votes[player];
       optionCounts[vote] = (optionCounts[vote] || 0) + 1;
     }
-
     const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
     const majorityVote = sortedOptions[0][0];
     const leastCommonVote = sortedOptions[sortedOptions.length - 1][0];
@@ -56,8 +54,8 @@ export default function AdminMajority() {
   };
 
   const handleResetGame = () => {
-    resetGame(); // Emit reset event to the server
-    setStep(-1);  // Reset the step to the initial state
+    resetGame();          // Emit reset event to the server and reset game state
+    setStep(-1);          // Reset the step to the initial state
     localStorage.removeItem("playerName"); // Clear stored player name
   };
 
@@ -79,9 +77,16 @@ export default function AdminMajority() {
       </button>
       
       <div className="mt-6">
-        <h2>Current Votes:</h2>
+        <h2 className="font-bold">Current Votes:</h2>
         {Object.entries(currentVotes).map(([player, vote]) => (
           <p key={player}>{player} voted for: {vote}</p>
+        ))}
+      </div>
+      
+      <div className="mt-6">
+        <h2 className="font-bold">Players Joined:</h2>
+        {players.map((player, index) => (
+          <p key={index}>{player.name}</p>
         ))}
       </div>
     </Layout>
