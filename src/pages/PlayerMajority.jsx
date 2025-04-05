@@ -1,8 +1,7 @@
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
-import Layout from "../components/Layout"; // Import Layout component
+import Layout from "../components/Layout"; 
 
 export default function PlayerMajority() {
   const navigate = useNavigate();
@@ -10,8 +9,7 @@ export default function PlayerMajority() {
 
   useEffect(() => {
     socket.on("gameState", (state) => {
-      // Handle receiving game state, like current votes, question, etc.
-      setVotes(state.votes);
+      setVotes(state.votes); // Set the votes based on current game state
     });
 
     return () => {
@@ -29,9 +27,10 @@ export default function PlayerMajority() {
       <h1>Player Majority Rules</h1>
       <div>
         <h2>Question {step + 1}</h2>
-        {/* Your question and answer options here */}
         <button onClick={() => handleVote("Option 1")}>Option 1</button>
         <button onClick={() => handleVote("Option 2")}>Option 2</button>
+        <button onClick={() => handleVote("Option 3")}>Option 3</button>
+        <button onClick={() => handleVote("Option 4")}>Option 4</button>
       </div>
     </Layout>
   );
