@@ -15,20 +15,22 @@ export default function AdminHome() {
 
   return (
     <Layout>
-      <h1 className="text-3xl font-bold mb-4">👋 Welcome to Admin Home</h1>
-      <div className="mt-6">
-        <button
-          onClick={handleMajorityGame}
-          className="game-mode-btn bg-blue-600 text-white p-3 rounded mb-4"
-        >
-          Start Majority Rules Game
-        </button>
-        <button
-          onClick={handleKahootGame}
-          className="game-mode-btn bg-green-600 text-white p-3 rounded"
-        >
-          Start Kahoot Game
-        </button>
+      <div className="admin-home">
+        <h1 className="text-3xl font-bold mb-4">👋 Welcome to Admin Home</h1>
+        <div className="mt-6">
+          <button
+            onClick={handleMajorityGame}
+            className="game-mode-btn bg-blue-600 text-white p-3 rounded mb-4"
+          >
+            Start Majority Rules Game
+          </button>
+          <button
+            onClick={handleKahootGame}
+            className="game-mode-btn bg-green-600 text-white p-3 rounded"
+          >
+            Start Kahoot Game
+          </button>
+        </div>
       </div>
     </Layout>
   );
