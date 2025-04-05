@@ -11,10 +11,12 @@ export default function AdminKahoot() {
   ]);
   
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false); // Track game started status
 
   const handleStartGame = () => {
     setStep(1);  // Start the game (move to the first question)
-    socket.emit("gameStart", questions);
+    setGameStarted(true);
+    socket.emit("gameStart", questions);  // Send questions to players
     socket.emit("startTimer"); // Start the timer for the first question
   };
 
@@ -25,17 +27,26 @@ export default function AdminKahoot() {
       socket.emit("nextQuestion", currentQuestion + 1);  // Move to the next question
       socket.emit("startTimer"); // Start the timer for the next question
     } else {
-      setStep("done");  // End game after last question
+      setStep("done");  // End the game after the last question
+      setGameStarted(false); // Game finished
     }
   };
 
   return (
     <Layout>
       <h1>Admin Kahoot Game</h1>
-      <button onClick={handleStartGame} className="game-mode-btn bg-green-600 text-white p-3 rounded">
-        Start Kahoot Game
+      <button
+        onClick={handleStartGame}
+        className="game-mode-btn bg-green-600 text-white p-3 rounded"
+        disabled={gameStarted}  // Disable the button once the game has started
+      >
+        {gameStarted ? "Game Started" : "Start Kahoot Game"}
       </button>
-      <button onClick={handleNextQuestion} className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4">
+      <button
+        onClick={handleNextQuestion}
+        className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4"
+        disabled={!gameStarted} // Disable the button until the game starts
+      >
         Next Question
       </button>
       {/* Placeholder Questions */}
