@@ -1,3 +1,4 @@
+// src/pages/PlayerJoin.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
@@ -6,24 +7,18 @@ import Layout from "../components/Layout";
 export default function PlayerJoin() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
-  const { socket, setPlayerName, mode, step } = useGame();
+  const { socket, setPlayerName } = useGame();
 
-  // Redirect to join page when game is reset (step is -1)
-  useEffect(() => {
-    if (step === -1) {
-      navigate("/join");
-    }
-  }, [step, navigate]);
-
-  // Restore player name from localStorage if available
+  // Restore player name from localStorage if available, then navigate to waiting screen
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
     if (stored) {
       setName(stored);
       setPlayerName(stored);
       socket.emit("player-join", stored);
+      navigate("/waiting");
     }
-  }, [setPlayerName, socket]);
+  }, [setPlayerName, socket, navigate]);
 
   // Handle player name input and joining
   const handleJoin = () => {
@@ -31,14 +26,8 @@ export default function PlayerJoin() {
     localStorage.setItem("playerName", name);
     setPlayerName(name);
     socket.emit("player-join", name);
+    navigate("/waiting"); // Redirect to waiting screen immediately after joining
   };
-
-  // Redirect when game starts (step >= 0) and mode is set
-  useEffect(() => {
-    if (step >= 0 && mode) {
-      navigate(`/play/${mode}`);
-    }
-  }, [step, mode, navigate]);
 
   // Inline styles for this component
   const containerStyle = {
