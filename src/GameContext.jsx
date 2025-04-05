@@ -1,7 +1,7 @@
+// src/GameContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 
-// Initialize the socket (ensure the URL is correct)
 const socket = io("https://mr-ds.onrender.com");
 
 const GameContext = createContext();
@@ -11,13 +11,11 @@ export function GameProvider({ children }) {
   const [playerName, setPlayerName] = useState("");
   const [votes, setVotes] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [step, setStep] = useState(-1);
+  const [step, setStep] = useState(-1); // -1: waiting/join, 0..n: question index, "done": finished
   const [mode, setMode] = useState("majority");
-  const [tally, setTally] = useState({});
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
 
-  // Listen for game state updates from the server
   useEffect(() => {
     socket.on("gameState", (state) => {
       console.log("Game state received from server:", state);
@@ -25,9 +23,12 @@ export function GameProvider({ children }) {
       setVotes(state.votes || {});
       setQuestionIndex(state.questionIndex || 0);
       setMode(state.gameMode || "majority");
-      setLeaderboard(state.leaderboard || []);
+      setQuestions(state.questions || []);
 
-      if (state.questionIndex >= questions.length) {
+      // Set leaderboard as players sorted by score
+      setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
+
+      if (state.questionIndex === "done" || state.questionIndex >= (state.questions ? state.questions.length : 0)) {
         setStep("done");
       } else if (state.questionIndex === 0 && (!state.votes || Object.keys(state.votes).length === 0)) {
         setStep(-1);
@@ -39,11 +40,10 @@ export function GameProvider({ children }) {
     return () => {
       socket.disconnect();
     };
-  }, [questions]);
+  }, []);
 
-  // Functions for interacting with the socket
   const addPlayer = (name) => {
-    socket.emit("join", name);
+    socket.emit("player-join", name);
   };
 
   const submitVote = (name, option) => {
@@ -72,31 +72,31 @@ export function GameProvider({ children }) {
   };
 
   return (
-    <GameContext.Provider value={{
-      socket,
-      players,
-      playerName,
-      setPlayerName,
-      votes,
-      questionIndex,
-      step,
-      setStep,
-      mode,
-      setMode,
-      questions,
-      setQuestions,
-      leaderboard,
-      setLeaderboard,
-      tally,
-      setTally,
-      addPlayer,
-      submitVote,
-      submitKahootAnswer,
-      nextQuestion,
-      resetGame,
-      changeMode,
-      showResults,
-    }}>
+    <GameContext.Provider
+      value={{
+        socket,
+        players,
+        playerName,
+        setPlayerName,
+        votes,
+        questionIndex,
+        step,
+        setStep,
+        mode,
+        setMode,
+        questions,
+        setQuestions,
+        leaderboard,
+        setLeaderboard,
+        addPlayer,
+        submitVote,
+        submitKahootAnswer,
+        nextQuestion,
+        resetGame,
+        changeMode,
+        showResults,
+      }}
+    >
       {children}
     </GameContext.Provider>
   );
