@@ -1,13 +1,3 @@
-
-/* Global styles */
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #f8f8f8;
-}
-
 /* Admin Home Styling */
 .admin-home {
   display: flex;
@@ -26,44 +16,7 @@ body {
   margin-bottom: 20px;
 }
 
-.admin-home button {
-  background-color: #ff61c7;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 12px;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.admin-home button:hover {
-  background-color: #7b61ff;
-}
-
-/* Player Join Styling */
-.player-join {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(to right, #4fc3f7, #80deea);
-  color: white;
-  text-align: center;
-}
-
-.player-join input {
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  width: 200px;
-}
-
-.player-join button {
-  background-color: #ff61c7;
+.game-mode-btn {
   padding: 12px 24px;
   border-radius: 8px;
   border: none;
@@ -72,6 +25,15 @@ body {
   cursor: pointer;
 }
 
-.player-join button:hover {
-  background-color: #7b61ff;
+.game-mode-btn:hover {
+  opacity: 0.8;
+}
+
+/* Specific button styles */
+.bg-blue-600 {
+  background-color: #3182ce;
+}
+
+.bg-green-600 {
+  background-color: #38a169;
 }
