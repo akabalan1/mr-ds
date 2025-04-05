@@ -1,0 +1,1 @@
+// AdminHome page that lets you pick Kahoot or Majority
