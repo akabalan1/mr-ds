@@ -1,18 +1,39 @@
-// src/components/Layout.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
+const layoutStyle = {
+  minHeight: "100vh",
+  background: "linear-gradient(to right, #8e2de2, #ff0080)", // Purple to pink gradient
+  color: "white",
+};
+
+const navStyle = {
+  padding: "1.5rem",
+};
+
+const contentStyle = {
+  padding: "1.5rem",
+};
+
 export default function Layout({ children, showAdminLink = true }) {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-purple-600 to-pink-500 text-white">
-      <nav className="p-6">
+    <div style={layoutStyle}>
+      <nav style={navStyle}>
         {showAdminLink && (
-          <Link to="/admin" className="text-xl font-bold">
+          <Link
+            to="/admin"
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: "bold",
+              color: "white",
+              textDecoration: "none",
+            }}
+          >
             Go to Admin Home
           </Link>
         )}
       </nav>
-      <div className="p-6">{children}</div>
+      <div style={contentStyle}>{children}</div>
     </div>
   );
 }
