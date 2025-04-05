@@ -9,6 +9,8 @@ export default function Waiting() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Waiting page: step =", step, "mode =", mode);
+    // Only navigate if the game has started (i.e. step is 0 or more)
     if (step >= 0 && mode) {
       if (mode === "kahoot") {
         navigate("/play/kahoot");
@@ -22,7 +24,9 @@ export default function Waiting() {
     <Layout showAdminLink={false}>
       <div style={{ padding: "1.5rem", textAlign: "center" }}>
         <h1>Waiting for the game to start...</h1>
-        <p>You have successfully joined the game. Please wait for the admin to start the game.</p>
+        <p>
+          You have successfully joined the game. Please wait for the admin to start the game.
+        </p>
       </div>
     </Layout>
   );
