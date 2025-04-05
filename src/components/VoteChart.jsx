@@ -1,0 +1,1 @@
+// VoteChart component
