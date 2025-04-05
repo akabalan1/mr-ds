@@ -7,9 +7,17 @@ import Layout from "../components/Layout";
 export default function PlayerJoin() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
-  const { socket, setPlayerName } = useGame();
+  const { socket, setPlayerName, mode, step } = useGame();
 
-  // Restore player name from localStorage if available, then navigate to waiting screen
+  // If the game has been reset, send the player back to the join page.
+  useEffect(() => {
+    if (step === -1) {
+      navigate("/join");
+    }
+  }, [step, navigate]);
+
+  // Restore player name from localStorage if available,
+  // then join the game and navigate to a waiting screen.
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
     if (stored) {
@@ -26,8 +34,15 @@ export default function PlayerJoin() {
     localStorage.setItem("playerName", name);
     setPlayerName(name);
     socket.emit("player-join", name);
-    navigate("/waiting"); // Redirect to waiting screen immediately after joining
+    navigate("/waiting"); // Navigate to waiting screen immediately after joining
   };
+
+  // If the game starts (step becomes >= 0 and mode is set), navigate to the play route.
+  useEffect(() => {
+    if (step >= 0 && mode) {
+      navigate(`/play/${mode}`);
+    }
+  }, [step, mode, navigate]);
 
   // Inline styles for this component
   const containerStyle = {
