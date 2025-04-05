@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
+import Layout from "../components/Layout";
 
 export default function PlayerJoin() {
   const [name, setName] = useState("");
@@ -40,21 +41,23 @@ export default function PlayerJoin() {
   }, [step, mode, navigate]);
 
   return (
-    <div className="p-6 text-center">
-      <h1 className="text-3xl font-bold mb-4">👋 Enter Your Name</h1>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Your name..."
-        className="border rounded px-4 py-2"
-      />
-      <button
-        onClick={handleJoin}
-        className="ml-3 bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Join Game
-      </button>
-    </div>
+    <Layout>
+      <div className="p-6 text-center">
+        <h1 className="text-3xl font-bold mb-4">👋 Enter Your Name</h1>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name..."
+          className="border rounded px-4 py-2"
+        />
+        <button
+          onClick={handleJoin}
+          className="ml-3 bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Join Game
+        </button>
+      </div>
+    </Layout>
   );
 }
