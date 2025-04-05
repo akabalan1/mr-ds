@@ -4,7 +4,8 @@ import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
 export default function AdminKahoot() {
-  const { socket, resetGame, setStep, players } = useGame();
+  const { socket, resetGame, setStep, players, step } = useGame();
+
   // Define questions locally (for Kahoot)
   const [questions] = useState([
     {
@@ -23,11 +24,37 @@ export default function AdminKahoot() {
       correctAnswer: "12",
     },
   ]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  // Start the Kahoot game: send questions and set game mode
+  // Track the current question index and whether the game has started
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  // Button styling
+  const buttonBase = {
+    margin: "0.5rem",
+    padding: "0.5rem 1rem",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+  };
+  const startButtonStyle = {
+    ...buttonBase,
+    backgroundColor: "#10b981", // Green
+  };
+  const nextButtonStyle = {
+    ...buttonBase,
+    backgroundColor: "#3b82f6", // Blue
+  };
+  const resetButtonStyle = {
+    ...buttonBase,
+    backgroundColor: "#dc2626", // Red
+  };
+
+  // Start the Kahoot game
   const handleStartGame = () => {
-    setStep(0); // start at question 0
+    setGameStarted(true);
+    setStep(0); // first question
     socket.emit("gameStart", { questions, gameMode: "kahoot" });
     socket.emit("startTimer");
   };
@@ -50,44 +77,64 @@ export default function AdminKahoot() {
     resetGame();
     setStep(-1);
     setCurrentQuestion(0);
+    setGameStarted(false);
     localStorage.removeItem("playerName");
   };
 
-  // Leaderboard display
+  // Display the leaderboard from second question onward or if the game is done
   const displayLeaderboard = () => {
-    return players.map((player, index) => (
-      <div key={index}>
-        <p>{player.name}: {player.score} points</p>
-      </div>
-    ));
+    return players
+      .slice()
+      .sort((a, b) => b.score - a.score)
+      .map((player, index) => (
+        <p key={index}>
+          {player.name}: {player.score} points
+        </p>
+      ));
   };
 
   return (
     <Layout>
       <h1>Admin Kahoot Game</h1>
-      <button onClick={handleStartGame} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
-        Start Kahoot Game
-      </button>
-      <button onClick={handleNextQuestion} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
-        Next Question
-      </button>
-      <button onClick={handleResetGame} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
-        Reset Game
-      </button>
-
-      <div style={{ marginTop: "1rem" }}>
-        <h2>Current Question:</h2>
-        {questions[currentQuestion] && (
-          <div>
-            <p><strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}</p>
-            <ul>
-              {questions[currentQuestion].options.map((option, i) => (
-                <li key={i}>{option}</li>
-              ))}
-            </ul>
-          </div>
+      <div style={{ margin: "1rem 0" }}>
+        {/* Show START button if the game has not started */}
+        {!gameStarted && (
+          <button onClick={handleStartGame} style={startButtonStyle}>
+            Start Kahoot Game
+          </button>
         )}
+
+        {/* Show NEXT QUESTION button only after game starts and not done */}
+        {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
+          <button onClick={handleNextQuestion} style={nextButtonStyle}>
+            Next Question
+          </button>
+        )}
+
+        {/* Reset button is always visible */}
+        <button onClick={handleResetGame} style={resetButtonStyle}>
+          Reset Game
+        </button>
       </div>
+
+      {/* Show the current question only if the game has started and step >= 0 */}
+      {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
+        <div style={{ marginTop: "1rem" }}>
+          <h2>Current Question:</h2>
+          {questions[currentQuestion] && (
+            <div>
+              <p>
+                <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
+              </p>
+              <ul>
+                {questions[currentQuestion].options.map((option, i) => (
+                  <li key={i}>{option}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       <div style={{ marginTop: "1rem" }}>
         <h2>Players Joined:</h2>
@@ -96,7 +143,8 @@ export default function AdminKahoot() {
         ))}
       </div>
 
-      {step === "done" && (
+      {/* Show the leaderboard from the second question onward or if the game is done */}
+      {gameStarted && ((typeof step === "number" && step >= 1) || step === "done") && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Leaderboard:</h2>
           {displayLeaderboard()}
