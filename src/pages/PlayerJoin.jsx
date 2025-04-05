@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
 
 export default function PlayerJoin() {
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { socket, setPlayerName, gameMode, step } = useGame();
 
@@ -14,15 +14,18 @@ export default function PlayerJoin() {
     if (stored) {
       setName(stored);
       setPlayerName(stored);
-      socket.emit("player-join", stored);
+      if (socket) socket.emit("player-join", stored);
     }
-  }, []);
+  }, [socket]);
 
   const handleJoin = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setError("Please enter a name.");
+      return;
+    }
     localStorage.setItem("playerName", name);
     setPlayerName(name);
-    socket.emit("player-join", name);
+    if (socket) socket.emit("player-join", name);
   };
 
   // Redirect when game starts and step is updated
@@ -48,6 +51,7 @@ export default function PlayerJoin() {
       >
         Join Game
       </button>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 }
