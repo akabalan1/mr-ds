@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
 export default function AdminMajority() {
-  const { socket, resetGame, setStep, players } = useGame();
+  const { socket, resetGame, setStep, players, step } = useGame(); // Added step here
   // Define questions locally (for Majority Rules)
   const [questions] = useState([
     {
@@ -91,7 +91,9 @@ export default function AdminMajority() {
         <h2>Current Question:</h2>
         {questions[currentQuestion] && (
           <div>
-            <p><strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}</p>
+            <p>
+              <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
+            </p>
             <ul>
               {questions[currentQuestion].options.map((option, i) => (
                 <li key={i}>{option}</li>
