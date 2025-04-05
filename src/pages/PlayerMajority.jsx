@@ -1,36 +1,48 @@
+// src/pages/PlayerMajority.jsx
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
-import Layout from "../components/Layout"; 
+import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 export default function PlayerMajority() {
+  const { socket, questions, questionIndex, step, mode } = useGame();
   const navigate = useNavigate();
-  const { step, gameMode, votes, setVotes, socket } = useGame();
-
-  useEffect(() => {
-    socket.on("gameState", (state) => {
-      setVotes(state.votes); // Set the votes based on current game state
-    });
-
-    return () => {
-      socket.off("gameState");
-    };
-  }, [socket, setVotes]);
 
   const handleVote = (option) => {
-    const newVote = { player: "Player Name", option: option }; // Replace with actual player name
-    socket.emit("submitVote", newVote);
+    socket.emit("submitVote", {
+      name: localStorage.getItem("playerName"),
+      option,
+      questionIndex,
+    });
   };
 
+  useEffect(() => {
+    if (step === "done" && mode === "majority") {
+      navigate("/results");
+    }
+  }, [step, mode, navigate]);
+
   return (
-    <Layout>
-      <h1>Player Majority Rules</h1>
-      <div>
-        <h2>Question {step + 1}</h2>
-        <button onClick={() => handleVote("Option 1")}>Option 1</button>
-        <button onClick={() => handleVote("Option 2")}>Option 2</button>
-        <button onClick={() => handleVote("Option 3")}>Option 3</button>
-        <button onClick={() => handleVote("Option 4")}>Option 4</button>
+    <Layout showAdminLink={false}>
+      <div style={{ marginTop: "1rem" }}>
+        {questions[questionIndex] ? (
+          <div>
+            <h2>
+              Q{questionIndex + 1}: {questions[questionIndex].question}
+            </h2>
+            <ul>
+              {questions[questionIndex].options.map((option, i) => (
+                <li key={i}>
+                  <button onClick={() => handleVote(option)}>
+                    {option}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p>Waiting for the game to start...</p>
+        )}
       </div>
     </Layout>
   );
