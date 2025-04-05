@@ -28,10 +28,10 @@ const { socket, setPlayerName, mode, step } = useGame();
 
   // Redirect when game starts and step is updated
   useEffect(() => {
-    if (step >= 0 && gameMode) {
-      navigate(`/play/${gameMode}`);  // Navigate to the correct game page
+    if (step >= 0 && mode) {
+      navigate(`/play/${mode}`);  // Navigate to the correct game page
     }
-  }, [step, gameMode, navigate]);
+  }, [step, mode, navigate]);
 
   return (
     <div className="p-6 text-center">
