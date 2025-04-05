@@ -1,3 +1,4 @@
+// src/pages/AdminKahoot.jsx
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
@@ -14,7 +15,7 @@ export default function AdminKahoot() {
 
   // Start the Kahoot game
   const handleStartGame = () => {
-    setStep(1);  // Start the game (move to the first question)
+    setStep(1); // Start the game (move to the first question)
     socket.emit("gameStart", questions);
     socket.emit("startTimer"); // Start the timer for the first question
   };
@@ -22,25 +23,26 @@ export default function AdminKahoot() {
   // Move to the next question
   const handleNextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setStep(currentQuestion + 1);
-      socket.emit("nextQuestion", currentQuestion + 1);  // Move to the next question
+      const nextQuestionIndex = currentQuestion + 1;
+      setCurrentQuestion(nextQuestionIndex);
+      setStep(nextQuestionIndex);
+      socket.emit("nextQuestion", nextQuestionIndex); // Move to the next question
       socket.emit("startTimer"); // Start the timer for the next question
     } else {
-      setStep("done");  // End the game after the last question
+      setStep("done"); // End the game after the last question
     }
   };
 
   // Handle the game reset
   const handleResetGame = () => {
-    resetGame();  // Call reset function to reset the game
-    setStep(-1);  // Reset the step to the initial state
-    setCurrentQuestion(0);  // Reset the current question index to 0
+    resetGame();          // Emit reset event to the server and reset game state
+    setStep(-1);          // Reset the step to the initial state
+    setCurrentQuestion(0); // Reset the current question index to 0
+    localStorage.removeItem("playerName"); // Clear stored player name
   };
 
-  // Display the current score/leaderboard (you can add this part as needed)
+  // Display the current score/leaderboard
   const displayLeaderboard = () => {
-    // Example of displaying leaderboard after each question
     return players.map((player, index) => (
       <div key={index}>
         <p>{player.name}: {player.points} points</p>
@@ -53,17 +55,26 @@ export default function AdminKahoot() {
       <h1>Admin Kahoot Game</h1>
 
       {/* Start Game Button */}
-      <button onClick={handleStartGame} className="game-mode-btn bg-green-600 text-white p-3 rounded">
+      <button
+        onClick={handleStartGame}
+        className="game-mode-btn bg-green-600 text-white p-3 rounded"
+      >
         Start Kahoot Game
       </button>
 
       {/* Next Question Button */}
-      <button onClick={handleNextQuestion} className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4">
+      <button
+        onClick={handleNextQuestion}
+        className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4"
+      >
         Next Question
       </button>
 
       {/* Reset Game Button */}
-      <button onClick={handleResetGame} className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4">
+      <button
+        onClick={handleResetGame}
+        className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4"
+      >
         Reset Game
       </button>
 
