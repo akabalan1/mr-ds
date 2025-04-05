@@ -5,7 +5,8 @@ import { useGame } from "../GameContext";
 export default function PlayerJoin() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
-  const { socket, setPlayerName, gameMode, step } = useGame();
+const { socket, setPlayerName, mode, step } = useGame();
+
 
   // Restore player name from localStorage if available
   useEffect(() => {
