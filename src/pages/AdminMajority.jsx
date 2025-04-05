@@ -1,1 +1,0 @@
-// AdminMajority placeholder
