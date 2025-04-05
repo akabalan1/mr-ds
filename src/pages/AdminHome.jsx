@@ -1,16 +1,26 @@
 import React from "react";
-import Layout from "../components/Layout"; // Import Layout component
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import Layout from "../components/Layout";
+import { useNavigate } from "react-router-dom";
+import { useGame } from "../GameContext";
 
 export default function AdminHome() {
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
+  const { resetGame, setStep } = useGame();
 
   const handleMajorityGame = () => {
-    navigate("/admin/majority"); // Navigate to the Majority Rules game setup
+    navigate("/admin/majority");
   };
 
   const handleKahootGame = () => {
-    navigate("/admin/kahoot"); // Navigate to the Kahoot game setup
+    navigate("/admin/kahoot");
+  };
+
+  // Reset the game: emit reset event, reset local state, and clear player local storage
+  const handleResetGame = () => {
+    resetGame(); // Emit reset event to the server
+    setStep(-1); // Reset the step to the initial state
+    localStorage.removeItem("playerName"); // Clear player's local storage
+    console.log("Game reset");
   };
 
   return (
@@ -26,9 +36,15 @@ export default function AdminHome() {
           </button>
           <button
             onClick={handleKahootGame}
-            className="game-mode-btn bg-green-600 text-white p-3 rounded"
+            className="game-mode-btn bg-green-600 text-white p-3 rounded mb-4"
           >
             Start Kahoot Game
+          </button>
+          <button
+            onClick={handleResetGame}
+            className="game-mode-btn bg-red-600 text-white p-3 rounded"
+          >
+            Reset Game
           </button>
         </div>
       </div>
