@@ -40,21 +40,48 @@ export default function PlayerJoin() {
     }
   }, [step, mode, navigate]);
 
+  // Inline styles for this component
+  const containerStyle = {
+    padding: "1.5rem",
+    textAlign: "center",
+  };
+
+  const headingStyle = {
+    fontSize: "2rem",
+    fontWeight: "bold",
+    marginBottom: "1rem",
+  };
+
+  const inputStyle = {
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    padding: "0.5rem",
+    marginRight: "0.5rem",
+    fontSize: "1rem",
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#2563eb", // Blue
+    color: "white",
+    padding: "0.5rem 1rem",
+    borderRadius: "4px",
+    border: "none",
+    fontSize: "1rem",
+    cursor: "pointer",
+  };
+
   return (
     <Layout showAdminLink={false}>
-      <div className="p-6 text-center">
-        <h1 className="text-3xl font-bold mb-4">👋 Enter Your Name</h1>
+      <div style={containerStyle}>
+        <h1 style={headingStyle}>👋 Enter Your Name</h1>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name..."
-          className="border rounded px-4 py-2"
+          style={inputStyle}
         />
-        <button
-          onClick={handleJoin}
-          className="ml-3 bg-blue-600 text-white px-4 py-2 rounded"
-        >
+        <button onClick={handleJoin} style={buttonStyle}>
           Join Game
         </button>
       </div>
