@@ -5,6 +5,7 @@ import { useGame } from "../GameContext";
 
 export default function AdminKahoot() {
   const { socket, resetGame, setStep, players } = useGame();
+  // Define questions locally (for Kahoot)
   const [questions] = useState([
     {
       question: "What is the capital of France?",
@@ -24,10 +25,10 @@ export default function AdminKahoot() {
   ]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  // Start the Kahoot game
+  // Start the Kahoot game: send questions and set game mode
   const handleStartGame = () => {
-    setStep(1);
-    socket.emit("gameStart", questions);
+    setStep(0); // start at question 0
+    socket.emit("gameStart", { questions, gameMode: "kahoot" });
     socket.emit("startTimer");
   };
 
@@ -44,7 +45,7 @@ export default function AdminKahoot() {
     }
   };
 
-  // Handle the game reset
+  // Reset the game
   const handleResetGame = () => {
     resetGame();
     setStep(-1);
@@ -52,11 +53,11 @@ export default function AdminKahoot() {
     localStorage.removeItem("playerName");
   };
 
-  // Display leaderboard (players with points)
+  // Leaderboard display
   const displayLeaderboard = () => {
     return players.map((player, index) => (
       <div key={index}>
-        <p>{player.name}: {player.points} points</p>
+        <p>{player.name}: {player.score} points</p>
       </div>
     ));
   };
@@ -64,56 +65,43 @@ export default function AdminKahoot() {
   return (
     <Layout>
       <h1>Admin Kahoot Game</h1>
-      <button
-        onClick={handleStartGame}
-        className="game-mode-btn bg-green-600 text-white p-3 rounded"
-      >
+      <button onClick={handleStartGame} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
         Start Kahoot Game
       </button>
-      <button
-        onClick={handleNextQuestion}
-        className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4"
-      >
+      <button onClick={handleNextQuestion} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
         Next Question
       </button>
-      <button
-        onClick={handleResetGame}
-        className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4"
-      >
+      <button onClick={handleResetGame} style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}>
         Reset Game
       </button>
 
-      <div className="mt-6">
-        <h2 className="font-bold">Players Joined:</h2>
+      <div style={{ marginTop: "1rem" }}>
+        <h2>Current Question:</h2>
+        {questions[currentQuestion] && (
+          <div>
+            <p><strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}</p>
+            <ul>
+              {questions[currentQuestion].options.map((option, i) => (
+                <li key={i}>{option}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginTop: "1rem" }}>
+        <h2>Players Joined:</h2>
         {players.map((player, index) => (
           <p key={index}>{player.name}</p>
         ))}
       </div>
 
-      <div className="mt-6">
-        <h2 className="font-bold">Leaderboard:</h2>
-        {displayLeaderboard()}
-      </div>
-
-      <div className="mt-6">
-        <h2 className="font-bold">Questions:</h2>
-        {questions.map((q, index) => (
-          <div key={index}>
-            <p>
-              <strong>Q{index + 1}: </strong>
-              {q.question}
-            </p>
-            <ul>
-              {q.options.map((option, i) => (
-                <li key={i}>{option}</li>
-              ))}
-            </ul>
-            <p>
-              <strong>Correct Answer:</strong> {q.correctAnswer}
-            </p>
-          </div>
-        ))}
-      </div>
+      {step === "done" && (
+        <div style={{ marginTop: "1rem" }}>
+          <h2>Leaderboard:</h2>
+          {displayLeaderboard()}
+        </div>
+      )}
     </Layout>
   );
 }
