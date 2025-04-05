@@ -5,7 +5,7 @@ import AdminMajority from "./pages/AdminMajority";
 import PlayerMajority from "./pages/PlayerMajority";
 import AdminKahoot from "./pages/AdminKahoot";
 import PlayerKahoot from "./pages/PlayerKahoot";
-import PlayerJoin from "./pages/PlayerJoin"; // Make sure this is imported
+import PlayerJoin from "./pages/PlayerJoin"; // Player join page
 import { GameProvider } from "./GameContext";
 
 export default function App() {
@@ -13,8 +13,8 @@ export default function App() {
     <GameProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/join" />} />
-          <Route path="/join" element={<PlayerJoin />} />  {/* Ensure this is correct */}
+          <Route path="/" element={<Navigate to="/join" />} />  {/* Player join page */}
+          <Route path="/join" element={<PlayerJoin />} />  {/* Ensure the player join route */}
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/majority" element={<AdminMajority />} />
           <Route path="/admin/kahoot" element={<AdminKahoot />} />
