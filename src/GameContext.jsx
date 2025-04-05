@@ -7,6 +7,7 @@ const GameContext = createContext();
 
 export function GameProvider({ children }) {
   const [players, setPlayers] = useState([]);
+  const [playerName, setPlayerName] = useState("");  // Ensure this is initialized
   const [votes, setVotes] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [step, setStep] = useState(-1);
@@ -14,8 +15,7 @@ export function GameProvider({ children }) {
   const [tally, setTally] = useState({});
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
-  
-  // Sync game state with the server
+
   useEffect(() => {
     socket.on("gameState", (state) => {
       console.log("↪ Game state received from server:", state);
@@ -78,6 +78,8 @@ export function GameProvider({ children }) {
     <GameContext.Provider
       value={{
         players,
+        playerName, // Make sure to provide this
+        setPlayerName, // Ensure this is provided correctly
         votes,
         questionIndex,
         step,
@@ -96,7 +98,7 @@ export function GameProvider({ children }) {
         nextQuestion,
         resetGame,
         changeMode,
-        showResults
+        showResults,
       }}
     >
       {children}
