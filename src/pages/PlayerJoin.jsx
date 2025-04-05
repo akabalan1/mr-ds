@@ -8,7 +8,7 @@ export default function PlayerJoin() {
   const navigate = useNavigate();
   const { socket, setPlayerName, mode, step } = useGame();
 
-  // Redirect to the join page when game is reset (step is -1)
+  // Redirect to join page when game is reset (step is -1)
   useEffect(() => {
     if (step === -1) {
       navigate("/join");
@@ -33,7 +33,7 @@ export default function PlayerJoin() {
     socket.emit("player-join", name);
   };
 
-  // Redirect when game starts and step is updated (for example, to /play/majority)
+  // Redirect when game starts (step >= 0) and mode is set
   useEffect(() => {
     if (step >= 0 && mode) {
       navigate(`/play/${mode}`);
@@ -41,7 +41,7 @@ export default function PlayerJoin() {
   }, [step, mode, navigate]);
 
   return (
-    <Layout>
+    <Layout showAdminLink={false}>
       <div className="p-6 text-center">
         <h1 className="text-3xl font-bold mb-4">👋 Enter Your Name</h1>
         <input
