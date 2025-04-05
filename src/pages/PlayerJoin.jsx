@@ -5,31 +5,37 @@ import { useGame } from "../GameContext";
 export default function PlayerJoin() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
-const { socket, setPlayerName, mode, step } = useGame();
+  const { socket, setPlayerName, mode, step } = useGame();
 
+  // Redirect to the join page when game is reset (step is -1)
+  useEffect(() => {
+    if (step === -1) {
+      navigate("/join");
+    }
+  }, [step, navigate]);
 
   // Restore player name from localStorage if available
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
     if (stored) {
-      setName(stored);               // Set name from localStorage
-      setPlayerName(stored);         // Set player name using context
-      socket.emit("player-join", stored);  // Emit to server that player joined
+      setName(stored);
+      setPlayerName(stored);
+      socket.emit("player-join", stored);
     }
   }, [setPlayerName, socket]);
 
   // Handle player name input and joining
   const handleJoin = () => {
-    if (!name.trim()) return;  // Don't allow empty name
-    localStorage.setItem("playerName", name);  // Save name to localStorage
-    setPlayerName(name);  // Set player name using context
-    socket.emit("player-join", name);  // Emit to server that player joined
+    if (!name.trim()) return;
+    localStorage.setItem("playerName", name);
+    setPlayerName(name);
+    socket.emit("player-join", name);
   };
 
-  // Redirect when game starts and step is updated
+  // Redirect when game starts and step is updated (for example, to /play/majority)
   useEffect(() => {
     if (step >= 0 && mode) {
-      navigate(`/play/${mode}`);  // Navigate to the correct game page
+      navigate(`/play/${mode}`);
     }
   }, [step, mode, navigate]);
 
@@ -39,7 +45,7 @@ const { socket, setPlayerName, mode, step } = useGame();
       <input
         type="text"
         value={name}
-        onChange={(e) => setName(e.target.value)}  // Update name input
+        onChange={(e) => setName(e.target.value)}
         placeholder="Your name..."
         className="border rounded px-4 py-2"
       />
