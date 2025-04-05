@@ -1,66 +1,45 @@
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const { Server } = require("socket.io");
 
-const app = express();
-const server = http.createServer(app);
-app.use(cors());
-
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+const io = require("socket.io")(server);
 
 let gameState = {
   players: [],
   votes: {},
   questionIndex: 0,
-  mode: "majority", // or "kahoot"
-  leaderboard: []
+  gameMode: "majority" // default
 };
 
+function emitGameState() {
+  io.emit("gameState", {
+    players: gameState.players,
+    votes: gameState.votes,
+    questionIndex: gameState.questionIndex,
+    gameMode: gameState.gameMode
+  });
+}
+
 io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+  console.log("Client connected:", socket.id);
 
-  socket.on("join", (playerName) => {
-    const newPlayer = { id: socket.id, name: playerName, score: 0 };
-    gameState.players.push(newPlayer);
-    io.emit("gameState", gameState);
-  });
-
-  socket.on("submitVote", (vote) => {
-    if (!gameState.votes[gameState.questionIndex]) {
-      gameState.votes[gameState.questionIndex] = [];
-    }
-    gameState.votes[gameState.questionIndex].push(vote);
-    io.emit("gameState", gameState);
-  });
-
-  socket.on("nextQuestion", () => {
-    gameState.questionIndex += 1;
-    io.emit("gameState", gameState);
-  });
-
-  socket.on("resetGame", () => {
-    gameState.votes = {};
-    gameState.questionIndex = 0;
-    gameState.leaderboard = [];
-    io.emit("gameState", gameState);
-  });
-
-  socket.on("disconnect", () => {
-    gameState.players = gameState.players.filter(p => p.id !== socket.id);
-    io.emit("gameState", gameState);
-  });
-
-  // Send initial state to new client
+  // Emit initial game state when a player joins
   socket.emit("gameState", gameState);
-});
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`Socket server running on port ${PORT}`);
+  // Handle player joining
+  socket.on("player-join", (name) => {
+    if (!name) return;
+    const existing = gameState.players.find(p => p.name === name);
+    if (!existing) {
+      gameState.players.push({ name, score: 0 });
+    }
+    console.log(`Player joined: ${name}`);
+    emitGameState();
+  });
+
+  // Handle other events like voting, game actions, etc.
+
+  // Optionally handle disconnects
+  socket.on("disconnect", () => {
+    gameState.players = gameState.players.filter(p => p.socketId !== socket.id);
+    console.log("Player disconnected", socket.id);
+    emitGameState();
+  });
 });
