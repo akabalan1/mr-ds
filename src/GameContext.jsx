@@ -73,36 +73,37 @@ export function GameProvider({ children }) {
     socket.emit("changeMode", newMode); // Notify the server
   };
 
-  return (
-    <GameContext.Provider
-      value={{
-        players,
-        playerName, // Provide player name state
-        setPlayerName, // Allow components to set player name
-        votes,
-        questionIndex,
-        step,
-        setStep,
-        mode,
-        setMode,
-        questions,
-        setQuestions,
-        leaderboard,
-        setLeaderboard,
-        tally,
-        setTally,
-        addPlayer,
-        submitVote,
-        submitKahootAnswer,
-        nextQuestion,
-        resetGame,
-        changeMode,
-        showResults,
-      }}
-    >
-      {children}
-    </GameContext.Provider>
-  );
+ return (
+  <GameContext.Provider
+    value={{
+      socket, // add this line
+      players,
+      playerName,
+      setPlayerName,
+      votes,
+      questionIndex,
+      step,
+      setStep,
+      mode,
+      setMode,
+      questions,
+      setQuestions,
+      leaderboard,
+      setLeaderboard,
+      tally,
+      setTally,
+      addPlayer,
+      submitVote,
+      submitKahootAnswer,
+      nextQuestion,
+      resetGame,
+      changeMode,
+      showResults,
+    }}
+  >
+    {children}
+  </GameContext.Provider>
+);
 }
 
 export const useGame = () => useContext(GameContext);
