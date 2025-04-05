@@ -1,4 +1,3 @@
-
 const io = require("socket.io")(server);
 
 let gameState = {
@@ -34,7 +33,17 @@ io.on("connection", (socket) => {
     emitGameState();
   });
 
-  // Handle other events like voting, game actions, etc.
+  // Handle reset game event from admin
+  socket.on("resetGame", () => {
+    console.log("Resetting game state");
+    gameState = {
+      players: [],
+      votes: {},
+      questionIndex: 0,
+      gameMode: "majority"
+    };
+    emitGameState();
+  });
 
   // Optionally handle disconnects
   socket.on("disconnect", () => {
