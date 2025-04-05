@@ -4,20 +4,30 @@ import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
 export default function AdminMajority() {
-  const { setStep, socket, setPlayers, players, resetGame } = useGame();
+  const { socket, resetGame, setStep, players } = useGame();
+  // Define questions locally (for Majority Rules)
   const [questions] = useState([
-    { question: "What is your favorite color?", options: ["Red", "Blue", "Green", "Yellow"] },
-    { question: "What is the best type of music?", options: ["Rock", "Pop", "Classical", "Jazz"] },
-    { question: "What is your favorite fruit?", options: ["Apple", "Banana", "Orange", "Grapes"] },
+    {
+      question: "What is your favorite color?",
+      options: ["Red", "Blue", "Green", "Yellow"],
+    },
+    {
+      question: "What is the best type of music?",
+      options: ["Rock", "Pop", "Classical", "Jazz"],
+    },
+    {
+      question: "What is your favorite fruit?",
+      options: ["Apple", "Banana", "Orange", "Grapes"],
+    },
   ]);
-  const [currentVotes, setCurrentVotes] = useState({});
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
+  const [currentVotes, setCurrentVotes] = useState({});
 
   useEffect(() => {
     if (socket) {
       socket.on("updateVotes", (newVotes) => {
         setCurrentVotes(newVotes);
-        calculateScores(newVotes);
       });
       return () => {
         socket.off("updateVotes");
@@ -25,38 +35,33 @@ export default function AdminMajority() {
     }
   }, [socket]);
 
+  // Start Majority Rules game
   const handleStartGame = () => {
-    setStep(1); // Start the game (move to the first question)
+    setStep(0);
     setGameStarted(true);
-    socket.emit("gameStart", questions);
+    socket.emit("gameStart", { questions, gameMode: "majority" });
   };
 
-  const calculateScores = (votes) => {
-    const optionCounts = {};
-    for (let player in votes) {
-      const vote = votes[player];
-      optionCounts[vote] = (optionCounts[vote] || 0) + 1;
+  // Next question: calculate scores then advance
+  const handleNextQuestion = () => {
+    // Calculate majority scores on the server
+    socket.emit("calculateMajorityScores");
+    if (currentQuestion < questions.length - 1) {
+      const nextQuestionIndex = currentQuestion + 1;
+      setCurrentQuestion(nextQuestionIndex);
+      setStep(nextQuestionIndex);
+      socket.emit("nextQuestion", nextQuestionIndex);
+    } else {
+      setStep("done");
     }
-    const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
-    const majorityVote = sortedOptions[0][0];
-    const leastCommonVote = sortedOptions[sortedOptions.length - 1][0];
-
-    let updatedPlayers = [...players];
-    updatedPlayers.forEach((player) => {
-      const playerVote = votes[player.name];
-      if (playerVote === majorityVote) {
-        player.points += 3; // Majority gets 3 points
-      } else if (playerVote === leastCommonVote) {
-        player.points += 1; // Least common gets 1 point
-      }
-    });
-    setPlayers(updatedPlayers);
   };
 
+  // Reset the game
   const handleResetGame = () => {
-    resetGame();          // Emit reset event to the server and reset game state
-    setStep(-1);          // Reset the step to the initial state
-    localStorage.removeItem("playerName"); // Clear stored player name
+    resetGame();
+    setStep(-1);
+    setCurrentQuestion(0);
+    localStorage.removeItem("playerName");
   };
 
   return (
@@ -64,31 +69,58 @@ export default function AdminMajority() {
       <h1>Admin Majority Rules</h1>
       <button
         onClick={handleStartGame}
-        className="game-mode-btn bg-blue-600 text-white p-3 rounded"
+        style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}
         disabled={gameStarted}
       >
         {gameStarted ? "Game Started" : "Start Majority Rules"}
       </button>
       <button
+        onClick={handleNextQuestion}
+        style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}
+      >
+        Next Question
+      </button>
+      <button
         onClick={handleResetGame}
-        className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4"
+        style={{ margin: "0.5rem", padding: "0.5rem 1rem" }}
       >
         Reset Game
       </button>
-      
-      <div className="mt-6">
-        <h2 className="font-bold">Current Votes:</h2>
-        {Object.entries(currentVotes).map(([player, vote]) => (
-          <p key={player}>{player} voted for: {vote}</p>
-        ))}
+
+      <div style={{ marginTop: "1rem" }}>
+        <h2>Current Question:</h2>
+        {questions[currentQuestion] && (
+          <div>
+            <p><strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}</p>
+            <ul>
+              {questions[currentQuestion].options.map((option, i) => (
+                <li key={i}>{option}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
-      
-      <div className="mt-6">
-        <h2 className="font-bold">Players Joined:</h2>
+
+      <div style={{ marginTop: "1rem" }}>
+        <h2>Players Joined:</h2>
         {players.map((player, index) => (
           <p key={index}>{player.name}</p>
         ))}
       </div>
+
+      {step === "done" && (
+        <div style={{ marginTop: "1rem" }}>
+          <h2>Leaderboard:</h2>
+          {players
+            .slice()
+            .sort((a, b) => b.score - a.score)
+            .map((player, index) => (
+              <p key={index}>
+                {player.name}: {player.score} points
+              </p>
+            ))}
+        </div>
+      )}
     </Layout>
   );
 }
