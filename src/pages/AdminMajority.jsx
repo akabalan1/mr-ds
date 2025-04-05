@@ -10,28 +10,31 @@ export default function AdminMajority() {
     { question: "What is your favorite fruit?", options: ["Apple", "Banana", "Orange", "Grapes"] },
   ]);
   const [currentVotes, setCurrentVotes] = useState({});
-  const [gameStarted, setGameStarted] = useState(false); // Track game start status
-  
-  useEffect(() => {
-    socket.on("updateVotes", (newVotes) => {
-      setCurrentVotes(newVotes);
-      calculateScores(newVotes); // Recalculate scores whenever votes change
-    });
+  const [gameStarted, setGameStarted] = useState(false);
 
-    return () => {
-      socket.off("updateVotes");
-    };
+  useEffect(() => {
+    // Ensure socket is initialized and listen for vote updates
+    if (socket) {
+      socket.on("updateVotes", (newVotes) => {
+        setCurrentVotes(newVotes);
+        calculateScores(newVotes);  // Recalculate scores whenever votes change
+      });
+
+      return () => {
+        socket.off("updateVotes");
+      };
+    }
   }, [socket]);
 
   const handleStartGame = () => {
-    setStep(1);
-    setGameStarted(true); // Mark the game as started
-    socket.emit("gameStart", questions); // Send the questions to all players
+    setStep(1);  // Start game step
+    setGameStarted(true);  // Mark the game as started
+    socket.emit("gameStart", questions);  // Send the questions to players
   };
 
   // Calculate scores for players based on majority rules
   const calculateScores = (votes) => {
-    const optionCounts = {}; // Track how many players chose each option
+    const optionCounts = {};  // Track how many players chose each option
     for (let player in votes) {
       const vote = votes[player];
       optionCounts[vote] = (optionCounts[vote] || 0) + 1;
@@ -42,18 +45,18 @@ export default function AdminMajority() {
     const majorityVote = sortedOptions[0][0];
     const leastCommonVote = sortedOptions[sortedOptions.length - 1][0];
 
-    // Assign points
+    // Assign points to players
     let updatedPlayers = [...players];
     updatedPlayers.forEach((player) => {
       const playerVote = votes[player.name];
       if (playerVote === majorityVote) {
-        player.points += 3; // Majority gets 3 points
+        player.points += 3;  // Majority gets 3 points
       } else if (playerVote === leastCommonVote) {
-        player.points += 1; // Least common gets 1 point
+        player.points += 1;  // Least common gets 1 point
       }
     });
 
-    setPlayers(updatedPlayers); // Update players with their points
+    setPlayers(updatedPlayers);  // Update the player points
   };
 
   return (
@@ -62,10 +65,11 @@ export default function AdminMajority() {
       <button
         onClick={handleStartGame}
         className="game-mode-btn bg-blue-600 text-white p-3 rounded"
-        disabled={gameStarted}  // Disable the button once the game has started
+        disabled={gameStarted}  // Disable button after the game starts
       >
         {gameStarted ? "Game Started" : "Start Majority Rules"}
       </button>
+
       {/* Display current votes */}
       <div className="mt-6">
         <h2>Current Votes:</h2>
