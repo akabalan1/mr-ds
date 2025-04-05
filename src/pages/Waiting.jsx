@@ -1,5 +1,5 @@
 // src/pages/Waiting.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
@@ -7,17 +7,23 @@ import Layout from "../components/Layout";
 export default function Waiting() {
   const { step, mode } = useGame();
   const navigate = useNavigate();
+  const prevStep = useRef(step);
 
   useEffect(() => {
-    console.log("Waiting page: step =", step, "mode =", mode);
-    // Only navigate if the game has started (i.e. step is 0 or more)
-    if (step >= 0 && mode) {
+    console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
+    // If the game was previously started (prevStep not -1) and now step is -1, admin has reset the game.
+    if (prevStep.current !== -1 && step === -1) {
+      navigate("/join");
+    } 
+    // If the game has started (step is 0 or higher) and mode is set, navigate to the proper play page.
+    else if (step >= 0 && mode) {
       if (mode === "kahoot") {
         navigate("/play/kahoot");
       } else if (mode === "majority") {
         navigate("/play/majority");
       }
     }
+    prevStep.current = step;
   }, [step, mode, navigate]);
 
   return (
