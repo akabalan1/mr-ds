@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
+import Layout from "../components/Layout";  // Import Layout component
 
 export default function PlayerJoin() {
   const [name, setName] = useState("");
@@ -31,7 +32,7 @@ export default function PlayerJoin() {
   }, [step, gameMode, navigate]);
 
   return (
-    <div className="player-join">
+    <Layout>  {/* Wrap content inside Layout */}
       <h1 className="text-3xl font-bold mb-4">👋 Enter Your Name</h1>
       <input
         type="text"
@@ -41,6 +42,6 @@ export default function PlayerJoin() {
         className="border rounded-xl px-6 py-3 mb-6 text-black w-72 text-center"
       />
       <button onClick={handleJoin} className="ml-3 bg-yellow-500 text-white px-6 py-3 rounded-xl shadow-lg transition duration-300">Join Game</button>
-    </div>
+    </Layout>
   );
 }
