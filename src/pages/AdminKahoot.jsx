@@ -2,94 +2,91 @@ import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
-export default function AdminMajority() {
-  const { setStep, socket, setPlayers, players, resetGame } = useGame();
+export default function AdminKahoot() {
+  const { gameMode, step, setStep, setPlayers, socket, resetGame, players } = useGame();
   const [questions] = useState([
-    { question: "What is your favorite color?", options: ["Red", "Blue", "Green", "Yellow"] },
-    { question: "What is the best type of music?", options: ["Rock", "Pop", "Classical", "Jazz"] },
-    { question: "What is your favorite fruit?", options: ["Apple", "Banana", "Orange", "Grapes"] },
+    { question: "What is the capital of France?", options: ["Paris", "London", "Rome", "Berlin"], correctAnswer: "Paris" },
+    { question: "Who wrote 'Romeo and Juliet'?", options: ["Shakespeare", "Dickens", "Hemingway", "Fitzgerald"], correctAnswer: "Shakespeare" },
+    { question: "What is 5 + 7?", options: ["10", "12", "14", "15"], correctAnswer: "12" },
   ]);
-  const [currentVotes, setCurrentVotes] = useState({});
-  const [gameStarted, setGameStarted] = useState(false); // Track game start status
   
-  useEffect(() => {
-    // Check if socket is available
-    if (socket) {
-      socket.on("updateVotes", (newVotes) => {
-        setCurrentVotes(newVotes);
-        calculateScores(newVotes);  // Recalculate scores whenever votes change
-      });
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
-      // Clean up socket listener on component unmount
-      return () => {
-        socket.off("updateVotes");
-      };
-    }
-  }, [socket]);
-
+  // Start the Kahoot game
   const handleStartGame = () => {
-    setStep(1);  // Move to next step (start the game)
-    setGameStarted(true);  // Mark the game as started
-    socket.emit("gameStart", questions);  // Send the questions to all players
+    setStep(1);  // Start the game (move to the first question)
+    socket.emit("gameStart", questions);
+    socket.emit("startTimer"); // Start the timer for the first question
   };
 
-  // Calculate scores for players based on majority rules
-  const calculateScores = (votes) => {
-    const optionCounts = {}; // Track how many players chose each option
-    for (let player in votes) {
-      const vote = votes[player];
-      optionCounts[vote] = (optionCounts[vote] || 0) + 1;
+  // Move to the next question
+  const handleNextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setStep(currentQuestion + 1);
+      socket.emit("nextQuestion", currentQuestion + 1);  // Move to the next question
+      socket.emit("startTimer"); // Start the timer for the next question
+    } else {
+      setStep("done");  // End the game after the last question
     }
-
-    // Sort options by count to determine majority and minority votes
-    const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
-    const majorityVote = sortedOptions[0][0];
-    const leastCommonVote = sortedOptions[sortedOptions.length - 1][0];
-
-    // Assign points to players
-    let updatedPlayers = [...players];
-    updatedPlayers.forEach((player) => {
-      const playerVote = votes[player.name];
-      if (playerVote === majorityVote) {
-        player.points += 3;  // Majority gets 3 points
-      } else if (playerVote === leastCommonVote) {
-        player.points += 1;  // Least common gets 1 point
-      }
-    });
-
-    setPlayers(updatedPlayers);  // Update players with their points
   };
 
+  // Handle the game reset
   const handleResetGame = () => {
     resetGame();  // Call reset function to reset the game
-    setGameStarted(false);  // Set game started to false
-    setStep(-1);  // Reset step to initial state
+    setStep(-1);  // Reset the step to the initial state
+    setCurrentQuestion(0);  // Reset the current question index to 0
+  };
+
+  // Display the current score/leaderboard (you can add this part as needed)
+  const displayLeaderboard = () => {
+    // Example of displaying leaderboard after each question
+    return players.map((player, index) => (
+      <div key={index}>
+        <p>{player.name}: {player.points} points</p>
+      </div>
+    ));
   };
 
   return (
     <Layout>
-      <h1>Admin Majority Rules</h1>
-      <button
-        onClick={handleStartGame}
-        className="game-mode-btn bg-blue-600 text-white p-3 rounded"
-        disabled={gameStarted}  // Disable the button once the game has started
-      >
-        {gameStarted ? "Game Started" : "Start Majority Rules"}
+      <h1>Admin Kahoot Game</h1>
+
+      {/* Start Game Button */}
+      <button onClick={handleStartGame} className="game-mode-btn bg-green-600 text-white p-3 rounded">
+        Start Kahoot Game
       </button>
 
-      <button
-        onClick={handleResetGame}
-        className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4"
-      >
+      {/* Next Question Button */}
+      <button onClick={handleNextQuestion} className="game-mode-btn bg-blue-600 text-white p-3 rounded mt-4">
+        Next Question
+      </button>
+
+      {/* Reset Game Button */}
+      <button onClick={handleResetGame} className="game-mode-btn bg-red-600 text-white p-3 rounded mt-4">
         Reset Game
       </button>
 
-      {/* Display current votes */}
+      {/* Display Questions */}
       <div className="mt-6">
-        <h2>Current Votes:</h2>
-        {Object.entries(currentVotes).map(([player, vote]) => (
-          <p key={player}>{player} voted for: {vote}</p>
+        <h2 className="font-bold">Questions:</h2>
+        {questions.map((q, index) => (
+          <div key={index}>
+            <p><strong>Q{index + 1}: </strong>{q.question}</p>
+            <ul>
+              {q.options.map((option, i) => (
+                <li key={i}>{option}</li>
+              ))}
+            </ul>
+            <p><strong>Correct Answer:</strong> {q.correctAnswer}</p>
+          </div>
         ))}
+      </div>
+
+      {/* Display Leaderboard */}
+      <div className="mt-6">
+        <h2 className="font-bold">Leaderboard:</h2>
+        {displayLeaderboard()}
       </div>
     </Layout>
   );
