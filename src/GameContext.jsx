@@ -44,11 +44,12 @@ export function GameProvider({ children }) {
   setStep("done");
 } else if (typeof state.step === "number") {
   // Avoid advancing prematurely if game just started and player just joined
-  if (state.step === 0 && state.players.length === 1) {
-    setStep(-1); // Treat this like waiting
-  } else {
-    setStep(state.step);
-  }
+  if (state.step === 0 && (!state.questions || state.questions.length === 0)) {
+  setStep(-1);
+} else {
+  setStep(state.step);
+}
+
 }
 
 
