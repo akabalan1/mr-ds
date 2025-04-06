@@ -11,29 +11,33 @@ export function GameProvider({ children }) {
   const [playerName, setPlayerName] = useState("");
   const [votes, setVotes] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [step, setStep] = useState(-1); // -1: waiting/join, 0..n: question index, "done": finished
+  const [step, setStep] = useState(-1);
   const [mode, setMode] = useState("majority");
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("playerName");
+    if (storedName) {
+      setPlayerName(storedName);
+      socket.emit("player-join", storedName);
+    }
+  }, []);
 
   useEffect(() => {
     socket.on("gameState", (state) => {
       console.log("Game state received from server:", state);
       setPlayers(state.players || []);
       setVotes(state.votes || {});
-      setQuestionIndex(state.questionIndex || 0);
+      setQuestionIndex(state.currentQuestionIndex || 0);
       setMode(state.gameMode || "majority");
       setQuestions(state.questions || []);
-
-      // Set leaderboard as players sorted by score
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
-      if (state.questionIndex === "done" || state.questionIndex >= (state.questions ? state.questions.length : 0)) {
+      if (state.step === "done" || state.currentQuestionIndex >= (state.questions ? state.questions.length : 0)) {
         setStep("done");
-      } else if (state.questionIndex === 0 && (!state.votes || Object.keys(state.votes).length === 0)) {
-        setStep(-1);
       } else {
-        setStep(state.questionIndex);
+        setStep(state.currentQuestionIndex);
       }
     });
 
