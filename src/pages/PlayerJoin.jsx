@@ -26,6 +26,7 @@ export default function PlayerJoin() {
   }, [setPlayerName, socket, navigate]);
 
   const handleJoin = () => {
+    console.log("🚀 Emitting player-join for:", name);
     if (!name.trim()) return;
     localStorage.removeItem("playerName");
     localStorage.setItem("playerName", name);
