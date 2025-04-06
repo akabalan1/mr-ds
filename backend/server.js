@@ -1,4 +1,3 @@
-// server.js (updated Majority Rules scoring logic)
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -26,7 +25,6 @@ let gameState = {
 };
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
   console.log("✅ New client connected:", socket.id);
 
   socket.on("player-join", (name) => {
@@ -107,6 +105,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log("Server listening on port 3001");
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log("🚀 Server listening on port", PORT);
 });
