@@ -10,13 +10,17 @@ export default function Waiting() {
   const prevStep = useRef(step);
 
   useEffect(() => {
-  console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
-
   const storedName = localStorage.getItem("playerName");
 
+  console.log("[Waiting.jsx] step =", step, "| mode =", mode, "| storedName =", storedName);
+
+  // Only send to join if the user never joined
   if (!storedName && step === -1) {
     navigate("/join");
-  } else if (step >= 0 && mode) {
+  }
+
+  // Once the game starts, redirect player to correct game mode
+  if (typeof step === "number" && step >= 0) {
     if (mode === "kahoot") {
       navigate("/play/kahoot");
     } else if (mode === "majority") {
