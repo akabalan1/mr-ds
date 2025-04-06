@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
       gameState.leaderboard = [...gameState.players].sort((a, b) => b.score - a.score);
       io.emit("showResults", gameState);
     } else {
+      gameState.step = gameState.currentQuestionIndex;
       io.emit("gameState", gameState);
     }
   });
