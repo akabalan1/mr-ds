@@ -1,3 +1,4 @@
+// src/pages/PlayerJoin.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
@@ -10,9 +11,9 @@ export default function PlayerJoin() {
 
   useEffect(() => {
     if (step === -1) {
-      navigate("/join");
+      localStorage.removeItem("playerName");
     }
-  }, [step, navigate]);
+  }, [step]);
 
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
@@ -26,6 +27,7 @@ export default function PlayerJoin() {
 
   const handleJoin = () => {
     if (!name.trim()) return;
+    localStorage.removeItem("playerName");
     localStorage.setItem("playerName", name);
     setPlayerName(name);
     socket.emit("player-join", name);
