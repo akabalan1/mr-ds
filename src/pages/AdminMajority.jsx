@@ -23,7 +23,6 @@ export default function AdminMajority() {
   ]);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false);
   const [currentVotes, setCurrentVotes] = useState({});
   const [showChart, setShowChart] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
@@ -54,7 +53,7 @@ export default function AdminMajority() {
   }, [socket]);
 
   useEffect(() => {
-    if (!gameStarted || step === "done") return;
+    if (typeof step !== "number" || step === "done") return;
     setTimer(10);
     const countdown = setInterval(() => {
       setTimer((prev) => {
@@ -66,10 +65,9 @@ export default function AdminMajority() {
       });
     }, 1000);
     return () => clearInterval(countdown);
-  }, [step, gameStarted]);
+  }, [step]);
 
   const handleStartGame = () => {
-    setGameStarted(true);
     setStep(0);
     socket.emit("gameStart", { questions, gameMode: "majority" });
   };
@@ -93,7 +91,6 @@ export default function AdminMajority() {
     resetGame();
     setStep(-1);
     setCurrentQuestion(0);
-    setGameStarted(false);
     localStorage.removeItem("playerName");
   };
 
@@ -101,24 +98,24 @@ export default function AdminMajority() {
     <Layout>
       <h1>Admin Majority Rules</h1>
       <div style={{ margin: "1rem 0" }}>
-      {step === -1 && (
-        <button onClick={handleStartGame} style={startButtonStyle}>
-          Start Majority Rules
-        </button>
-      )}
+        {step === -1 && (
+          <button onClick={handleStartGame} style={startButtonStyle}>
+            Start Majority Rules
+          </button>
+        )}
 
         {typeof step === "number" && step >= 0 && step !== "done" && (
-  <button onClick={handleNextQuestion} style={nextButtonStyle}>
-    Next Question
-  </button>
-)}
+          <button onClick={handleNextQuestion} style={nextButtonStyle}>
+            Next Question
+          </button>
+        )}
 
         <button onClick={handleResetGame} style={resetButtonStyle}>
           Reset Game
         </button>
       </div>
 
-      {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
+      {typeof step === "number" && step >= 0 && step !== "done" && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Current Question:</h2>
           {questions[currentQuestion] && (
@@ -126,6 +123,7 @@ export default function AdminMajority() {
               <p>
                 <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
               </p>
+              <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
               <ul>
                 {questions[currentQuestion].options.map((option, i) => (
                   <li key={i}>{option}</li>
@@ -150,7 +148,7 @@ export default function AdminMajority() {
         ))}
       </div>
 
-      {gameStarted && ((typeof step === "number" && step >= 1) || step === "done") && (
+      {(typeof step === "number" && step >= 1) || step === "done" ? (
         <div style={{ marginTop: "1rem" }}>
           <h2>Leaderboard:</h2>
           {players
@@ -162,7 +160,7 @@ export default function AdminMajority() {
               </p>
             ))}
         </div>
-      )}
+      ) : null}
     </Layout>
   );
 }
