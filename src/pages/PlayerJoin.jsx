@@ -1,4 +1,3 @@
-// src/pages/PlayerJoin.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
@@ -44,7 +43,10 @@ export default function PlayerJoin() {
           placeholder="Your name..."
           style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "0.5rem", marginRight: "0.5rem" }}
         />
-        <button onClick={handleJoin} style={{ backgroundColor: "#2563eb", color: "white", padding: "0.5rem 1rem", borderRadius: "4px", border: "none", cursor: "pointer" }}>
+        <button
+          onClick={handleJoin}
+          style={{ backgroundColor: "#2563eb", color: "white", padding: "0.5rem 1rem", borderRadius: "4px", border: "none", cursor: "pointer" }}
+        >
           Join Game
         </button>
       </div>
