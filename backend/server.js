@@ -27,6 +27,7 @@ let gameState = {
 
 io.on("connection", (socket) => {
   console.log("A user connected");
+  console.log("✅ New client connected:", socket.id);
 
   socket.on("player-join", (name) => {
     if (!gameState.players.find((p) => p.name === name)) {
