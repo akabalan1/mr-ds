@@ -10,21 +10,23 @@ export default function Waiting() {
   const prevStep = useRef(step);
 
   useEffect(() => {
-    console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
+  console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
 
-    if (step === -1) {
-      localStorage.removeItem("playerName");
-      navigate("/join");
-    } else if (step >= 0 && mode) {
-      if (mode === "kahoot") {
-        navigate("/play/kahoot");
-      } else if (mode === "majority") {
-        navigate("/play/majority");
-      }
+  const storedName = localStorage.getItem("playerName");
+
+  if (!storedName && step === -1) {
+    navigate("/join");
+  } else if (step >= 0 && mode) {
+    if (mode === "kahoot") {
+      navigate("/play/kahoot");
+    } else if (mode === "majority") {
+      navigate("/play/majority");
     }
+  }
 
-    prevStep.current = step;
-  }, [step, mode, navigate]);
+  prevStep.current = step;
+}, [step, mode, navigate]);
+
 
   return (
     <Layout showAdminLink={false}>
