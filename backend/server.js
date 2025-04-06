@@ -1,93 +1,70 @@
-// backend/server.js
-const io = require("socket.io")(server);
+// server.js (updated Majority Rules scoring logic)
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
 
 let gameState = {
   players: [],
   votes: {},
-  questionIndex: 0,
   gameMode: "majority", // default
-  questions: []
+  questions: [],
+  currentQuestionIndex: 0,
+  leaderboard: [],
+  step: -1
 };
 
-function emitGameState() {
-  io.emit("gameState", {
-    players: gameState.players,
-    votes: gameState.votes,
-    questionIndex: gameState.questionIndex,
-    gameMode: gameState.gameMode,
-    questions: gameState.questions
-  });
-}
-
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
+  console.log("A user connected");
 
-  // Emit initial game state when a client connects
-  socket.emit("gameState", gameState);
-
-  // Handle player joining
   socket.on("player-join", (name) => {
-    if (!name) return;
-    const existing = gameState.players.find(p => p.name === name);
-    if (!existing) {
+    if (!gameState.players.find((p) => p.name === name)) {
       gameState.players.push({ name, score: 0 });
     }
-    console.log(`Player joined: ${name}`);
-    emitGameState();
+    io.emit("gameState", gameState);
   });
 
-  // Handle game start (for both Kahoot and Majority)
-  socket.on("gameStart", (data) => {
-    // data: { questions: [...], gameMode: "kahoot" or "majority" }
-    gameState.questions = data.questions;
-    gameState.gameMode = data.gameMode;
-    gameState.questionIndex = 0;
-    console.log("Game started with questions:", gameState.questions);
-    emitGameState();
+  socket.on("gameStart", ({ questions, gameMode }) => {
+    gameState.questions = questions;
+    gameState.gameMode = gameMode;
+    gameState.currentQuestionIndex = 0;
+    gameState.step = 0;
+    gameState.votes = {};
+    gameState.leaderboard = [];
+    gameState.players.forEach((p) => (p.score = 0));
+    io.emit("gameState", gameState);
   });
 
-  // Handle next question event
-  socket.on("nextQuestion", (nextQuestionIndex) => {
-    gameState.questionIndex = nextQuestionIndex;
-    console.log("Next question index:", nextQuestionIndex);
-    emitGameState();
-  });
-
-  // Handle Kahoot answer submissions
-  socket.on("submitKahoot", ({ name, option, time, questionIndex }) => {
-    const question = gameState.questions[questionIndex];
-    if (!question) return;
-    // Award points only if the answer is correct.
-    if (option === question.correctAnswer) {
-      // Example: max 10 points minus the time factor (ensuring at least 1 point)
-      const points = Math.max(10 - time, 1);
-      const player = gameState.players.find(p => p.name === name);
-      if (player) {
-        player.score += points;
-      }
-    }
-    emitGameState();
-  });
-
-  // Handle vote submissions for Majority Rules
   socket.on("submitVote", ({ name, option, questionIndex }) => {
     gameState.votes[name] = option;
-    emitGameState();
+    io.emit("updateVotes", gameState.votes);
   });
 
-  // When admin wants to calculate majority scores at the end of a question
   socket.on("calculateMajorityScores", () => {
     const votes = gameState.votes;
     const optionCounts = {};
+
     for (let player in votes) {
       const vote = votes[player];
       optionCounts[vote] = (optionCounts[vote] || 0) + 1;
     }
+
     const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
     const majorityVote = sortedOptions[0] ? sortedOptions[0][0] : null;
     const leastCommonVote = sortedOptions[sortedOptions.length - 1] ? sortedOptions[sortedOptions.length - 1][0] : null;
 
-    gameState.players.forEach(player => {
+    gameState.players.forEach((player) => {
       const vote = votes[player.name];
       if (vote === majorityVote) {
         player.score += 3;
@@ -97,28 +74,33 @@ io.on("connection", (socket) => {
         player.score += 2;
       }
     });
-    // Clear votes for next question.
+
     gameState.votes = {};
-    emitGameState();
+    gameState.currentQuestionIndex++;
+
+    if (gameState.currentQuestionIndex >= gameState.questions.length) {
+      gameState.step = "done";
+      gameState.leaderboard = [...gameState.players].sort((a, b) => b.score - a.score);
+      io.emit("showResults", gameState);
+    } else {
+      io.emit("gameState", gameState);
+    }
   });
 
-  // Handle game reset
   socket.on("resetGame", () => {
-    console.log("Resetting game state");
     gameState = {
       players: [],
       votes: {},
-      questionIndex: 0,
       gameMode: "majority",
-      questions: []
+      questions: [],
+      currentQuestionIndex: 0,
+      leaderboard: [],
+      step: -1
     };
-    emitGameState();
+    io.emit("gameState", gameState);
   });
+});
 
-  // Optionally handle disconnects
-  socket.on("disconnect", () => {
-    gameState.players = gameState.players.filter(p => p.socketId !== socket.id);
-    console.log("Player disconnected", socket.id);
-    emitGameState();
-  });
+server.listen(3001, () => {
+  console.log("Server listening on port 3001");
 });
