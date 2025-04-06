@@ -11,8 +11,8 @@ export default function Waiting() {
 
   useEffect(() => {
     console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
-    // If the game has been reset, navigate to join page
-    if (prevStep.current !== -1 && step === -1) {
+
+    if (step === -1) {
       localStorage.removeItem("playerName");
       navigate("/join");
     } else if (step >= 0 && mode) {
@@ -22,6 +22,7 @@ export default function Waiting() {
         navigate("/play/majority");
       }
     }
+
     prevStep.current = step;
   }, [step, mode, navigate]);
 
