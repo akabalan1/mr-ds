@@ -27,7 +27,7 @@ export default function AdminMajority() {
   const [gameStarted, setGameStarted] = useState(false);
   const [currentVotes, setCurrentVotes] = useState({});
 
-  // Button styling
+  // Button styling (for consistency)
   const buttonBase = {
     margin: "0.5rem",
     padding: "0.5rem 1rem",
@@ -36,18 +36,9 @@ export default function AdminMajority() {
     borderRadius: "4px",
     cursor: "pointer",
   };
-  const startButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#10b981", // Green
-  };
-  const nextButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#3b82f6", // Blue
-  };
-  const resetButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#dc2626", // Red
-  };
+  const startButtonStyle = { ...buttonBase, backgroundColor: "#10b981" };
+  const nextButtonStyle = { ...buttonBase, backgroundColor: "#3b82f6" };
+  const resetButtonStyle = { ...buttonBase, backgroundColor: "#dc2626" };
 
   useEffect(() => {
     if (socket) {
