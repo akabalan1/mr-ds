@@ -34,11 +34,18 @@ export function GameProvider({ children }) {
       setQuestions(state.questions || []);
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
-      if (state.step === "done" || state.currentQuestionIndex >= (state.questions ? state.questions.length : 0)) {
-        setStep("done");
-      } else {
-        setStep(state.currentQuestionIndex);
-      }
+      if (state.step === "done") {
+  setStep("done");
+} else if (
+  state.questions &&
+  state.questions.length > 0 &&
+  state.currentQuestionIndex >= state.questions.length
+) {
+  setStep("done");
+} else if (typeof state.step === "number") {
+  setStep(state.step);
+}
+
     });
 
     return () => {
