@@ -1,4 +1,3 @@
-// src/pages/Results.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
@@ -8,11 +7,9 @@ export default function Results() {
   const { players, resetGame, setStep } = useGame();
   const navigate = useNavigate();
 
-  // Sort players by cumulative score in descending order
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
   const handlePlayAgain = () => {
-    // Reset the game state and navigate back to the join page
     resetGame();
     setStep(-1);
     navigate("/join");
