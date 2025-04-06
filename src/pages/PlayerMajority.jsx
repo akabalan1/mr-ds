@@ -1,5 +1,5 @@
 // src/pages/PlayerMajority.jsx
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,40 @@ export default function PlayerMajority() {
   const { socket, questions, questionIndex, step, mode } = useGame();
   const navigate = useNavigate();
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [timer, setTimer] = useState(10);
+  const [locked, setLocked] = useState(false);
+
+  useEffect(() => {
+    if (step === "done" && mode === "majority") {
+      navigate("/results");
+      return;
+    }
+
+    setSubmitted(false);
+    setSelectedOption(null);
+    setLocked(false);
+    setTimer(10);
+
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          setLocked(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [step, mode, navigate]);
+
   const handleVote = (option) => {
+    if (locked || submitted) return;
+    setSelectedOption(option);
+    setSubmitted(true);
     socket.emit("submitVote", {
       name: localStorage.getItem("playerName"),
       option,
@@ -16,29 +49,49 @@ export default function PlayerMajority() {
     });
   };
 
-  useEffect(() => {
-    if (step === "done" && mode === "majority") {
-      navigate("/results");
-    }
-  }, [step, mode, navigate]);
+  const currentQuestion = questions[questionIndex];
 
   return (
     <Layout showAdminLink={false}>
-      <div style={{ marginTop: "1rem" }}>
-        {questions[questionIndex] ? (
+      <div style={{ marginTop: "1rem", textAlign: "center" }}>
+        {currentQuestion ? (
           <div>
             <h2>
-              Q{questionIndex + 1}: {questions[questionIndex].question}
+              Q{questionIndex + 1}: {currentQuestion.question}
             </h2>
-            <ul>
-              {questions[questionIndex].options.map((option, i) => (
-                <li key={i}>
-                  <button onClick={() => handleVote(option)}>
+            <div style={{ marginBottom: "0.5rem", fontSize: "0.9rem", color: "gray" }}>
+              Time left: {timer}s
+            </div>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {currentQuestion.options.map((option, i) => (
+                <li key={i} style={{ marginBottom: "0.5rem" }}>
+                  <button
+                    onClick={() => handleVote(option)}
+                    disabled={locked || submitted}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      borderRadius: "5px",
+                      border: "1px solid #ccc",
+                      backgroundColor:
+                        selectedOption === option
+                          ? "#10b981"
+                          : locked
+                          ? "#ccc"
+                          : "#fff",
+                      color:
+                        selectedOption === option || locked ? "#fff" : "#000",
+                      cursor: locked ? "not-allowed" : "pointer",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
                     {option}
                   </button>
                 </li>
               ))}
             </ul>
+            {submitted && (
+              <p style={{ color: "#10b981", fontWeight: "bold" }}>Vote submitted!</p>
+            )}
           </div>
         ) : (
           <p>Waiting for the game to start...</p>
