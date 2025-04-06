@@ -1,5 +1,5 @@
 // src/pages/PlayerMajority.jsx
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
@@ -63,8 +63,15 @@ export default function PlayerMajority() {
             <h2>
               Q{questionIndex + 1}: {currentQuestion.question}
             </h2>
-            <div style={{ marginBottom: "0.5rem", fontSize: "0.9rem", color: "gray" }}>
-              Time left: {timer}s
+            <div
+              style={{
+                marginBottom: "0.5rem",
+                fontSize: "0.9rem",
+                color: timer <= 3 ? "red" : "gray",
+                fontWeight: timer <= 3 ? "bold" : "normal",
+              }}
+            >
+              ⏳ Time left: {timer}s
             </div>
             <ul style={{ listStyle: "none", padding: 0 }}>
               {currentQuestion.options.map((option, i) => (
@@ -94,7 +101,14 @@ export default function PlayerMajority() {
               ))}
             </ul>
             {submitted && (
-              <p style={{ color: "#10b981", fontWeight: "bold" }}>Vote submitted!</p>
+              <p style={{ color: "#10b981", fontWeight: "bold" }}>
+                Vote submitted!
+              </p>
+            )}
+            {locked && !submitted && (
+              <p style={{ color: "#f97316", fontWeight: "bold" }}>
+                Time's up! You didn't vote in time.
+              </p>
             )}
           </div>
         ) : (
