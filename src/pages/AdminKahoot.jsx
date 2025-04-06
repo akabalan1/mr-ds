@@ -1,12 +1,9 @@
-// src/pages/AdminKahoot.jsx
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 
 export default function AdminKahoot() {
   const { socket, resetGame, setStep, players, step } = useGame();
-
-  // Define questions locally (for Kahoot)
   const [questions] = useState([
     {
       question: "What is the capital of France?",
@@ -24,12 +21,10 @@ export default function AdminKahoot() {
       correctAnswer: "12",
     },
   ]);
-
-  // Track the current question index and whether the game has started
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
 
-  // Button styling
+  // Shared button style
   const buttonBase = {
     margin: "0.5rem",
     padding: "0.5rem 1rem",
@@ -38,28 +33,17 @@ export default function AdminKahoot() {
     borderRadius: "4px",
     cursor: "pointer",
   };
-  const startButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#10b981", // Green
-  };
-  const nextButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#3b82f6", // Blue
-  };
-  const resetButtonStyle = {
-    ...buttonBase,
-    backgroundColor: "#dc2626", // Red
-  };
+  const startButtonStyle = { ...buttonBase, backgroundColor: "#10b981" };
+  const nextButtonStyle = { ...buttonBase, backgroundColor: "#3b82f6" };
+  const resetButtonStyle = { ...buttonBase, backgroundColor: "#dc2626" };
 
-  // Start the Kahoot game
   const handleStartGame = () => {
     setGameStarted(true);
-    setStep(0); // first question
+    setStep(0); // Start at question index 0
     socket.emit("gameStart", { questions, gameMode: "kahoot" });
     socket.emit("startTimer");
   };
 
-  // Move to the next question
   const handleNextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
       const nextQuestionIndex = currentQuestion + 1;
@@ -72,7 +56,6 @@ export default function AdminKahoot() {
     }
   };
 
-  // Reset the game
   const handleResetGame = () => {
     resetGame();
     setStep(-1);
@@ -81,7 +64,6 @@ export default function AdminKahoot() {
     localStorage.removeItem("playerName");
   };
 
-  // Display the leaderboard from second question onward or if the game is done
   const displayLeaderboard = () => {
     return players
       .slice()
@@ -97,27 +79,21 @@ export default function AdminKahoot() {
     <Layout>
       <h1>Admin Kahoot Game</h1>
       <div style={{ margin: "1rem 0" }}>
-        {/* Show START button if the game has not started */}
         {!gameStarted && (
           <button onClick={handleStartGame} style={startButtonStyle}>
             Start Kahoot Game
           </button>
         )}
-
-        {/* Show NEXT QUESTION button only after game starts and not done */}
         {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
           <button onClick={handleNextQuestion} style={nextButtonStyle}>
             Next Question
           </button>
         )}
-
-        {/* Reset button is always visible */}
         <button onClick={handleResetGame} style={resetButtonStyle}>
           Reset Game
         </button>
       </div>
 
-      {/* Show the current question only if the game has started and step >= 0 */}
       {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Current Question:</h2>
@@ -143,7 +119,6 @@ export default function AdminKahoot() {
         ))}
       </div>
 
-      {/* Show the leaderboard from the second question onward or if the game is done */}
       {gameStarted && ((typeof step === "number" && step >= 1) || step === "done") && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Leaderboard:</h2>
