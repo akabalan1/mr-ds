@@ -101,26 +101,17 @@ export default function AdminMajority() {
     <Layout>
       <h1>Admin Majority Rules</h1>
       <div style={{ margin: "1rem 0" }}>
-        {!gameStarted && (
-          <button onClick={handleStartGame} style={startButtonStyle}>
-            Start Majority Rules
-          </button>
-        )}
+      {step === -1 && (
+        <button onClick={handleStartGame} style={startButtonStyle}>
+          Start Majority Rules
+        </button>
+      )}
 
-        {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
-          <>
-            <button
-              onClick={handleNextQuestion}
-              style={nextButtonStyle}
-              disabled={voteCount < players.length}
-            >
-              Next Question
-            </button>
-            <span style={{ marginLeft: "1rem", color: "gray" }}>
-              Votes: {voteCount}/{players.length} | Timer: {timer}s
-            </span>
-          </>
-        )}
+        {typeof step === "number" && step >= 0 && step !== "done" && (
+  <button onClick={handleNextQuestion} style={nextButtonStyle}>
+    Next Question
+  </button>
+)}
 
         <button onClick={handleResetGame} style={resetButtonStyle}>
           Reset Game
