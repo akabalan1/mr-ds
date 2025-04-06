@@ -1,3 +1,4 @@
+// src/pages/Waiting.jsx
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
@@ -12,6 +13,7 @@ export default function Waiting() {
     console.log("Waiting page: step =", step, "mode =", mode, "prevStep =", prevStep.current);
     // If the game has been reset, navigate to join page
     if (prevStep.current !== -1 && step === -1) {
+      localStorage.removeItem("playerName");
       navigate("/join");
     } else if (step >= 0 && mode) {
       if (mode === "kahoot") {
