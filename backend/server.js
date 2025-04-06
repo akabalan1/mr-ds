@@ -30,13 +30,16 @@ io.on("connection", (socket) => {
   console.log("✅ New client connected:", socket.id);
 
   socket.on("player-join", (name) => {
+    console.log(`📥 player-join received from "${name}"`);
     if (!gameState.players.find((p) => p.name === name)) {
       gameState.players.push({ name, score: 0 });
     }
+    console.log("👥 Updated players list:", gameState.players.map(p => p.name));
     io.emit("gameState", gameState);
   });
 
   socket.on("gameStart", ({ questions, gameMode }) => {
+    console.log(`🟢 Game starting in "${gameMode}" mode with questions:`, questions);
     gameState.questions = questions;
     gameState.gameMode = gameMode;
     gameState.currentQuestionIndex = 0;
@@ -53,6 +56,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("calculateMajorityScores", () => {
+    console.log("📤 Emitting updated gameState:", gameState);
     const votes = gameState.votes;
     const optionCounts = {};
 
@@ -89,6 +93,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("resetGame", () => {
+    console.log("🔄 Resetting game state");
     gameState = {
       players: [],
       votes: {},
