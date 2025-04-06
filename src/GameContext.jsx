@@ -1,6 +1,7 @@
 // src/GameContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 const socket = io("https://mr-ds.onrender.com");
 
@@ -15,6 +16,8 @@ export function GameProvider({ children }) {
   const [mode, setMode] = useState("majority");
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
@@ -39,12 +42,18 @@ export function GameProvider({ children }) {
       } else {
         setStep(state.currentQuestionIndex);
       }
+
+      if (state.step === -1 || state.currentQuestionIndex === -1) {
+        localStorage.removeItem("playerName");
+        setPlayerName("");
+        navigate("/join");
+      }
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [navigate]);
 
   const addPlayer = (name) => {
     socket.emit("player-join", name);
