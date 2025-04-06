@@ -7,7 +7,6 @@ import VoteChart from "../components/VoteChart";
 export default function AdminMajority() {
   const { socket, resetGame, setStep, players, step } = useGame();
 
-  // Define questions for Majority Rules
   const [questions] = useState([
     {
       question: "What is your favorite color?",
@@ -23,13 +22,13 @@ export default function AdminMajority() {
     },
   ]);
 
-  // Track the current question index and whether the game has started
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [currentVotes, setCurrentVotes] = useState({});
   const [showChart, setShowChart] = useState(false);
+  const [voteCount, setVoteCount] = useState(0);
+  const [timer, setTimer] = useState(10);
 
-  // Button styling (for consistency)
   const buttonBase = {
     margin: "0.5rem",
     padding: "0.5rem 1rem",
@@ -46,6 +45,7 @@ export default function AdminMajority() {
     if (socket) {
       socket.on("updateVotes", (newVotes) => {
         setCurrentVotes(newVotes);
+        setVoteCount(Object.keys(newVotes).length);
       });
       return () => {
         socket.off("updateVotes");
@@ -53,32 +53,42 @@ export default function AdminMajority() {
     }
   }, [socket]);
 
-  // Start the game
+  useEffect(() => {
+    if (!gameStarted || step === "done") return;
+    setTimer(10);
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(countdown);
+  }, [step, gameStarted]);
+
   const handleStartGame = () => {
     setGameStarted(true);
-    setStep(0); // First question index = 0
+    setStep(0);
     socket.emit("gameStart", { questions, gameMode: "majority" });
   };
 
-  // Move to the next question
   const handleNextQuestion = () => {
-    socket.emit("calculateMajorityScores");
     setShowChart(true);
     setTimeout(() => {
+      socket.emit("calculateMajorityScores");
       setShowChart(false);
-    }, 4000);
-
-    if (currentQuestion < questions.length - 1) {
-      const nextQuestionIndex = currentQuestion + 1;
-      setCurrentQuestion(nextQuestionIndex);
-      setStep(nextQuestionIndex);
-      socket.emit("nextQuestion", nextQuestionIndex);
-    } else {
-      setStep("done");
-    }
+      if (currentQuestion < questions.length - 1) {
+        const nextQuestionIndex = currentQuestion + 1;
+        setCurrentQuestion(nextQuestionIndex);
+        setStep(nextQuestionIndex);
+      } else {
+        setStep("done");
+      }
+    }, 2000);
   };
 
-  // Reset the game
   const handleResetGame = () => {
     resetGame();
     setStep(-1);
@@ -98,9 +108,18 @@ export default function AdminMajority() {
         )}
 
         {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
-          <button onClick={handleNextQuestion} style={nextButtonStyle}>
-            Next Question
-          </button>
+          <>
+            <button
+              onClick={handleNextQuestion}
+              style={nextButtonStyle}
+              disabled={voteCount < players.length}
+            >
+              Next Question
+            </button>
+            <span style={{ marginLeft: "1rem", color: "gray" }}>
+              Votes: {voteCount}/{players.length} | Timer: {timer}s
+            </span>
+          </>
         )}
 
         <button onClick={handleResetGame} style={resetButtonStyle}>
