@@ -43,15 +43,17 @@ export default function PlayerMajority() {
   }, [step, mode, navigate]);
 
   const handleVote = (option) => {
-    if (locked || submitted) return;
-    setSelectedOption(option);
-    setSubmitted(true);
-    socket.emit("submitVote", {
-      name: playerName, // ✅ FIXED: use from context
-      option,
-      questionIndex,
-    });
-  };
+  if (locked || submitted) return;
+  const name = localStorage.getItem("playerName");
+  console.log("📤 submitting vote for:", name);
+  setSelectedOption(option);
+  setSubmitted(true);
+  socket.emit("submitVote", {
+    name,
+    option,
+    questionIndex,
+  });
+};
 
   const currentQuestion = questions[questionIndex];
 
