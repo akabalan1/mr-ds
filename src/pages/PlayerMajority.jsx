@@ -51,7 +51,7 @@ export default function PlayerMajority() {
     return;
   }
 
-  console.log("📤 Submitting vote for:", name);
+  console.log("📤 submitting vote for:", name);
   setSelectedOption(option);
   setSubmitted(true);
 
@@ -61,6 +61,7 @@ export default function PlayerMajority() {
     questionIndex,
   });
 };
+
 
 
 
