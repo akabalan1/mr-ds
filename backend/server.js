@@ -49,8 +49,16 @@ io.on("connection", (socket) => {
   });
 
  socket.on("submitVote", ({ name, option, questionIndex }) => {
+  console.log("🧾 Received vote:", { name, option, questionIndex });
+
   if (!name || typeof name !== "string" || name.trim() === "") {
     console.warn("⚠️ Invalid vote received with missing name");
+    return;
+  }
+
+  const playerExists = gameState.players.some((p) => p.name === name);
+  if (!playerExists) {
+    console.warn(`❌ Vote rejected: "${name}" is not a registered player`);
     return;
   }
 
@@ -62,8 +70,9 @@ io.on("connection", (socket) => {
 
   console.log(`🗳 Vote received for Q${questionIndex}:`, gameState.votes[questionIndex]);
 
-  io.emit("updateVotes", gameState.votes[questionIndex]); // Send votes for current question only
+  io.emit("updateVotes", gameState.votes[questionIndex]);
 });
+
 
 
     socket.on("calculateMajorityScores", () => {
