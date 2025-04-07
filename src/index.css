@@ -181,3 +181,30 @@ canvas {
 .player-join button:hover {
   background-color: #7b61ff;
 }
+.player-button {
+  width: 100%;
+  background-color: #10b981;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.player-button:hover {
+  background-color: #059669;
+}
+
+.player-button.selected-option {
+  background-color: #3b82f6 !important;
+  font-weight: bold;
+}
+
+.player-button.disabled-option {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
