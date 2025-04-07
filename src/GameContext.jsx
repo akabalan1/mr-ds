@@ -17,12 +17,12 @@ export function GameProvider({ children }) {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-    const storedName = localStorage.getItem("playerName");
-    if (storedName) {
-      setPlayerName(storedName);
-      socket.emit("player-join", storedName);
-    }
-  }, []);
+  const storedName = localStorage.getItem("playerName");
+  if (storedName && socket.connected) {
+    setPlayerName(storedName);
+    socket.emit("player-join", storedName);
+  }
+}, [socket.connected]);
 
   useEffect(() => {
     socket.on("gameState", (state) => {
