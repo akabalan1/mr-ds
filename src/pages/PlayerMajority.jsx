@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 
 export default function PlayerMajority() {
-  const { socket, questions, questionIndex, step, mode } = useGame();
+  const { socket, questions, questionIndex, step, mode, playerName } = useGame(); // ⬅️ Added playerName from context
   const navigate = useNavigate();
 
   const [selectedOption, setSelectedOption] = useState(null);
@@ -47,77 +47,75 @@ export default function PlayerMajority() {
     setSelectedOption(option);
     setSubmitted(true);
     socket.emit("submitVote", {
-  name,
-  option,
-  questionIndex,
-});
+      name: playerName, // ✅ FIXED: use from context
+      option,
+      questionIndex,
+    });
   };
 
   const currentQuestion = questions[questionIndex];
 
   return (
     <Layout showAdminLink={false}>
-  <div className="player-mobile">
-    {currentQuestion ? (
-      <div>
-        <h2>
-          Q{questionIndex + 1}: {currentQuestion.question}
-        </h2>
+      <div className="player-mobile">
+        {currentQuestion ? (
+          <div>
+            <h2>
+              Q{questionIndex + 1}: {currentQuestion.question}
+            </h2>
 
-        <div
-          style={{
-            marginBottom: "0.5rem",
-            fontSize: "0.9rem",
-            color: timer <= 3 ? "red" : "gray",
-            fontWeight: timer <= 3 ? "bold" : "normal",
-          }}
-        >
-          ⏳ Time left: {timer}s
-        </div>
+            <div
+              style={{
+                marginBottom: "0.5rem",
+                fontSize: "0.9rem",
+                color: timer <= 3 ? "red" : "gray",
+                fontWeight: timer <= 3 ? "bold" : "normal",
+              }}
+            >
+              ⏳ Time left: {timer}s
+            </div>
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {currentQuestion.options.map((option, i) => (
-            <li key={i} style={{ marginBottom: "0.5rem" }}>
-              <button
-  onClick={() => handleVote(option)}
-  disabled={locked || submitted}
-  className="player-button"
-  style={{
-    backgroundColor:
-      selectedOption === option
-        ? "#10b981" // green for selected
-        : locked || submitted
-        ? "#ccc" // gray for others when locked
-        : "#fff",
-    color:
-      selectedOption === option || locked ? "#fff" : "#000",
-    border: "1px solid #ccc",
-    transition: "all 0.3s ease",
-  }}
->
-  {option}
-</button>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {currentQuestion.options.map((option, i) => (
+                <li key={i} style={{ marginBottom: "0.5rem" }}>
+                  <button
+                    onClick={() => handleVote(option)}
+                    disabled={locked || submitted}
+                    className="player-button"
+                    style={{
+                      backgroundColor:
+                        selectedOption === option
+                          ? "#10b981"
+                          : locked || submitted
+                          ? "#ccc"
+                          : "#fff",
+                      color:
+                        selectedOption === option || locked ? "#fff" : "#000",
+                      border: "1px solid #ccc",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    {option}
+                  </button>
+                </li>
+              ))}
+            </ul>
 
-            </li>
-          ))}
-        </ul>
-
-        {submitted && (
-          <p style={{ color: "#10b981", fontWeight: "bold" }}>
-            ✅ Vote submitted!
-          </p>
-        )}
-        {locked && !submitted && (
-          <p style={{ color: "#f97316", fontWeight: "bold" }}>
-            ⌛ Time's up! You didn't vote in time.
-          </p>
+            {submitted && (
+              <p style={{ color: "#10b981", fontWeight: "bold" }}>
+                ✅ Vote submitted!
+              </p>
+            )}
+            {locked && !submitted && (
+              <p style={{ color: "#f97316", fontWeight: "bold" }}>
+                ⌛ Time's up! You didn't vote in time.
+              </p>
+            )}
+          </div>
+        ) : (
+          <p>Waiting for the game to start...</p>
         )}
       </div>
-    ) : (
-      <p>Waiting for the game to start...</p>
-    )}
-  </div>
-</Layout>
-
+    </Layout>
   );
 }
