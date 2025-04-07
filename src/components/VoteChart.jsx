@@ -24,11 +24,17 @@ export default function VoteChart({ votes = {}, question }) {
   }, {});
 
   // Tally received votes
-  Object.values(votes).forEach((vote) => {
-    if (optionCounts.hasOwnProperty(vote)) {
-      optionCounts[vote]++;
-    }
-  });
+  // Tally received votes (handle arrays and individual values safely)
+Object.entries(votes).forEach(([player, vote]) => {
+  if (Array.isArray(vote)) {
+    vote.forEach((v) => {
+      if (optionCounts.hasOwnProperty(v)) optionCounts[v]++;
+    });
+  } else if (optionCounts.hasOwnProperty(vote)) {
+    optionCounts[vote]++;
+  }
+});
+
 
   const labels = question.options;
   const values = labels.map((opt) => optionCounts[opt]);
