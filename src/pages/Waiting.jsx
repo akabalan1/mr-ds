@@ -17,7 +17,6 @@ export default function Waiting() {
     // Handle game reset: clear storage and return to join
     if (step === -1 && prevStep.current !== -1) {
   console.log("[Waiting.jsx] Game was reset — returning to join");
-  localStorage.removeItem("playerName");
   navigate("/join");
   return;
 }
