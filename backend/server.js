@@ -94,23 +94,28 @@ io.on("connection", (socket) => {
       }
     });
 
-    const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
-    const majorityVote = sortedOptions[0] ? sortedOptions[0][0] : null;
-    const leastCommonVote = sortedOptions[sortedOptions.length - 1] ? sortedOptions[sortedOptions.length - 1][0] : null;
+   const voteCounts = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
+const highestCount = voteCounts[0]?.[1] || 0;
+const lowestCount = voteCounts[voteCounts.length - 1]?.[1] || 0;
 
-    // Score logic
-    gameState.players.forEach((player) => {
-      const vote = votes[player.name];
-      if (!vote) return; // No points if didn't vote
+// In case of tie, track all majority/least votes
+const majorityVotes = voteCounts.filter(([_, count]) => count === highestCount).map(([opt]) => opt);
+const leastVotes = voteCounts.filter(([_, count]) => count === lowestCount).map(([opt]) => opt);
 
-      if (vote === majorityVote) {
-        player.score += 3;
-      } else if (vote === leastCommonVote) {
-        player.score += 1;
-      } else {
-        player.score += 2;
-      }
-    });
+// Score logic
+gameState.players.forEach((player) => {
+  const vote = votes[player.name];
+  if (!vote) return; // No vote, no points
+
+  if (majorityVotes.length === 1 && vote === majorityVotes[0]) {
+    player.score += 3;
+  } else if (leastVotes.length === 1 && vote === leastVotes[0]) {
+    player.score += 1;
+  } else {
+    player.score += 2;
+  }
+});
+
 
     // Reset votes and advance question
     delete gameState.votes[gameState.currentQuestionIndex];
