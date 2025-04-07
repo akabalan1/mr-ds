@@ -13,14 +13,14 @@ export default function Waiting() {
   const storedName = localStorage.getItem("playerName");
   console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-  // ✅ Always go back to join if step = -1 and no playerName
-  if (step === -1) {
-  console.log("[Waiting.jsx] step = -1 — returning to join");
-  navigate("/join");
-  return;
-}
+  // ✅ Go back to /join if there's no player name
+  if (!storedName || storedName.trim() === "") {
+    console.log("[Waiting.jsx] No player name found — returning to join");
+    navigate("/join");
+    return;
+  }
 
-  // ✅ Once the game starts, redirect to correct mode
+  // ✅ If the game starts, send player to correct game page
   if (typeof step === "number" && step >= 0) {
     if (mode === "kahoot") {
       navigate("/play/kahoot");
