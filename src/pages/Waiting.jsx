@@ -11,31 +11,28 @@ export default function Waiting() {
 
   useEffect(() => {
   const storedName = localStorage.getItem("playerName");
-  console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
+  console.log("⌛ [Waiting] step =", step, "| prevStep =", prevStep.current, "| storedName =", storedName);
 
-  // ✅ Go back to join if:
-  // 1. No playerName OR
-  // 2. Game was reset (step = -1) AFTER player joined
-  const gameWasReset = step === -1 && prevStep.current !== -1;
-  const missingName = !storedName || storedName.trim() === "";
-
-  if (gameWasReset || missingName) {
-    console.log("[Waiting.jsx] Game was reset or anonymous — returning to join");
+  // ✅ Case 1: Reset happened, and no player name — redirect to join
+  if (step === -1 && (!storedName || storedName.trim() === "")) {
+    console.log("[Waiting.jsx] Reset AND no player — go to /join");
     navigate("/join");
     return;
   }
 
-  // ✅ If the game starts, send player to correct mode
+  // ✅ Case 2: Game started — go to appropriate game mode
   if (typeof step === "number" && step >= 0) {
     if (mode === "kahoot") {
       navigate("/play/kahoot");
     } else if (mode === "majority") {
       navigate("/play/majority");
     }
+    return;
   }
 
   prevStep.current = step;
 }, [step, mode, navigate]);
+
 
 
 
