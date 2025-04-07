@@ -63,10 +63,6 @@ export default function PlayerMajority() {
 };
 
 
-
-
-};
-
   const currentQuestion = questions[questionIndex];
 
   return (
