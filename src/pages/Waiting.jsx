@@ -1,5 +1,5 @@
 // src/pages/Waiting.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
@@ -7,19 +7,22 @@ import Layout from "../components/Layout";
 export default function Waiting() {
   const { step, mode } = useGame();
   const navigate = useNavigate();
+  const prevStep = useRef(step);
 
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
     console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-    // ✅ 1. Redirect to /join if game was reset
-    if (step === -1) {
+    // ✅ Kick player out ONLY if step transitioned from non -1 to -1 (i.e. game reset)
+    if (step === -1 && prevStep.current !== -1) {
+      console.log("[Waiting.jsx] Game was reset — returning to join");
       localStorage.removeItem("playerName");
       navigate("/join");
       return;
     }
 
-    // ✅ 2. Once game starts, go to correct player mode
+    // ✅ Stay on waiting if game hasn't started yet
+    // ✅ Once game starts, redirect player to the right game mode
     if (typeof step === "number" && step >= 0) {
       if (mode === "kahoot") {
         navigate("/play/kahoot");
@@ -27,6 +30,8 @@ export default function Waiting() {
         navigate("/play/majority");
       }
     }
+
+    prevStep.current = step;
   }, [step, mode, navigate]);
 
   return (
