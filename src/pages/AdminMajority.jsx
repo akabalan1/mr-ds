@@ -130,9 +130,9 @@ const hasVoted = (playerName) => {
         </button>
       </div>
 
-      {/* ✅ Two-Column Grid Layout */}
+     {/* ✅ Two-Column Grid Layout */}
 <div className="admin-panel">
-  {/* ⬅️ Left Column: Question + Players */}
+  {/* ⬅️ Left Column: Question + Vote Tally */}
   {step !== "done" && (
     <div className="admin-section">
       {typeof step === "number" && step >= 0 && (
@@ -148,29 +148,33 @@ const hasVoted = (playerName) => {
               <li key={i}>{option}</li>
             ))}
           </ul>
+
+          <h2 style={{ marginTop: "1.5rem" }}>Vote Tally:</h2>
+          {players.map((player, index) => (
+            <p
+              key={index}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              {player.name}
+              {currentVotes[player.name] ? (
+                <span style={{ color: "green" }}>✅</span>
+              ) : (
+                <span style={{ color: "gray" }}>⌛</span>
+              )}
+            </p>
+          ))}
         </>
       )}
-
-      <h2>Vote Tally:</h2>
-      {players.map((player, index) => (
-        <p
-          key={index}
-          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-        >
-          {player.name}
-          {currentVotes[player.name] ? (
-            <span style={{ color: "green" }}>✅</span>
-          ) : (
-            <span style={{ color: "gray" }}>⌛</span>
-          )}
-        </p>
-      ))}
     </div>
   )}
 
-  {/* ➡️ Right Column: Chart + Leaderboard */}
+  {/* ➡️ Right Column: Chart or Leaderboard */}
   <div className="admin-section">
-    {resultsVisible && (
+    {resultsVisible && step !== "done" && (
       <>
         <h2>Live Vote Distribution</h2>
         <VoteChart
@@ -180,20 +184,32 @@ const hasVoted = (playerName) => {
       </>
     )}
 
-    {(typeof step === "number" && step >= 1) || step === "done" ? (
+    {((typeof step === "number" && step >= 1) || step === "done") && (
       <>
         <h2>Leaderboard:</h2>
         {leaderboard.length > 0 ? (
-          leaderboard.map((player, index) => (
-            <p key={index}>
-              {index + 1}. {player.name}: {player.score} points
-            </p>
-          ))
+          leaderboard.map((player, index) => {
+            const isTop3 = index < 3;
+            const isBottom3 = index >= leaderboard.length - 3;
+            let emoji = "";
+
+            if (step === "done") {
+              if (isTop3) emoji = ["👑", "🥈", "🥉"][index] || "🎉";
+              else if (isBottom3) emoji = "💩";
+            }
+
+            return (
+              <p key={index}>
+                {index + 1}. {player.name}: {player.score} points{" "}
+                {emoji && <span>{emoji}</span>}
+              </p>
+            );
+          })
         ) : (
           <p>No players to show.</p>
         )}
       </>
-    ) : null}
+    )}
   </div>
 </div>
 
