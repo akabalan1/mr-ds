@@ -32,9 +32,12 @@ export default function AdminMajority() {
   useEffect(() => {
     if (socket) {
       socket.on("updateVotes", (newVotes) => {
-        setCurrentVotes(newVotes);
-        setVoteCount(Object.keys(newVotes).length);
-      });
+  setCurrentVotes((prevVotes) => ({
+    ...prevVotes,
+    ...newVotes, // merge new votes with previous
+  }));
+});
+
       return () => {
         socket.off("updateVotes");
       };
