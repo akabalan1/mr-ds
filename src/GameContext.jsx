@@ -16,10 +16,11 @@ export function GameProvider({ children }) {
   const [questions, setQuestions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
   const tryJoin = () => {
     const storedName = localStorage.getItem("playerName");
-    if (storedName) {
+    if (storedName && storedName.trim() !== "") {
+      console.log("✅ Auto-rejoining with:", storedName);
       setPlayerName(storedName);
       socket.emit("player-join", storedName);
     }
@@ -28,13 +29,14 @@ export function GameProvider({ children }) {
   if (socket.connected) {
     tryJoin();
   } else {
-    socket.on("connect", tryJoin);
+    socket.once("connect", tryJoin);
   }
 
   return () => {
     socket.off("connect", tryJoin);
   };
 }, []);
+
 
 
   useEffect(() => {
