@@ -50,6 +50,7 @@ io.on("connection", (socket) => {
 
   socket.on("submitVote", ({ name, option, questionIndex }) => {
     gameState.votes[name] = option;
+    console.log("🗳 Votes so far:", gameState.votes); // ✅ log
     io.emit("updateVotes", gameState.votes);
   });
 
