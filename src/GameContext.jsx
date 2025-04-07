@@ -58,11 +58,13 @@ export function GameProvider({ children }) {
     };
 
     const handleShowResults = (state) => {
-      console.log("showResults received from server:", state);
-      setStep("done");
-      setPlayers(state.players || []);
-      setLeaderboard(state.leaderboard || []);
-    };
+  console.log("🎯 showResults received from server:", state);
+  setPlayers(state.players || []);
+  setLeaderboard(state.leaderboard || []);
+  setQuestionIndex(state.currentQuestionIndex || 0);
+  setStep("done");
+};
+
 
     socket.on("gameState", handleGameState);
     socket.on("showResults", handleShowResults);
