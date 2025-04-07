@@ -5,7 +5,8 @@ import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 
 export default function Results() {
-  const { players, resetGame, setStep, step } = useGame();
+  const { leaderboard, resetGame, setStep, step } = useGame();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function Results() {
     }
   }, [step, navigate]);
 
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  const sortedPlayers = leaderboard || [];
 
   const handlePlayAgain = () => {
     resetGame();
