@@ -68,28 +68,36 @@ export default function AdminMajority() {
     return () => clearInterval(countdown);
   }, [step]);
 
+  useEffect(() => {
+    if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
+      setFinalVotes({ ...currentVotes });
+      setResultsVisible(true);
+    }
+  }, [timer, currentVotes, step]);
+
+  useEffect(() => {
+    if (resultsVisible) {
+      const delay = setTimeout(() => {
+        socket.emit("calculateMajorityScores");
+        setResultsVisible(false);
+
+        if (currentQuestion < questions.length - 1) {
+          const nextQuestionIndex = currentQuestion + 1;
+          setCurrentQuestion(nextQuestionIndex);
+          setStep(nextQuestionIndex);
+        } else {
+          setStep("done");
+        }
+      }, 3000);
+
+      return () => clearTimeout(delay);
+    }
+  }, [resultsVisible]);
+
   const handleStartGame = () => {
     setStep(0);
     setResultsVisible(false);
     socket.emit("gameStart", { questions, gameMode: "majority" });
-  };
-
-  const handleNextQuestion = () => {
-    setFinalVotes(currentVotes);
-    setResultsVisible(true);
-
-    socket.emit("calculateMajorityScores");
-
-    setTimeout(() => {
-      setResultsVisible(false);
-      if (currentQuestion < questions.length - 1) {
-        const nextQuestionIndex = currentQuestion + 1;
-        setCurrentQuestion(nextQuestionIndex);
-        setStep(nextQuestionIndex);
-      } else {
-        setStep("done");
-      }
-    }, 2000);
   };
 
   const handleResetGame = () => {
@@ -112,7 +120,7 @@ export default function AdminMajority() {
         )}
 
         {typeof step === "number" && step >= 0 && step !== "done" && (
-          <button onClick={handleNextQuestion} style={nextButtonStyle}>
+          <button disabled={timer > 0 || resultsVisible} style={nextButtonStyle}>
             {currentQuestion === questions.length - 1 ? "Finish Game" : "Next Question"}
           </button>
         )}
@@ -144,7 +152,7 @@ export default function AdminMajority() {
       {resultsVisible && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Live Vote Distribution</h2>
-          <VoteChart votes={finalVotes} />
+          <VoteChart votes={finalVotes} question={questions[currentQuestion]} />
         </div>
       )}
 
