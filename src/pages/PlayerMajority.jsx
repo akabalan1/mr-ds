@@ -47,10 +47,10 @@ export default function PlayerMajority() {
     setSelectedOption(option);
     setSubmitted(true);
     socket.emit("submitVote", {
-      name: localStorage.getItem("playerName"),
-      option,
-      questionIndex,
-    });
+  name,
+  option,
+  questionIndex,
+});
   };
 
   const currentQuestion = questions[questionIndex];
