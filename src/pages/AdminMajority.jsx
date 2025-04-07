@@ -72,6 +72,8 @@ export default function AdminMajority() {
   };
 
   const handleNextQuestion = () => {
+  // Delay score calculation to allow vote chart to display
+  setTimeout(() => {
     socket.emit("calculateMajorityScores");
     setResultsVisible(false);
 
@@ -82,7 +84,9 @@ export default function AdminMajority() {
     } else {
       setStep("done");
     }
-  };
+  }, 3000); // Wait 3 seconds before progressing to next question
+};
+
 
   const handleResetGame = () => {
     resetGame();
