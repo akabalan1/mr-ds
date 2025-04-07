@@ -48,7 +48,12 @@ io.on("connection", (socket) => {
     io.emit("gameState", gameState);
   });
 
-  socket.on("submitVote", ({ name, option, questionIndex }) => {
+ socket.on("submitVote", ({ name, option, questionIndex }) => {
+  if (!name || typeof name !== "string" || name.trim() === "") {
+    console.warn("⚠️ Invalid vote received with missing name");
+    return;
+  }
+
   if (!gameState.votes[questionIndex]) {
     gameState.votes[questionIndex] = {};
   }
@@ -59,6 +64,7 @@ io.on("connection", (socket) => {
 
   io.emit("updateVotes", gameState.votes[questionIndex]); // Send votes for current question only
 });
+
 
     socket.on("calculateMajorityScores", () => {
     console.log("📊 Calculating scores for question", gameState.currentQuestionIndex);
