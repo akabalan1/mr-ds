@@ -53,22 +53,34 @@ io.on("connection", (socket) => {
     io.emit("updateVotes", gameState.votes);
   });
 
-  socket.on("calculateMajorityScores", () => {
-    console.log("📤 Emitting updated gameState:", gameState);
+    socket.on("calculateMajorityScores", () => {
+    console.log("📊 Calculating scores for question", gameState.currentQuestionIndex);
     const votes = gameState.votes;
     const optionCounts = {};
 
-    for (let player in votes) {
-      const vote = votes[player];
-      optionCounts[vote] = (optionCounts[vote] || 0) + 1;
-    }
+    // Ensure every player has an entry in the vote map (even if they didn't vote)
+    gameState.players.forEach((player) => {
+      if (!votes[player.name]) {
+        votes[player.name] = null;
+      }
+    });
+
+    // Count all submitted votes
+    Object.values(votes).forEach((vote) => {
+      if (vote) {
+        optionCounts[vote] = (optionCounts[vote] || 0) + 1;
+      }
+    });
 
     const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]);
     const majorityVote = sortedOptions[0] ? sortedOptions[0][0] : null;
     const leastCommonVote = sortedOptions[sortedOptions.length - 1] ? sortedOptions[sortedOptions.length - 1][0] : null;
 
+    // Score logic
     gameState.players.forEach((player) => {
       const vote = votes[player.name];
+      if (!vote) return; // No points if didn't vote
+
       if (vote === majorityVote) {
         player.score += 3;
       } else if (vote === leastCommonVote) {
@@ -78,6 +90,7 @@ io.on("connection", (socket) => {
       }
     });
 
+    // Reset votes and advance question
     gameState.votes = {};
     gameState.currentQuestionIndex++;
 
@@ -90,6 +103,7 @@ io.on("connection", (socket) => {
       io.emit("gameState", gameState);
     }
   });
+
 
   socket.on("resetGame", () => {
     console.log("🔄 Resetting game state");
