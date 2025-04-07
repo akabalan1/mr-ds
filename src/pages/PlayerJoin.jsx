@@ -26,13 +26,15 @@ export default function PlayerJoin() {
   }, [setPlayerName, socket, navigate]);
 
   const handleJoin = () => {
-  if (!name.trim()) return;
-  localStorage.setItem("playerName", name);
-  setPlayerName(name);
-  console.log("🚀 Emitting player-join for:", name);
-  socket.emit("player-join", name);
+  const cleanName = name.trim();
+  if (!cleanName) return;
+
+  localStorage.setItem("playerName", cleanName);
+  setPlayerName(cleanName);
+  socket.emit("player-join", cleanName);
   navigate("/waiting");
 };
+
 
 
   return (
