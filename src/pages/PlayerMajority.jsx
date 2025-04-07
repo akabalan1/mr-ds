@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 
 export default function PlayerMajority() {
-  const { socket, questions, questionIndex, step, mode, playerName } = useGame(); // ⬅️ Added playerName from context
+  const { socket, questions, questionIndex, step, mode, playerName } = useGame();
   const navigate = useNavigate();
 
   const [selectedOption, setSelectedOption] = useState(null);
@@ -18,11 +18,13 @@ export default function PlayerMajority() {
       localStorage.removeItem("playerName");
       navigate("/join");
     }
+
     if (step === "done" && mode === "majority") {
       navigate("/results");
       return;
     }
 
+    // Reset state on new question
     setSubmitted(false);
     setSelectedOption(null);
     setLocked(false);
@@ -43,25 +45,24 @@ export default function PlayerMajority() {
   }, [step, mode, navigate]);
 
   const handleVote = (option) => {
-  if (locked || submitted) return;
+    if (locked || submitted) return;
 
-  const name = playerName || localStorage.getItem("playerName");
-  if (!name || name.trim() === "") {
-    console.warn("🚫 No player name found when voting");
-    return;
-  }
+    const name = playerName || localStorage.getItem("playerName");
+    if (!name || name.trim() === "") {
+      console.warn("🚫 No player name found when voting");
+      return;
+    }
 
-  console.log("📤 submitting vote for:", name);
-  setSelectedOption(option);
-  setSubmitted(true);
+    console.log("📤 submitting vote for:", name);
+    setSelectedOption(option);
+    setSubmitted(true);
 
-  socket.emit("submitVote", {
-    name,
-    option,
-    questionIndex,
-  });
-};
-
+    socket.emit("submitVote", {
+      name,
+      option,
+      questionIndex,
+    });
+  };
 
   const currentQuestion = questions[questionIndex];
 
@@ -100,7 +101,9 @@ export default function PlayerMajority() {
                           ? "#ccc"
                           : "#fff",
                       color:
-                        selectedOption === option || locked ? "#fff" : "#000",
+                        selectedOption === option || locked
+                          ? "#fff"
+                          : "#000",
                       border: "1px solid #ccc",
                       transition: "all 0.3s ease",
                     }}
