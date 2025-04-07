@@ -13,14 +13,19 @@ export default function Waiting() {
   const storedName = localStorage.getItem("playerName");
   console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-  // ✅ Go back to /join if there's no player name
-  if (!storedName || storedName.trim() === "") {
-    console.log("[Waiting.jsx] No player name found — returning to join");
+  // ✅ Go back to join if:
+  // 1. No playerName OR
+  // 2. Game was reset (step = -1) AFTER player joined
+  const gameWasReset = step === -1 && prevStep.current !== -1;
+  const missingName = !storedName || storedName.trim() === "";
+
+  if (gameWasReset || missingName) {
+    console.log("[Waiting.jsx] Game was reset or anonymous — returning to join");
     navigate("/join");
     return;
   }
 
-  // ✅ If the game starts, send player to correct game page
+  // ✅ If the game starts, send player to correct mode
   if (typeof step === "number" && step >= 0) {
     if (mode === "kahoot") {
       navigate("/play/kahoot");
@@ -31,6 +36,7 @@ export default function Waiting() {
 
   prevStep.current = step;
 }, [step, mode, navigate]);
+
 
 
   return (
