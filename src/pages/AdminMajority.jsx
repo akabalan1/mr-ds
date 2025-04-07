@@ -31,12 +31,10 @@ export default function AdminMajority() {
   // 🔄 Sync live votes
   useEffect(() => {
     if (socket) {
-      socket.on("updateVotes", (newVotes) => {
-  setCurrentVotes((prevVotes) => ({
-    ...prevVotes,
-    ...newVotes, // merge new votes with previous
-  }));
+     socket.on("updateVotes", (newVotes) => {
+  setCurrentVotes(newVotes); // just use the latest full set of votes for this question
 });
+
 
       return () => {
         socket.off("updateVotes");
