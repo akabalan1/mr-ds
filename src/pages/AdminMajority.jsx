@@ -77,6 +77,7 @@ export default function AdminMajority() {
   setTimeout(() => {
     socket.emit("calculateMajorityScores");
     setResultsVisible(false);
+    setCurrentVotes({}); // ✅ Clear votes for the next question
 
     if (currentQuestion < questions.length - 1) {
       const nextQuestionIndex = currentQuestion + 1;
@@ -130,71 +131,72 @@ const hasVoted = (playerName) => {
       </div>
 
       {/* ✅ Two-Column Grid Layout */}
-      <div className="admin-panel">
-        {/* ⬅️ Left Column: Question + Players */}
-        <div className="admin-section">
-          {typeof step === "number" && step >= 0 && step !== "done" && (
-            <>
-              <h2>Current Question:</h2>
-              <p>
-                <strong>Q{currentQuestion + 1}:</strong>{" "}
-                {questions[currentQuestion].question}
-              </p>
-              <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-              <ul>
-                {questions[currentQuestion].options.map((option, i) => (
-                  <li key={i}>{option}</li>
-                ))}
-              </ul>
-            </>
-          )}
+<div className="admin-panel">
+  {/* ⬅️ Left Column: Question + Players */}
+  {step !== "done" && (
+    <div className="admin-section">
+      {typeof step === "number" && step >= 0 && (
+        <>
+          <h2>Current Question:</h2>
+          <p>
+            <strong>Q{currentQuestion + 1}:</strong>{" "}
+            {questions[currentQuestion].question}
+          </p>
+          <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
+          <ul>
+            {questions[currentQuestion].options.map((option, i) => (
+              <li key={i}>{option}</li>
+            ))}
+          </ul>
+        </>
+      )}
 
-         {step !== "done" && (
-  <>
-    <h2>Vote Tally:</h2>
-    {players.map((player, index) => (
-      <p
-        key={index}
-        style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-      >
-        {player.name}
-        {hasVoted(player.name) ? (
-          <span style={{ color: "green" }}>✅</span>
+      <h2>Vote Tally:</h2>
+      {players.map((player, index) => (
+        <p
+          key={index}
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        >
+          {player.name}
+          {currentVotes[player.name] ? (
+            <span style={{ color: "green" }}>✅</span>
+          ) : (
+            <span style={{ color: "gray" }}>⌛</span>
+          )}
+        </p>
+      ))}
+    </div>
+  )}
+
+  {/* ➡️ Right Column: Chart + Leaderboard */}
+  <div className="admin-section">
+    {resultsVisible && (
+      <>
+        <h2>Live Vote Distribution</h2>
+        <VoteChart
+          votes={finalVotes}
+          question={questions[currentQuestion]}
+        />
+      </>
+    )}
+
+    {(typeof step === "number" && step >= 1) || step === "done" ? (
+      <>
+        <h2>Leaderboard:</h2>
+        {leaderboard.length > 0 ? (
+          leaderboard.map((player, index) => (
+            <p key={index}>
+              {index + 1}. {player.name}: {player.score} points
+            </p>
+          ))
         ) : (
-          <span style={{ color: "gray" }}>⌛</span>
+          <p>No players to show.</p>
         )}
-      </p>
-    ))}
-  </>
-)}
+      </>
+    ) : null}
+  </div>
+</div>
 
-        </div>
-
-        {/* ➡️ Right Column: Chart + Leaderboard */}
-        <div className="admin-section">
-          {resultsVisible && (
-            <>
-              <h2>Live Vote Distribution</h2>
-              <VoteChart votes={finalVotes} question={questions[currentQuestion]} />
-            </>
-          )}
-
-          {(typeof step === "number" && step >= 1) || step === "done" ? (
-            <>
-              <h2>Leaderboard:</h2>
-              {leaderboard.length > 0 ? (
-                leaderboard.map((player, index) => (
-                  <p key={index}>
-                    {index + 1}. {player.name}: {player.score} points
-                  </p>
-                ))
-              ) : (
-                <p>No players to show.</p>
-              )}
-            </>
-          ) : null}
-        </div>
-      </div>
     </Layout>
   );
 }
