@@ -1,11 +1,19 @@
-import React from "react";
+// src/pages/Results.jsx
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 
 export default function Results() {
-  const { players, resetGame, setStep } = useGame();
+  const { players, resetGame, setStep, step } = useGame();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (step === -1) {
+      localStorage.removeItem("playerName");
+      navigate("/join");
+    }
+  }, [step, navigate]);
 
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
