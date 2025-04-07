@@ -36,7 +36,11 @@ Object.entries(votes).forEach(([player, vote]) => {
 });
 
 
-  const labels = question.options;
+  const correctAnswer = question.correctAnswer;
+const labels = question.options.map((opt) =>
+  opt === correctAnswer ? `${opt} ✅` : opt
+);
+
   const values = labels.map((opt) => optionCounts[opt]);
 
   const data = {
