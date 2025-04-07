@@ -13,14 +13,21 @@ export default function Waiting() {
   const storedName = localStorage.getItem("playerName");
   console.log("⌛ [Waiting] step =", step, "| prevStep =", prevStep.current, "| storedName =", storedName);
 
-  // ✅ Case 1: Reset happened, and no player name — redirect to join
-  if (step === -1 && (!storedName || storedName.trim() === "")) {
-    console.log("[Waiting.jsx] Reset AND no player — go to /join");
+  // 🧨 Case: Trying to reach /waiting without a name
+  if (!storedName || storedName.trim() === "") {
+    console.log("[Waiting] No name — redirecting to /join");
     navigate("/join");
     return;
   }
 
-  // ✅ Case 2: Game started — go to appropriate game mode
+  // 🔁 Case: Game was reset while on /waiting → go back to /join
+  if (step === -1 && prevStep.current !== -1) {
+    console.log("[Waiting] Game was reset — going back to /join");
+    navigate("/join");
+    return;
+  }
+
+  // 🚀 Case: Game started — go to the proper game mode
   if (typeof step === "number" && step >= 0) {
     if (mode === "kahoot") {
       navigate("/play/kahoot");
@@ -30,6 +37,7 @@ export default function Waiting() {
     return;
   }
 
+  // ✅ Track previous step to detect resets
   prevStep.current = step;
 }, [step, mode, navigate]);
 
