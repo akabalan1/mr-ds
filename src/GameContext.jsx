@@ -43,27 +43,35 @@ export function GameProvider({ children }) {
 
 
   useEffect(() => {
-    const handleGameState = (state) => {
-      console.log("Game state received from server:", state);
-      console.log("📥 [GameContext] handleGameState received:", state);
-      console.log("🙋 [GameContext] playerName state before update:", playerName);
-      setPlayers(state.players || []);
-      setVotes(state.votes || {});
-      setQuestionIndex(state.currentQuestionIndex || 0);
-      setMode(state.gameMode || "majority");
-      setQuestions(state.questions || []);
-      setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
+  const handleGameState = (state) => {
+    console.log("Game state received from server:", state);
+    console.log("📥 [GameContext] handleGameState received:", state);
+    console.log("🙋 [GameContext] playerName state before update:", playerName);
 
-      if (state.step === -1) {
-  console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
-  if (step !== -1 && playerName) {
-    console.log("❌ [GameContext] Resetting playerName due to full reset");
-    setPlayerName("");
-    localStorage.removeItem("playerName");
-  }
-  setStep(-1);
-}
- else if (state.step === "done") {
+    setPlayers(state.players || []);
+    setVotes(state.votes || {});
+    setQuestionIndex(state.currentQuestionIndex || 0);
+    setMode(state.gameMode || "majority");
+    setQuestions(state.questions || []);
+    setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
+
+    if (state.step === -1) {
+      console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
+      if (step !== -1 && playerName) {
+        console.log("❌ [GameContext] Resetting playerName due to full reset");
+        setPlayerName("");
+        localStorage.removeItem("playerName");
+      }
+      setStep(-1);
+    } else {
+      // ✅ Restore playerName from localStorage if it's missing in memory
+      const stored = localStorage.getItem("playerName");
+      if (!playerName && stored) {
+        console.log("🔄 [GameContext] Restoring playerName from localStorage:", stored);
+        setPlayerName(stored);
+      }
+
+      if (state.step === "done") {
         setStep("done");
       } else if (
         state.questions &&
@@ -78,26 +86,27 @@ export function GameProvider({ children }) {
           setStep(state.step);
         }
       }
-    };
+    }
+  };
 
-    const handleShowResults = (state) => {
-  console.log("🎯 showResults received from server:", state);
-  setPlayers(state.players || []);
-  setLeaderboard(state.leaderboard || []);
-  setQuestionIndex(state.currentQuestionIndex || 0);
-  setStep("done");
-};
+  const handleShowResults = (state) => {
+    console.log("🎯 showResults received from server:", state);
+    setPlayers(state.players || []);
+    setLeaderboard(state.leaderboard || []);
+    setQuestionIndex(state.currentQuestionIndex || 0);
+    setStep("done");
+  };
 
+  socket.on("gameState", handleGameState);
+  socket.on("showResults", handleShowResults);
 
-    socket.on("gameState", handleGameState);
-    socket.on("showResults", handleShowResults);
+  return () => {
+    // Only clean up listeners, DO NOT disconnect socket
+    socket.off("gameState", handleGameState);
+    socket.off("showResults", handleShowResults);
+  };
+}, [playerName]);
 
-    return () => {
-      // Only clean up listeners, DO NOT disconnect socket
-      socket.off("gameState", handleGameState);
-      socket.off("showResults", handleShowResults);
-    };
-  }, [playerName]);
 
   const addPlayer = (name) => {
     socket.emit("player-join", name);
