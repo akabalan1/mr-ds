@@ -44,16 +44,24 @@ export default function PlayerMajority() {
 
   const handleVote = (option) => {
   if (locked || submitted) return;
-  const name = localStorage.getItem("playerName");
-  console.log("📤 submitting vote for:", name);
+
+  const name = playerName || localStorage.getItem("playerName");
+  if (!name || name.trim() === "") {
+    console.warn("🚫 No player name found when voting");
+    return;
+  }
+
+  console.log("📤 Submitting vote for:", name);
   setSelectedOption(option);
   setSubmitted(true);
+
   socket.emit("submitVote", {
-    name: playerName,
+    name,
     option,
     questionIndex,
   });
 };
+
 
 
 };
