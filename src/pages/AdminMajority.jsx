@@ -24,9 +24,10 @@ export default function AdminMajority() {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentVotes, setCurrentVotes] = useState({});
-  const [showChart, setShowChart] = useState(false);
+  const [finalVotes, setFinalVotes] = useState({});
   const [voteCount, setVoteCount] = useState(0);
   const [timer, setTimer] = useState(10);
+  const [resultsVisible, setResultsVisible] = useState(false);
 
   const buttonBase = {
     margin: "0.5rem",
@@ -69,14 +70,18 @@ export default function AdminMajority() {
 
   const handleStartGame = () => {
     setStep(0);
+    setResultsVisible(false);
     socket.emit("gameStart", { questions, gameMode: "majority" });
   };
 
   const handleNextQuestion = () => {
-    setShowChart(true);
+    setFinalVotes(currentVotes);
+    setResultsVisible(true);
+
+    socket.emit("calculateMajorityScores");
+
     setTimeout(() => {
-      socket.emit("calculateMajorityScores");
-      setShowChart(false);
+      setResultsVisible(false);
       if (currentQuestion < questions.length - 1) {
         const nextQuestionIndex = currentQuestion + 1;
         setCurrentQuestion(nextQuestionIndex);
@@ -91,6 +96,8 @@ export default function AdminMajority() {
     resetGame();
     setStep(-1);
     setCurrentQuestion(0);
+    setFinalVotes({});
+    setResultsVisible(false);
     localStorage.removeItem("playerName");
   };
 
@@ -106,7 +113,7 @@ export default function AdminMajority() {
 
         {typeof step === "number" && step >= 0 && step !== "done" && (
           <button onClick={handleNextQuestion} style={nextButtonStyle}>
-            Next Question
+            {currentQuestion === questions.length - 1 ? "Finish Game" : "Next Question"}
           </button>
         )}
 
@@ -134,10 +141,10 @@ export default function AdminMajority() {
         </div>
       )}
 
-      {showChart && (
+      {resultsVisible && (
         <div style={{ marginTop: "1rem" }}>
           <h2>Live Vote Distribution</h2>
-          <VoteChart votes={currentVotes} />
+          <VoteChart votes={finalVotes} />
         </div>
       )}
 
