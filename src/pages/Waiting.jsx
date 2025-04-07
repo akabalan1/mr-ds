@@ -14,11 +14,11 @@ export default function Waiting() {
   console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
   // ✅ Always go back to join if step = -1 and no playerName
-  if (step === -1 && (!storedName || storedName.trim() === "" || prevStep.current !== -1)) {
-    console.log("[Waiting.jsx] Game was reset or anonymous — returning to join");
-    navigate("/join");
-    return;
-  }
+  if (step === -1) {
+  console.log("[Waiting.jsx] step = -1 — returning to join");
+  navigate("/join");
+  return;
+}
 
   // ✅ Once the game starts, redirect to correct mode
   if (typeof step === "number" && step >= 0) {
