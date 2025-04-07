@@ -37,22 +37,16 @@ export default function PlayerJoin() {
 
   return (
     <Layout showAdminLink={false}>
-      <div style={{ padding: "1.5rem", textAlign: "center" }}>
-        <h1>👋 Enter Your Name</h1>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name..."
-          style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "0.5rem", marginRight: "0.5rem" }}
-        />
-        <button
-          onClick={handleJoin}
-          style={{ backgroundColor: "#2563eb", color: "white", padding: "0.5rem 1rem", borderRadius: "4px", border: "none", cursor: "pointer" }}
-        >
-          Join Game
-        </button>
-      </div>
-    </Layout>
+  <div className="player-join">
+    <h1>👋 Enter Your Name</h1>
+    <input
+      type="text"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+      placeholder="Your name..."
+    />
+    <button onClick={handleJoin}>Join Game</button>
+  </div>
+</Layout>
   );
 }
