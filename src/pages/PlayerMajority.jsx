@@ -49,10 +49,12 @@ export default function PlayerMajority() {
   setSelectedOption(option);
   setSubmitted(true);
   socket.emit("submitVote", {
-  name: playerName,
-  option,
-  questionIndex,
-});
+    name: playerName,
+    option,
+    questionIndex,
+  });
+};
+
 
 };
 
