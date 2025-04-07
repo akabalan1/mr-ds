@@ -15,10 +15,10 @@ export default function PlayerKahoot() {
   const [startTime, setStartTime] = useState(null);
 
   useEffect(() => {
-    if (step === -1) {
-      localStorage.removeItem("playerName");
-      navigate("/join");
-    }
+    const storedName = localStorage.getItem("playerName");
+if (step === -1 && (!storedName || storedName.trim() === "")) {
+  navigate("/join");
+}
 
     if (step === "done" && mode === "kahoot") {
       navigate("/results");
