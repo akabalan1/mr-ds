@@ -94,8 +94,16 @@ export function GameProvider({ children }) {
   };
 
   const submitVote = (name, option) => {
-    socket.emit("submitVote", { name, option, questionIndex });
-  };
+  const finalName = name || localStorage.getItem("playerName") || playerName;
+  if (!finalName || typeof finalName !== "string" || finalName.trim() === "") {
+    console.warn("🚫 Cannot submit vote: Missing player name");
+    return;
+  }
+
+  console.log("📤 Submitting vote:", finalName, "=>", option);
+  socket.emit("submitVote", { name: finalName, option, questionIndex });
+};
+
 
   const submitKahootAnswer = (name, option, time) => {
     socket.emit("submitKahoot", { name, option, time, questionIndex });
