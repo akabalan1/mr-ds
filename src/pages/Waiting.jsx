@@ -10,29 +10,37 @@ export default function Waiting() {
   const prevStep = useRef(step);
 
   useEffect(() => {
-    const storedName = localStorage.getItem("playerName");
-    console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
+  const storedName = localStorage.getItem("playerName");
+  console.log("⌛ [Waiting] step =", step, "| prevStep =", prevStep.current, "| storedName =", storedName);
 
-    // ✅ Kick player out ONLY if step transitioned from non -1 to -1 (i.e. game reset)
-    if (step === -1 && prevStep.current !== -1) {
-      console.log("[Waiting.jsx] Game was reset — returning to join");
-      localStorage.removeItem("playerName");
-      navigate("/join");
-      return;
+  // 🧨 Case: Trying to reach /waiting without a name
+  if (!storedName || storedName.trim() === "") {
+    console.log("[Waiting] No name — redirecting to /join");
+    navigate("/join");
+    return;
+  }
+
+  // 🔁 Case: Game was reset while on /waiting → go back to /join
+  if (step === -1 && prevStep.current !== -1) {
+    console.log("[Waiting] Game was reset — going back to /join");
+    navigate("/join");
+    return;
+  }
+
+  // 🚀 Case: Game started — go to the proper game mode
+  if (typeof step === "number" && step >= 0) {
+    if (mode === "kahoot") {
+      navigate("/play/kahoot");
+    } else if (mode === "majority") {
+      navigate("/play/majority");
     }
+    return;
+  }
 
-    // ✅ Stay on waiting if game hasn't started yet
-    // ✅ Once game starts, redirect player to the right game mode
-    if (typeof step === "number" && step >= 0) {
-      if (mode === "kahoot") {
-        navigate("/play/kahoot");
-      } else if (mode === "majority") {
-        navigate("/play/majority");
-      }
-    }
+  // ✅ Track previous step to detect resets
+  prevStep.current = step;
+}, [step, mode, navigate]);
 
-    prevStep.current = step;
-  }, [step, mode, navigate]);
 
   return (
     <Layout showAdminLink={false}>
