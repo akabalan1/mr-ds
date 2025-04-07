@@ -97,6 +97,10 @@ export default function AdminMajority() {
     setResultsVisible(false);
     localStorage.removeItem("playerName");
   };
+// Helper to check if a player has voted
+const hasVoted = (playerName) => {
+  return currentVotes && currentVotes[playerName];
+};
 
   return (
     <Layout>
@@ -145,10 +149,25 @@ export default function AdminMajority() {
             </>
           )}
 
-          <h2>Players Joined:</h2>
-          {players.map((player, index) => (
-            <p key={index}>{player.name}</p>
-          ))}
+         {step !== "done" && (
+  <>
+    <h2>Vote Tally:</h2>
+    {players.map((player, index) => (
+      <p
+        key={index}
+        style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+      >
+        {player.name}
+        {hasVoted(player.name) ? (
+          <span style={{ color: "green" }}>✅</span>
+        ) : (
+          <span style={{ color: "gray" }}>⌛</span>
+        )}
+      </p>
+    ))}
+  </>
+)}
+
         </div>
 
         {/* ➡️ Right Column: Chart + Leaderboard */}
