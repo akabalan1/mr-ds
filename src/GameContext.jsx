@@ -19,6 +19,7 @@ export function GameProvider({ children }) {
  useEffect(() => {
   const tryJoin = () => {
     const storedName = localStorage.getItem("playerName");
+    console.log("📞 [GameContext] tryJoin — emitting player-join for:", storedName);
     if (storedName && storedName.trim() !== "") {
       setPlayerName(storedName);
       socket.emit("player-join", storedName);
@@ -44,6 +45,8 @@ export function GameProvider({ children }) {
   useEffect(() => {
     const handleGameState = (state) => {
       console.log("Game state received from server:", state);
+      console.log("📥 [GameContext] handleGameState received:", state);
+      console.log("🙋 [GameContext] playerName state before update:", playerName);
       setPlayers(state.players || []);
       setVotes(state.votes || {});
       setQuestionIndex(state.currentQuestionIndex || 0);
@@ -52,12 +55,15 @@ export function GameProvider({ children }) {
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
       if (state.step === -1) {
-        setStep(-1);
-        if (playerName) {
-          setPlayerName("");
-          localStorage.removeItem("playerName");
-        }
-      } else if (state.step === "done") {
+  console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
+  if (step !== -1 && playerName) {
+    console.log("❌ [GameContext] Resetting playerName due to full reset");
+    setPlayerName("");
+    localStorage.removeItem("playerName");
+  }
+  setStep(-1);
+}
+ else if (state.step === "done") {
         setStep("done");
       } else if (
         state.questions &&
