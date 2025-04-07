@@ -75,29 +75,23 @@ export default function AdminMajority() {
     }
   }, [timer, currentVotes, step]);
 
-  useEffect(() => {
-    if (resultsVisible) {
-      const delay = setTimeout(() => {
-        socket.emit("calculateMajorityScores");
-        setResultsVisible(false);
-
-        if (currentQuestion < questions.length - 1) {
-          const nextQuestionIndex = currentQuestion + 1;
-          setCurrentQuestion(nextQuestionIndex);
-          setStep(nextQuestionIndex);
-        } else {
-          setStep("done");
-        }
-      }, 3000);
-
-      return () => clearTimeout(delay);
-    }
-  }, [resultsVisible]);
-
   const handleStartGame = () => {
     setStep(0);
     setResultsVisible(false);
     socket.emit("gameStart", { questions, gameMode: "majority" });
+  };
+
+  const handleNextQuestion = () => {
+    socket.emit("calculateMajorityScores");
+    setResultsVisible(false);
+
+    if (currentQuestion < questions.length - 1) {
+      const nextQuestionIndex = currentQuestion + 1;
+      setCurrentQuestion(nextQuestionIndex);
+      setStep(nextQuestionIndex);
+    } else {
+      setStep("done");
+    }
   };
 
   const handleResetGame = () => {
@@ -120,7 +114,11 @@ export default function AdminMajority() {
         )}
 
         {typeof step === "number" && step >= 0 && step !== "done" && (
-          <button disabled={timer > 0 || resultsVisible} style={nextButtonStyle}>
+          <button
+            onClick={handleNextQuestion}
+            disabled={timer > 0 || !resultsVisible}
+            style={nextButtonStyle}
+          >
             {currentQuestion === questions.length - 1 ? "Finish Game" : "Next Question"}
           </button>
         )}
