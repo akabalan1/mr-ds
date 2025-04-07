@@ -34,7 +34,11 @@ export function GameProvider({ children }) {
       setQuestions(state.questions || []);
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
-      if (state.step === "done") {
+      if (state.step === -1) {
+        setStep(-1);
+        setPlayerName("");
+        localStorage.removeItem("playerName");
+      } else if (state.step === "done") {
         setStep("done");
       } else if (
         state.questions &&
