@@ -18,19 +18,27 @@ export function GameProvider({ children }) {
 
   useEffect(() => {
   const storedName = localStorage.getItem("playerName");
-  if (storedName) {
-    setPlayerName(storedName);
 
-    // Wait until the socket is connected before emitting
-    if (socket.connected) {
+  const tryJoin = () => {
+    if (storedName) {
+      setPlayerName(storedName);
       socket.emit("player-join", storedName);
-    } else {
-      socket.on("connect", () => {
-        socket.emit("player-join", storedName);
-      });
     }
+  };
+
+  // Join if already connected
+  if (socket.connected) {
+    tryJoin();
   }
+
+  // Otherwise, wait for connection
+  socket.on("connect", tryJoin);
+
+  return () => {
+    socket.off("connect", tryJoin);
+  };
 }, []);
+
 
   useEffect(() => {
     const handleGameState = (state) => {
