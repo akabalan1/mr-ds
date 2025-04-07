@@ -17,15 +17,15 @@ export function GameProvider({ children }) {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-  const storedName = localStorage.getItem("playerName");
-  if (storedName && socket.connected) {
-    setPlayerName(storedName);
-    socket.emit("player-join", storedName);
-  }
-}, [socket.connected]);
+    const storedName = localStorage.getItem("playerName");
+    if (storedName && socket.connected) {
+      setPlayerName(storedName);
+      socket.emit("player-join", storedName);
+    }
+  }, [socket.connected]);
 
   useEffect(() => {
-    socket.on("gameState", (state) => {
+    const handleGameState = (state) => {
       console.log("Game state received from server:", state);
       setPlayers(state.players || []);
       setVotes(state.votes || {});
@@ -35,12 +35,12 @@ export function GameProvider({ children }) {
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
       if (state.step === -1) {
-  setStep(-1);
-  if (playerName) {
-    setPlayerName("");
-    localStorage.removeItem("playerName");
-  }
-} else if (state.step === "done") {
+        setStep(-1);
+        if (playerName) {
+          setPlayerName("");
+          localStorage.removeItem("playerName");
+        }
+      } else if (state.step === "done") {
         setStep("done");
       } else if (
         state.questions &&
@@ -55,19 +55,24 @@ export function GameProvider({ children }) {
           setStep(state.step);
         }
       }
-    });
+    };
 
-    socket.on("showResults", (state) => {
+    const handleShowResults = (state) => {
       console.log("showResults received from server:", state);
       setStep("done");
       setPlayers(state.players || []);
       setLeaderboard(state.leaderboard || []);
-    });
+    };
+
+    socket.on("gameState", handleGameState);
+    socket.on("showResults", handleShowResults);
 
     return () => {
-      socket.disconnect();
+      // Only clean up listeners, DO NOT disconnect socket
+      socket.off("gameState", handleGameState);
+      socket.off("showResults", handleShowResults);
     };
-  }, []);
+  }, [playerName]);
 
   const addPlayer = (name) => {
     socket.emit("player-join", name);
