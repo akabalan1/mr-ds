@@ -66,6 +66,7 @@ export default function AdminKahoot() {
   const handleReset = () => {
     resetGame();
     setCurrentQuestionIndex(0);
+    setFinalVotes({});
     setStep(-1);
   };
 
@@ -113,35 +114,52 @@ export default function AdminKahoot() {
           )}
 
           {step !== "done" && (
-            <>
-              <h2>Players:</h2>
-              {players.map((player, index) => (
-                <p key={index}>{player.name}</p>
-              ))}
-            </>
-          )}
+  <>
+    <h2>Answer Tally:</h2>
+    {players.map((player, index) => (
+      <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {player.name}
+        {votes[player.name] ? (
+          <span style={{ color: "green" }}>✅</span>
+        ) : (
+          <span style={{ color: "gray" }}>⌛</span>
+        )}
+      </p>
+    ))}
+  </>
+)}
+
         </div>
 
         <div className="admin-section">
           {resultsVisible && step !== "done" && (
-            <>
-              <h2>Live Vote Distribution</h2>
-              <VoteChart votes={finalVotes} question={currentQuestion} />
-            </>
-          )}
+  <>
+    <h2>Live Answer Breakdown</h2>
+    <VoteChart votes={finalVotes} question={currentQuestion} />
+  </>
+)}
+
 
           {(typeof step === "number" && step >= 1) || step === "done" ? (
             <>
-              <h2>Leaderboard:</h2>
-              {leaderboard.length > 0 ? (
-                leaderboard.map((player, index) => (
-                  <p key={index}>
-                    {index + 1}. {player.name}: {player.score} points
-                  </p>
-                ))
-              ) : (
-                <p>No players to show.</p>
-              )}
+             <h2>Leaderboard:</h2>
+{leaderboard.length > 0 ? (
+  leaderboard.map((player, index) => {
+    const emoji =
+      index === 0 ? "👑" :
+      index === 1 ? "🥈" :
+      index === 2 ? "🥉" :
+      index >= leaderboard.length - 3 ? "😞" : "";
+    return (
+      <p key={index}>
+        {emoji} {index + 1}. {player.name}: {player.score} points
+      </p>
+    );
+  })
+) : (
+  <p>No players to show.</p>
+)}
+
             </>
           ) : null}
         </div>
