@@ -135,40 +135,51 @@ const hasVoted = (playerName) => {
   {/* ⬅️ Left Column: Question + Vote Tally */}
   {step !== "done" && (
     <div className="admin-section">
-      {typeof step === "number" && step >= 0 && (
-        <>
-          <h2>Current Question:</h2>
-          <p>
-            <strong>Q{currentQuestion + 1}:</strong>{" "}
-            {questions[currentQuestion].question}
-          </p>
-          <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-          <ul>
-            {questions[currentQuestion].options.map((option, i) => (
-              <li key={i}>{option}</li>
-            ))}
-          </ul>
+      <>
+  {typeof step === "number" && step >= 0 && (
+    <>
+      <h2>Current Question:</h2>
+      <p>
+        <strong>Q{currentQuestion + 1}:</strong>{" "}
+        {questions[currentQuestion].question}
+      </p>
+      <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
+      <ul>
+        {questions[currentQuestion].options.map((option, i) => (
+          <li key={i}>{option}</li>
+        ))}
+      </ul>
+    </>
+  )}
 
-          <h2 style={{ marginTop: "1.5rem" }}>Vote Tally:</h2>
-          {players.map((player, index) => (
-            <p
-              key={index}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              {player.name}
-              {currentVotes[player.name] ? (
-                <span style={{ color: "green" }}>✅</span>
-              ) : (
-                <span style={{ color: "gray" }}>⌛</span>
-              )}
-            </p>
-          ))}
-        </>
-      )}
+  {players.length > 0 && (
+    <>
+      <h2 style={{ marginTop: "1.5rem" }}>
+        {step >= 0 ? "Vote Tally:" : "Players Joined:"}
+      </h2>
+      {players.map((player, index) => (
+        <p
+          key={index}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          {player.name}
+          {step >= 0 ? (
+            currentVotes[player.name] ? (
+              <span style={{ color: "green" }}>✅</span>
+            ) : (
+              <span style={{ color: "gray" }}>⌛</span>
+            )
+          ) : null}
+        </p>
+      ))}
+    </>
+  )}
+</>
+
     </div>
   )}
 
