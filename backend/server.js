@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
 
     socket.on("calculateMajorityScores", () => {
     console.log("📊 Calculating scores for question", gameState.currentQuestionIndex);
-    const votes = gameState.votes;
+    const votes = gameState.votes[gameState.currentQuestionIndex] || {};
     const optionCounts = {};
 
     // Ensure every player has an entry in the vote map (even if they didn't vote)
@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
     });
 
     // Reset votes and advance question
-    gameState.votes = {};
+    delete gameState.votes[gameState.currentQuestionIndex];
     gameState.currentQuestionIndex++;
 
     if (gameState.currentQuestionIndex >= gameState.questions.length) {
