@@ -62,6 +62,8 @@ export default function PlayerMajority() {
   console.log("📤 Submitting vote for:", name);
   setSelectedOption(option);
   setSubmitted(true);
+  const name = playerName || localStorage.getItem("playerName");
+console.log("🗳️ [PlayerMajority] submitting vote → name:", name, "| option:", option, "| step:", step);
 
   socket.emit("submitVote", {
     name,
