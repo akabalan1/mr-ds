@@ -3,6 +3,18 @@ import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
 import VoteChart from "../components/VoteChart";
 
+// 🔁 Transform Kahoot answers into flat vote format for VoteChart
+const transformKahootVotes = (kahootData, qIndex) => {
+  const result = {};
+  Object.entries(kahootData || {}).forEach(([player, answers]) => {
+    if (answers[qIndex] && answers[qIndex].answer) {
+      result[player] = answers[qIndex].answer;
+    }
+  });
+  return result;
+};
+
+
 export default function AdminKahoot() {
   const {
     socket,
@@ -146,7 +158,11 @@ export default function AdminKahoot() {
           {resultsVisible && step !== "done" && (
   <>
     <h2>Live Answer Breakdown</h2>
-    <VoteChart votes={finalVotes} question={currentQuestion} />
+    <VoteChart
+  votes={transformKahootVotes(finalVotes, currentQuestionIndex)}
+  question={currentQuestion}
+/>
+
   </>
 )}
 
