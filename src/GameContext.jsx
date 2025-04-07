@@ -20,22 +20,24 @@ export function GameProvider({ children }) {
   const tryJoin = () => {
     const storedName = localStorage.getItem("playerName");
     if (storedName && storedName.trim() !== "") {
-      console.log("✅ Auto-rejoining with:", storedName);
       setPlayerName(storedName);
       socket.emit("player-join", storedName);
+    } else {
+      console.warn("❌ No stored player name found on connect.");
     }
   };
 
   if (socket.connected) {
     tryJoin();
   } else {
-    socket.once("connect", tryJoin);
+    socket.on("connect", tryJoin);
   }
 
   return () => {
     socket.off("connect", tryJoin);
   };
 }, []);
+
 
 
 
