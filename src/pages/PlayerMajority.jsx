@@ -45,24 +45,31 @@ export default function PlayerMajority() {
   }, [step, mode, navigate]);
 
   const handleVote = (option) => {
-    if (locked || submitted) return;
+  if (locked || submitted) return;
 
-    const name = playerName || localStorage.getItem("playerName");
-    if (!name || name.trim() === "") {
-      console.warn("🚫 No player name found when voting");
-      return;
-    }
+  const name = playerName || localStorage.getItem("playerName");
+  if (!name || name.trim() === "") {
+    console.warn("🚫 No player name found when voting");
+    return;
+  }
 
-    console.log("📤 submitting vote for:", name);
-    setSelectedOption(option);
-    setSubmitted(true);
+  // Make sure GameContext knows the name if it wasn't already set
+  if (!playerName || playerName !== name) {
+    localStorage.setItem("playerName", name);
+    setPlayerName(name); // sync context state
+  }
 
-    socket.emit("submitVote", {
-      name,
-      option,
-      questionIndex,
-    });
-  };
+  console.log("📤 Submitting vote for:", name);
+  setSelectedOption(option);
+  setSubmitted(true);
+
+  socket.emit("submitVote", {
+    name,
+    option,
+    questionIndex,
+  });
+};
+
 
   const currentQuestion = questions[questionIndex];
 
