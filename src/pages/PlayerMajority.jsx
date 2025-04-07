@@ -57,7 +57,7 @@ export default function PlayerMajority() {
 
   return (
     <Layout showAdminLink={false}>
-      <div style={{ marginTop: "1rem", textAlign: "center" }}>
+     <div className="player-mobile">
         {currentQuestion ? (
           <div>
             <h2>
@@ -79,21 +79,9 @@ export default function PlayerMajority() {
                   <button
                     onClick={() => handleVote(option)}
                     disabled={locked || submitted}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      borderRadius: "5px",
-                      border: "1px solid #ccc",
-                      backgroundColor:
-                        selectedOption === option
-                          ? "#10b981"
-                          : locked
-                          ? "#ccc"
-                          : "#fff",
-                      color:
-                        selectedOption === option || locked ? "#fff" : "#000",
-                      cursor: locked ? "not-allowed" : "pointer",
-                      transition: "all 0.3s ease",
-                    }}
+                    
+                     className="player-button"
+>
                   >
                     {option}
                   </button>
