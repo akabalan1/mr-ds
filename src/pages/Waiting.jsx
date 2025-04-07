@@ -15,11 +15,12 @@ export default function Waiting() {
     console.log("[Waiting.jsx] step =", step, "| mode =", mode, "| storedName =", storedName);
 
     // Handle game reset: clear storage and return to join
-    if (step === -1) {
-      localStorage.removeItem("playerName");
-      navigate("/join");
-      return;
-    }
+    if (step === -1 && prevStep.current !== -1) {
+  console.log("[Waiting.jsx] Game was reset — returning to join");
+  localStorage.removeItem("playerName");
+  navigate("/join");
+  return;
+}
 
     // Once the game starts, redirect player to correct game mode
     if (typeof step === "number" && step >= 0) {
