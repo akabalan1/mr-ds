@@ -10,27 +10,28 @@ export default function Waiting() {
   const prevStep = useRef(step);
 
   useEffect(() => {
-  const storedName = localStorage.getItem("playerName");
+    const storedName = localStorage.getItem("playerName");
 
-  console.log("[Waiting.jsx] step =", step, "| mode =", mode, "| storedName =", storedName);
+    console.log("[Waiting.jsx] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-  // Only send to join if the user never joined
-  if (!storedName && step === -1) {
-    navigate("/join");
-  }
-
-  // Once the game starts, redirect player to correct game mode
-  if (typeof step === "number" && step >= 0) {
-    if (mode === "kahoot") {
-      navigate("/play/kahoot");
-    } else if (mode === "majority") {
-      navigate("/play/majority");
+    // Handle game reset: clear storage and return to join
+    if (step === -1) {
+      localStorage.removeItem("playerName");
+      navigate("/join");
+      return;
     }
-  }
 
-  prevStep.current = step;
-}, [step, mode, navigate]);
+    // Once the game starts, redirect player to correct game mode
+    if (typeof step === "number" && step >= 0) {
+      if (mode === "kahoot") {
+        navigate("/play/kahoot");
+      } else if (mode === "majority") {
+        navigate("/play/majority");
+      }
+    }
 
+    prevStep.current = step;
+  }, [step, mode, navigate]);
 
   return (
     <Layout showAdminLink={false}>
