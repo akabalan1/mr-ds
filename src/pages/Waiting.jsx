@@ -1,49 +1,43 @@
 // src/pages/Waiting.jsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 
 export default function Waiting() {
-  const { step, mode } = useGame();
+  const { step, mode, socket } = useGame();
   const navigate = useNavigate();
-  const prevStep = useRef(step);
 
   useEffect(() => {
-  const storedName = localStorage.getItem("playerName");
-  console.log("⌛ [Waiting] step =", step, "| prevStep =", prevStep.current, "| storedName =", storedName);
+    const storedName = localStorage.getItem("playerName");
+    console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-  // 🧨 Case: Trying to reach /waiting without a name
-  if (!storedName || storedName.trim() === "") {
-    console.log("[Waiting] No name — redirecting to /join");
-    navigate("/join");
-    return;
-  }
-
-  // 🔁 Case: Game was reset while on /waiting → go back to /join
-  if (step === -1 && prevStep.current !== -1) {
-    console.log("[Waiting] Game was reset — going back to /join");
-    localStorage.removeItem("playerName");
-    navigate("/join");
-    return;
-  }
-
-  // 🚀 Case: Game started — go to the proper game mode
-  if (typeof step === "number" && step >= 0) {
-    if (mode === "kahoot") {
-      navigate("/play/kahoot");
-    } else if (mode === "majority") {
-      navigate("/play/majority");
+    // 🚨 Redirect to /join if no name (e.g. refresh or bug)
+    if (!storedName || storedName.trim() === "") {
+      console.log("⚠️ [Waiting] No player name found — redirecting to /join");
+      navigate("/join");
+      return;
     }
-    return;
-  }
 
-  // ✅ Track previous step to detect resets
-  prevStep.current = step;
-}, [step, mode, navigate]);
+    // ✅ Redirect to game page once the game starts
+    if (typeof step === "number" && step >= 0) {
+      if (mode === "kahoot") {
+        navigate("/play/kahoot");
+      } else if (mode === "majority") {
+        navigate("/play/majority");
+      }
+    }
 
+    // ✅ Listen for admin reset
+    const handleReset = () => {
+      console.log("🧹 [Waiting] gameReset received — redirecting to /join");
+      localStorage.removeItem("playerName");
+      navigate("/join");
+    };
 
-
+    socket.on("gameReset", handleReset);
+    return () => socket.off("gameReset", handleReset);
+  }, [step, mode, navigate, socket]);
 
   return (
     <Layout showAdminLink={false}>
