@@ -1,130 +1,151 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
+import VoteChart from "../components/VoteChart";
 
 export default function AdminKahoot() {
-  const { socket, resetGame, setStep, players, step } = useGame();
-  const [questions] = useState([
-    {
-      question: "What is the capital of France?",
-      options: ["Paris", "London", "Rome", "Berlin"],
-      correctAnswer: "Paris",
-    },
-    {
-      question: "Who wrote 'Romeo and Juliet'?",
-      options: ["Shakespeare", "Dickens", "Hemingway", "Fitzgerald"],
-      correctAnswer: "Shakespeare",
-    },
-    {
-      question: "What is 5 + 7?",
-      options: ["10", "12", "14", "15"],
-      correctAnswer: "12",
-    },
-  ]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false);
+  const {
+    socket,
+    players,
+    leaderboard,
+    questions,
+    step,
+    setStep,
+    resetGame,
+    votes,
+  } = useGame();
 
-  // Shared button style
-  const buttonBase = {
-    margin: "0.5rem",
-    padding: "0.5rem 1rem",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  };
-  const startButtonStyle = { ...buttonBase, backgroundColor: "#10b981" };
-  const nextButtonStyle = { ...buttonBase, backgroundColor: "#3b82f6" };
-  const resetButtonStyle = { ...buttonBase, backgroundColor: "#dc2626" };
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [finalVotes, setFinalVotes] = useState({});
+  const [timer, setTimer] = useState(15);
+  const [resultsVisible, setResultsVisible] = useState(false);
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  useEffect(() => {
+    if (typeof step === "number" && step >= 0 && step !== "done") {
+      setTimer(15);
+      setResultsVisible(false);
+      const countdown = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdown);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(countdown);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (timer === 0 && typeof step === "number") {
+      setFinalVotes(votes);
+      setResultsVisible(true);
+    }
+  }, [timer, votes, step]);
 
   const handleStartGame = () => {
-    setGameStarted(true);
-    setStep(0); // Start at question index 0
+    setStep(0);
     socket.emit("gameStart", { questions, gameMode: "kahoot" });
-    socket.emit("startTimer");
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      const nextQuestionIndex = currentQuestion + 1;
-      setCurrentQuestion(nextQuestionIndex);
-      setStep(nextQuestionIndex);
-      socket.emit("nextQuestion", nextQuestionIndex);
-      socket.emit("startTimer");
+    socket.emit("calculateKahootScores");
+    setResultsVisible(false);
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < questions.length) {
+      setCurrentQuestionIndex(nextIndex);
+      setStep(nextIndex);
     } else {
       setStep("done");
     }
   };
 
-  const handleResetGame = () => {
+  const handleReset = () => {
     resetGame();
+    setCurrentQuestionIndex(0);
     setStep(-1);
-    setCurrentQuestion(0);
-    setGameStarted(false);
-    localStorage.removeItem("playerName");
-  };
-
-  const displayLeaderboard = () => {
-    return players
-      .slice()
-      .sort((a, b) => b.score - a.score)
-      .map((player, index) => (
-        <p key={index}>
-          {player.name}: {player.score} points
-        </p>
-      ));
   };
 
   return (
     <Layout>
-      <h1>Admin Kahoot Game</h1>
-      <div style={{ margin: "1rem 0" }}>
-        {!gameStarted && (
-          <button onClick={handleStartGame} style={startButtonStyle}>
+      <h1>Admin Kahoot Mode</h1>
+
+      <div className="admin-controls">
+        {step === -1 && (
+          <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
             Start Kahoot Game
           </button>
         )}
-        {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
-          <button onClick={handleNextQuestion} style={nextButtonStyle}>
-            Next Question
+
+        {typeof step === "number" && step >= 0 && step !== "done" && (
+          <button
+            onClick={handleNextQuestion}
+            disabled={timer > 0 || !resultsVisible}
+            className="game-mode-btn bg-blue-600"
+          >
+            {currentQuestionIndex === questions.length - 1 ? "Finish Game" : "Next Question"}
           </button>
         )}
-        <button onClick={handleResetGame} style={resetButtonStyle}>
+
+        <button onClick={handleReset} className="game-mode-btn bg-red-600">
           Reset Game
         </button>
       </div>
 
-      {gameStarted && typeof step === "number" && step >= 0 && step !== "done" && (
-        <div style={{ marginTop: "1rem" }}>
-          <h2>Current Question:</h2>
-          {questions[currentQuestion] && (
-            <div>
+      <div className="admin-panel">
+        <div className="admin-section">
+          {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
+            <>
+              <h2>Current Question:</h2>
               <p>
-                <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
+                <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
               </p>
+              <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
               <ul>
-                {questions[currentQuestion].options.map((option, i) => (
+                {currentQuestion.options.map((option, i) => (
                   <li key={i}>{option}</li>
                 ))}
               </ul>
-            </div>
+            </>
+          )}
+
+          {step !== "done" && (
+            <>
+              <h2>Players:</h2>
+              {players.map((player, index) => (
+                <p key={index}>{player.name}</p>
+              ))}
+            </>
           )}
         </div>
-      )}
 
-      <div style={{ marginTop: "1rem" }}>
-        <h2>Players Joined:</h2>
-        {players.map((player, index) => (
-          <p key={index}>{player.name}</p>
-        ))}
-      </div>
+        <div className="admin-section">
+          {resultsVisible && step !== "done" && (
+            <>
+              <h2>Live Vote Distribution</h2>
+              <VoteChart votes={finalVotes} question={currentQuestion} />
+            </>
+          )}
 
-      {gameStarted && ((typeof step === "number" && step >= 1) || step === "done") && (
-        <div style={{ marginTop: "1rem" }}>
-          <h2>Leaderboard:</h2>
-          {displayLeaderboard()}
+          {(typeof step === "number" && step >= 1) || step === "done" ? (
+            <>
+              <h2>Leaderboard:</h2>
+              {leaderboard.length > 0 ? (
+                leaderboard.map((player, index) => (
+                  <p key={index}>
+                    {index + 1}. {player.name}: {player.score} points
+                  </p>
+                ))
+              ) : (
+                <p>No players to show.</p>
+              )}
+            </>
+          ) : null}
         </div>
-      )}
+      </div>
     </Layout>
   );
 }
