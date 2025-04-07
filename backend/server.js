@@ -49,10 +49,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("submitVote", ({ name, option, questionIndex }) => {
-    gameState.votes[name] = option;
-    console.log("🗳 Votes so far:", gameState.votes); // ✅ log
-    io.emit("updateVotes", gameState.votes);
-  });
+  if (!gameState.votes[questionIndex]) {
+    gameState.votes[questionIndex] = {};
+  }
+
+  gameState.votes[questionIndex][name] = option;
+
+  console.log(`🗳 Vote received for Q${questionIndex}:`, gameState.votes[questionIndex]);
+
+  io.emit("updateVotes", gameState.votes[questionIndex]); // Send votes for current question only
+});
 
     socket.on("calculateMajorityScores", () => {
     console.log("📊 Calculating scores for question", gameState.currentQuestionIndex);
