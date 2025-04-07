@@ -35,24 +35,27 @@ export function GameProvider({ children }) {
       setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
 
       if (state.step === "done") {
-  setStep("done");
-} else if (
-  state.questions &&
-  state.questions.length > 0 &&
-  state.currentQuestionIndex >= state.questions.length
-) {
-  setStep("done");
-} else if (typeof state.step === "number") {
-  // Avoid advancing prematurely if game just started and player just joined
-  if (state.step === 0 && (!state.questions || state.questions.length === 0)) {
-  setStep(-1);
-} else {
-  setStep(state.step);
-}
+        setStep("done");
+      } else if (
+        state.questions &&
+        state.questions.length > 0 &&
+        state.currentQuestionIndex >= state.questions.length
+      ) {
+        setStep("done");
+      } else if (typeof state.step === "number") {
+        if (state.step === 0 && (!state.questions || state.questions.length === 0)) {
+          setStep(-1);
+        } else {
+          setStep(state.step);
+        }
+      }
+    });
 
-}
-
-
+    socket.on("showResults", (state) => {
+      console.log("showResults received from server:", state);
+      setStep("done");
+      setPlayers(state.players || []);
+      setLeaderboard(state.leaderboard || []);
     });
 
     return () => {
