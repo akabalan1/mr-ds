@@ -57,52 +57,65 @@ export default function PlayerMajority() {
 
   return (
     <Layout showAdminLink={false}>
-     <div className="player-mobile">
-        {currentQuestion ? (
-          <div>
-            <h2>
-              Q{questionIndex + 1}: {currentQuestion.question}
-            </h2>
-            <div
-              style={{
-                marginBottom: "0.5rem",
-                fontSize: "0.9rem",
-                color: timer <= 3 ? "red" : "gray",
-                fontWeight: timer <= 3 ? "bold" : "normal",
-              }}
-            >
-              ⏳ Time left: {timer}s
-            </div>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {currentQuestion.options.map((option, i) => (
-                <li key={i} style={{ marginBottom: "0.5rem" }}>
-                  <button
-                    onClick={() => handleVote(option)}
-                    disabled={locked || submitted}
-                    
-                     className="player-button"
->
-                  >
-                    {option}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {submitted && (
-              <p style={{ color: "#10b981", fontWeight: "bold" }}>
-                Vote submitted!
-              </p>
-            )}
-            {locked && !submitted && (
-              <p style={{ color: "#f97316", fontWeight: "bold" }}>
-                Time's up! You didn't vote in time.
-              </p>
-            )}
-          </div>
-        ) : (
-          <p>Waiting for the game to start...</p>
+  <div className="player-mobile">
+    {currentQuestion ? (
+      <div>
+        <h2>
+          Q{questionIndex + 1}: {currentQuestion.question}
+        </h2>
+
+        <div
+          style={{
+            marginBottom: "0.5rem",
+            fontSize: "0.9rem",
+            color: timer <= 3 ? "red" : "gray",
+            fontWeight: timer <= 3 ? "bold" : "normal",
+          }}
+        >
+          ⏳ Time left: {timer}s
+        </div>
+
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {currentQuestion.options.map((option, i) => (
+            <li key={i} style={{ marginBottom: "0.5rem" }}>
+              <button
+                onClick={() => handleVote(option)}
+                disabled={locked || submitted}
+                className="player-button"
+                style={{
+                  backgroundColor:
+                    selectedOption === option
+                      ? "#10b981"
+                      : locked
+                      ? "#ccc"
+                      : "#10b981",
+                  color:
+                    selectedOption === option || locked ? "#fff" : "#fff",
+                  cursor: locked || submitted ? "not-allowed" : "pointer",
+                }}
+              >
+                {option}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {submitted && (
+          <p style={{ color: "#10b981", fontWeight: "bold" }}>
+            ✅ Vote submitted!
+          </p>
+        )}
+        {locked && !submitted && (
+          <p style={{ color: "#f97316", fontWeight: "bold" }}>
+            ⌛ Time's up! You didn't vote in time.
+          </p>
         )}
       </div>
-    </Layout>
+    ) : (
+      <p>Waiting for the game to start...</p>
+    )}
+  </div>
+</Layout>
+
   );
 }
