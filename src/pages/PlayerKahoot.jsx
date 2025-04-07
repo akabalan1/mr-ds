@@ -1,60 +1,125 @@
 // src/pages/PlayerKahoot.jsx
-import React, { useState, useEffect } from "react";
-import Layout from "../components/Layout";
+import React, { useEffect, useState } from "react";
 import { useGame } from "../GameContext";
+import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 
 export default function PlayerKahoot() {
-  const { socket, questions, questionIndex, step, mode } = useGame();
+  const { socket, questions, questionIndex, step, mode, playerName, submitKahootAnswer } = useGame();
   const navigate = useNavigate();
-  const [timer, setTimer] = useState(0);
+
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [timer, setTimer] = useState(15);
+  const [locked, setLocked] = useState(false);
+  const [startTime, setStartTime] = useState(null);
 
   useEffect(() => {
-    if (socket) {
-      socket.on("timerUpdate", (timeRemaining) => {
-        setTimer(timeRemaining);
-      });
-      return () => {
-        socket.off("timerUpdate");
-      };
+    if (step === -1) {
+      localStorage.removeItem("playerName");
+      navigate("/join");
     }
-  }, [socket]);
 
-  const handleAnswer = (answer) => {
-    // For Kahoot: only correct answers earn points; faster answers earn more.
-    const timeFactor = Math.max(0, 10 - timer);
-    socket.emit("submitKahoot", {
-      name: localStorage.getItem("playerName"),
-      option: answer,
-      time: timeFactor,
-      questionIndex,
-    });
-  };
-
-  useEffect(() => {
     if (step === "done" && mode === "kahoot") {
       navigate("/results");
+      return;
     }
+
+    setSubmitted(false);
+    setSelectedOption(null);
+    setLocked(false);
+    setStartTime(Date.now());
+    setTimer(15);
+
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          setLocked(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
   }, [step, mode, navigate]);
+
+  const handleAnswer = (option) => {
+    if (locked || submitted) return;
+
+    const name = playerName || localStorage.getItem("playerName");
+    if (!name || name.trim() === "") {
+      console.warn("🚫 No player name found when answering");
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const answerTime = Math.max(0, 15 - elapsed);
+
+    setSelectedOption(option);
+    setSubmitted(true);
+    submitKahootAnswer(name, option, answerTime);
+  };
+
+  const currentQuestion = questions[questionIndex];
 
   return (
     <Layout showAdminLink={false}>
-      <div style={{ marginTop: "1rem" }}>
-        {questions[questionIndex] ? (
+      <div className="player-mobile">
+        {currentQuestion ? (
           <div>
             <h2>
-              Q{questionIndex + 1}: {questions[questionIndex].question}
+              Q{questionIndex + 1}: {currentQuestion.question}
             </h2>
-            <ul>
-              {questions[questionIndex].options.map((option, i) => (
-                <li key={i}>
-                  <button onClick={() => handleAnswer(option)}>
+
+            <div
+              style={{
+                marginBottom: "0.5rem",
+                fontSize: "0.9rem",
+                color: timer <= 3 ? "red" : "gray",
+                fontWeight: timer <= 3 ? "bold" : "normal",
+              }}
+            >
+              ⏳ Time left: {timer}s
+            </div>
+
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {currentQuestion.options.map((option, i) => (
+                <li key={i} style={{ marginBottom: "0.5rem" }}>
+                  <button
+                    onClick={() => handleAnswer(option)}
+                    disabled={locked || submitted}
+                    className="player-button"
+                    style={{
+                      backgroundColor:
+                        selectedOption === option
+                          ? "#10b981"
+                          : locked || submitted
+                          ? "#ccc"
+                          : "#fff",
+                      color:
+                        selectedOption === option || locked ? "#fff" : "#000",
+                      border: "1px solid #ccc",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
                     {option}
                   </button>
                 </li>
               ))}
             </ul>
-            <p>Time remaining: {timer} seconds</p>
+
+            {submitted && (
+              <p style={{ color: "#10b981", fontWeight: "bold" }}>
+                ✅ Answer submitted!
+              </p>
+            )}
+            {locked && !submitted && (
+              <p style={{ color: "#f97316", fontWeight: "bold" }}>
+                ⌛ Time's up! You didn't answer in time.
+              </p>
+            )}
           </div>
         ) : (
           <p>Waiting for the game to start...</p>
