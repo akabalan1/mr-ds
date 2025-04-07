@@ -5,21 +5,21 @@ import { useGame } from "../GameContext";
 import Layout from "../components/Layout";
 
 export default function Waiting() {
-  const { step, mode, socket } = useGame();
+  const { step, mode } = useGame();
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
     console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", storedName);
 
-    // 🚨 Redirect to /join if no name (e.g. refresh or bug)
-    if (!storedName || storedName.trim() === "") {
-      console.log("⚠️ [Waiting] No player name found — redirecting to /join");
+    // ✅ 1. Redirect to /join if game was reset
+    if (step === -1) {
+      localStorage.removeItem("playerName");
       navigate("/join");
       return;
     }
 
-    // ✅ Redirect to game page once the game starts
+    // ✅ 2. Once game starts, go to correct player mode
     if (typeof step === "number" && step >= 0) {
       if (mode === "kahoot") {
         navigate("/play/kahoot");
@@ -27,17 +27,7 @@ export default function Waiting() {
         navigate("/play/majority");
       }
     }
-
-    // ✅ Listen for admin reset
-    const handleReset = () => {
-      console.log("🧹 [Waiting] gameReset received — redirecting to /join");
-      localStorage.removeItem("playerName");
-      navigate("/join");
-    };
-
-    socket.on("gameReset", handleReset);
-    return () => socket.off("gameReset", handleReset);
-  }, [step, mode, navigate, socket]);
+  }, [step, mode, navigate]);
 
   return (
     <Layout showAdminLink={false}>
