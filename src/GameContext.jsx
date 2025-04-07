@@ -54,7 +54,9 @@ export function GameProvider({ children }) {
     setQuestionIndex(state.currentQuestionIndex || 0);
     setMode(state.gameMode || "majority");
     setQuestions(state.questions || []);
-    setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
+    if (state.step !== "done") {
+  setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
+}
 
     if (state.step === -1) {
       console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
