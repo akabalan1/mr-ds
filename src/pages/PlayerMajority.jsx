@@ -14,10 +14,10 @@ export default function PlayerMajority() {
   const [locked, setLocked] = useState(false);
 
   useEffect(() => {
-    if (step === -1) {
-      localStorage.removeItem("playerName");
-      navigate("/join");
-    }
+    const storedName = localStorage.getItem("playerName");
+if (step === -1 && (!storedName || storedName.trim() === "")) {
+  navigate("/join");
+}
 
     if (step === "done" && mode === "majority") {
       navigate("/results");
