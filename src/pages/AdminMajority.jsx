@@ -1,4 +1,3 @@
-// src/pages/AdminMajority.jsx
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useGame } from "../GameContext";
@@ -28,18 +27,6 @@ export default function AdminMajority() {
   const [voteCount, setVoteCount] = useState(0);
   const [timer, setTimer] = useState(10);
   const [resultsVisible, setResultsVisible] = useState(false);
-
-  const buttonBase = {
-    margin: "0.5rem",
-    padding: "0.5rem 1rem",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  };
-  const startButtonStyle = { ...buttonBase, backgroundColor: "#10b981" };
-  const nextButtonStyle = { ...buttonBase, backgroundColor: "#3b82f6" };
-  const resetButtonStyle = { ...buttonBase, backgroundColor: "#dc2626" };
 
   useEffect(() => {
     if (socket) {
@@ -107,71 +94,80 @@ export default function AdminMajority() {
     <Layout>
       <h1>Admin Majority Rules</h1>
 
-      <div className="admin-panel">
-  <div className="admin-section">
-    {typeof step === "number" && step >= 0 && step !== "done" && (
-      <>
-        <h2>Current Question:</h2>
-        {questions[currentQuestion] && (
-          <div>
-            <p>
-              <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
-            </p>
-            <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-            <ul>
-              {questions[currentQuestion].options.map((option, i) => (
-                <li key={i}>{option}</li>
-              ))}
-            </ul>
-          </div>
+      {/* ✅ Buttons Row */}
+      <div className="admin-controls">
+        {step === -1 && (
+          <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
+            Start Majority Rules
+          </button>
         )}
-      </>
-    )}
 
-    <h2>Players Joined:</h2>
-    {players.map((player, index) => (
-      <p key={index}>{player.name}</p>
-    ))}
-  </div>
+        {typeof step === "number" && step >= 0 && step !== "done" && (
+          <button
+            onClick={handleNextQuestion}
+            disabled={timer > 0 || !resultsVisible}
+            className="game-mode-btn bg-blue-600"
+          >
+            {currentQuestion === questions.length - 1 ? "Finish Game" : "Next Question"}
+          </button>
+        )}
 
-  <div className="admin-section">
-    {resultsVisible && (
-      <>
-        <h2>Live Vote Distribution</h2>
-        <VoteChart votes={finalVotes} question={questions[currentQuestion]} />
-      </>
-    )}
+        <button onClick={handleResetGame} className="game-mode-btn bg-red-600">
+          Reset Game
+        </button>
+      </div>
 
-    {(typeof step === "number" && step >= 1) || step === "done" ? (
-      <>
-        <h2>Leaderboard:</h2>
-        {players
-          .slice()
-          .sort((a, b) => b.score - a.score)
-          .map((player, index) => (
-            <p key={index}>
-              {player.name}: {player.score} points
-            </p>
+      {/* ✅ Responsive Two-Column Layout */}
+      <div className="admin-panel">
+        <div className="admin-section">
+          {typeof step === "number" && step >= 0 && step !== "done" && (
+            <>
+              <h2>Current Question:</h2>
+              {questions[currentQuestion] && (
+                <div>
+                  <p>
+                    <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
+                  </p>
+                  <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
+                  <ul>
+                    {questions[currentQuestion].options.map((option, i) => (
+                      <li key={i}>{option}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
+          )}
+
+          <h2>Players Joined:</h2>
+          {players.map((player, index) => (
+            <p key={index}>{player.name}</p>
           ))}
-      </>
-    ) : null}
-  </div>
-</div>
-
-
-      {(typeof step === "number" && step >= 1) || step === "done" ? (
-        <div style={{ marginTop: "1rem" }}>
-          <h2>Leaderboard:</h2>
-          {players
-            .slice()
-            .sort((a, b) => b.score - a.score)
-            .map((player, index) => (
-              <p key={index}>
-                {player.name}: {player.score} points
-              </p>
-            ))}
         </div>
-      ) : null}
+
+        <div className="admin-section">
+          {resultsVisible && (
+            <>
+              <h2>Live Vote Distribution</h2>
+              <VoteChart votes={finalVotes} question={questions[currentQuestion]} />
+            </>
+          )}
+
+          {(typeof step === "number" && step >= 1) || step === "done" ? (
+            <>
+              <h2>Leaderboard:</h2>
+              {players
+                .slice()
+                .sort((a, b) => b.score - a.score)
+                .map((player, index) => (
+                  <p key={index}>
+                    {player.name}: {player.score} points
+                  </p>
+                ))}
+            </>
+          ) : null}
+        </div>
+      </div>
     </Layout>
   );
 }
