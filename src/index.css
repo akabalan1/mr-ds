@@ -1,3 +1,9 @@
+/* Global Backgrounds */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
 /* Admin Home Styling */
 .admin-home {
   display: flex;
@@ -16,6 +22,7 @@
   margin-bottom: 20px;
 }
 
+/* Admin Buttons */
 .game-mode-btn {
   padding: 12px 24px;
   border-radius: 8px;
@@ -23,13 +30,13 @@
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .game-mode-btn:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-/* Specific button styles */
 .bg-blue-600 {
   background-color: #3182ce;
 }
@@ -37,6 +44,37 @@
 .bg-green-600 {
   background-color: #38a169;
 }
+
+.bg-red-600 {
+  background-color: #dc2626;
+}
+
+/* Admin Game Panel Layout */
+.admin-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.admin-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-section {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  color: white;
+}
+
 /* Player Join Styling */
 .player-join {
   display: flex;
@@ -72,29 +110,7 @@
   background-color: #7b61ff;
 }
 
-.admin-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.admin-controls {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-  justify-content: center;
-}
-
-.admin-section {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
-}
+/* Player Game UI */
 .player-mobile {
   max-width: 480px;
   margin: 0 auto;
@@ -124,3 +140,7 @@
   background-color: #059669;
 }
 
+/* Chart responsiveness */
+canvas {
+  max-width: 100% !important;
+}
