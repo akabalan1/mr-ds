@@ -10,6 +10,7 @@ export function GameProvider({ children }) {
   const [players, setPlayers] = useState([]);
   const [playerName, setPlayerName] = useState("");
   const [votes, setVotes] = useState({});
+  const [kahootAnswers, setKahootAnswers] = useState({});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [step, setStep] = useState(-1);
   const [mode, setMode] = useState("majority");
@@ -99,7 +100,9 @@ export function GameProvider({ children }) {
 
   socket.on("gameState", handleGameState);
   socket.on("showResults", handleShowResults);
-
+  socket.on("updateKahootAnswers", (data) => {
+    setKahootAnswers(data || {});
+  });
   return () => {
     // Only clean up listeners, DO NOT disconnect socket
     socket.off("gameState", handleGameState);
@@ -153,6 +156,7 @@ export function GameProvider({ children }) {
         playerName,
         setPlayerName,
         votes,
+        kahootAnswers, // ✅ added to context
         questionIndex,
         step,
         setStep,
