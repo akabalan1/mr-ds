@@ -17,22 +17,19 @@ export function GameProvider({ children }) {
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
-  const storedName = localStorage.getItem("playerName");
-
   const tryJoin = () => {
+    const storedName = localStorage.getItem("playerName");
     if (storedName) {
       setPlayerName(storedName);
       socket.emit("player-join", storedName);
     }
   };
 
-  // Join if already connected
   if (socket.connected) {
     tryJoin();
+  } else {
+    socket.on("connect", tryJoin);
   }
-
-  // Otherwise, wait for connection
-  socket.on("connect", tryJoin);
 
   return () => {
     socket.off("connect", tryJoin);
