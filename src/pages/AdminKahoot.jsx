@@ -8,12 +8,23 @@ export default function AdminKahoot() {
     socket,
     players,
     leaderboard,
-    questions,
     step,
     setStep,
     resetGame,
     votes,
   } = useGame();
+  const [questions] = useState([
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Venus"],
+    answer: "Mars",
+  },
+  {
+    question: "What is the capital of France?",
+    options: ["Rome", "Berlin", "Paris", "Madrid"],
+    answer: "Paris",
+  },
+]);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [finalVotes, setFinalVotes] = useState({});
