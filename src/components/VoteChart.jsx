@@ -14,15 +14,16 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function VoteChart({ votes = {}, question }) {
   if (!question || !question.options || question.options.length === 0) {
-    return <p className="text-gray-500 mt-4">No question provided.</p>;
+    return <p style={{ color: "#888", marginTop: "1rem" }}>No question provided.</p>;
   }
 
-  // Normalize vote counts to include all options
+  // Include all options with default count of 0
   const optionCounts = question.options.reduce((acc, option) => {
     acc[option] = 0;
     return acc;
   }, {});
 
+  // Tally received votes
   Object.values(votes).forEach((vote) => {
     if (optionCounts.hasOwnProperty(vote)) {
       optionCounts[vote]++;
@@ -38,25 +39,36 @@ export default function VoteChart({ votes = {}, question }) {
       {
         label: "Votes",
         data: values,
-        borderWidth: 1,
         backgroundColor: "#3b82f6",
+        borderRadius: 4,
+        borderWidth: 1,
       },
     ],
   };
 
-  const options = {
+  const chartOptions = {
     indexAxis: "y",
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
+      },
+      tooltip: {
+        enabled: true,
       },
     },
     scales: {
       x: {
         beginAtZero: true,
         ticks: {
+          stepSize: 1,
           precision: 0,
+        },
+      },
+      y: {
+        ticks: {
+          autoSkip: false,
         },
       },
     },
@@ -65,11 +77,11 @@ export default function VoteChart({ votes = {}, question }) {
   const noVotesYet = Object.values(optionCounts).every((count) => count === 0);
 
   return (
-    <div className="max-w-2xl mx-auto mt-6">
+    <div style={{ maxWidth: "700px", height: "300px", margin: "1rem auto" }}>
       {noVotesYet ? (
-        <p className="text-gray-500 mt-4">No votes received yet.</p>
+        <p style={{ color: "#888" }}>No votes received yet.</p>
       ) : (
-        <Bar data={data} options={options} />
+        <Bar data={data} options={chartOptions} />
       )}
     </div>
   );
