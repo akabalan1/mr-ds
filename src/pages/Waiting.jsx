@@ -11,8 +11,7 @@ export default function Waiting() {
 
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
-
-    console.log("[Waiting.jsx] step =", step, "| mode =", mode, "| storedName =", storedName);
+    console.log("⌛ [Waiting] step =", step, "| mode =", mode, "| storedName =", localStorage.getItem("playerName"));
 
     // Handle game reset: clear storage and return to join
     if (step === -1 && prevStep.current !== -1) {
