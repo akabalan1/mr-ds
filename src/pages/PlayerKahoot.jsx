@@ -63,6 +63,8 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
   };
 
   const currentQuestion = questions[questionIndex];
+  const correctAnswer = currentQuestion?.correctAnswer;
+
 
   return (
     <Layout showAdminLink={false}>
@@ -88,24 +90,37 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
               {currentQuestion.options.map((option, i) => (
                 <li key={i} style={{ marginBottom: "0.5rem" }}>
                   <button
-                    onClick={() => handleAnswer(option)}
-                    disabled={locked || submitted}
-                    className="player-button"
-                    style={{
-                      backgroundColor:
-                        selectedOption === option
-                          ? "#10b981"
-                          : locked || submitted
-                          ? "#ccc"
-                          : "#fff",
-                      color:
-                        selectedOption === option || locked ? "#fff" : "#000",
-                      border: "1px solid #ccc",
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    {option}
-                  </button>
+  onClick={() => handleAnswer(option)}
+  disabled={locked || submitted}
+  className="player-button"
+  style={{
+    backgroundColor:
+      submitted && option === correctAnswer && selectedOption === option
+        ? "#10b981" // ✅ correct and selected
+        : submitted && option === correctAnswer
+        ? "#10b981" // ✅ correct but not selected
+        : submitted && selectedOption === option && selectedOption !== correctAnswer
+        ? "#ef4444" // ❌ selected but wrong
+        : locked || submitted
+        ? "#ccc" // locked or already submitted
+        : "#fff", // default
+    color:
+      submitted &&
+      (option === correctAnswer || option === selectedOption)
+        ? "#fff"
+        : "#000",
+    fontWeight:
+      submitted &&
+      (option === correctAnswer || option === selectedOption)
+        ? "bold"
+        : "normal",
+    border: "1px solid #ccc",
+    transition: "all 0.3s ease",
+  }}
+>
+  {option}
+</button>
+
                 </li>
               ))}
             </ul>
