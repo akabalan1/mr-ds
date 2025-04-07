@@ -23,6 +23,7 @@ export default function Waiting() {
   // 🔁 Case: Game was reset while on /waiting → go back to /join
   if (step === -1 && prevStep.current !== -1) {
     console.log("[Waiting] Game was reset — going back to /join");
+    localStorage.removeItem("playerName");
     navigate("/join");
     return;
   }
