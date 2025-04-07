@@ -71,3 +71,56 @@
 .player-join button:hover {
   background-color: #7b61ff;
 }
+
+.admin-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.admin-section {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+.player-mobile {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.player-mobile h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.player-button {
+  width: 100%;
+  background-color: #10b981;
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.player-button:hover {
+  background-color: #059669;
+}
+
