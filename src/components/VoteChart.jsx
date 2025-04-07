@@ -45,7 +45,13 @@ Object.entries(votes).forEach(([player, vote]) => {
       {
         label: "Votes",
         data: values,
-        backgroundColor: "#3b82f6",
+        backgroundColor: labels.map((opt) => {
+  if (question.correctAnswer && opt === question.correctAnswer) {
+    return "#10b981"; // green
+  }
+  return "#3b82f6"; // default blue
+}),
+
         borderRadius: 4,
         borderWidth: 1,
       },
