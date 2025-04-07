@@ -79,23 +79,25 @@ export default function PlayerMajority() {
           {currentQuestion.options.map((option, i) => (
             <li key={i} style={{ marginBottom: "0.5rem" }}>
               <button
-                onClick={() => handleVote(option)}
-                disabled={locked || submitted}
-                className="player-button"
-                style={{
-                  backgroundColor:
-                    selectedOption === option
-                      ? "#10b981"
-                      : locked
-                      ? "#ccc"
-                      : "#10b981",
-                  color:
-                    selectedOption === option || locked ? "#fff" : "#fff",
-                  cursor: locked || submitted ? "not-allowed" : "pointer",
-                }}
-              >
-                {option}
-              </button>
+  onClick={() => handleVote(option)}
+  disabled={locked || submitted}
+  className="player-button"
+  style={{
+    backgroundColor:
+      selectedOption === option
+        ? "#10b981" // green for selected
+        : locked || submitted
+        ? "#ccc" // gray for others when locked
+        : "#fff",
+    color:
+      selectedOption === option || locked ? "#fff" : "#000",
+    border: "1px solid #ccc",
+    transition: "all 0.3s ease",
+  }}
+>
+  {option}
+</button>
+
             </li>
           ))}
         </ul>
