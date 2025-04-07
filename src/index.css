@@ -75,17 +75,6 @@ body {
   color: white;
 }
 
-/* Player Join Styling */
-.player-join {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(to right, #4fc3f7, #80deea);
-  color: white;
-  text-align: center;
-}
 
 .player-join input {
   padding: 12px;
