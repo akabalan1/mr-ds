@@ -1,3 +1,4 @@
+// src/components/VoteChart.jsx
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -11,13 +12,25 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function VoteChart({ tally }) {
-  if (!tally || Object.keys(tally).length === 0) {
-    return <p className="text-gray-500 mt-4">No votes received yet.</p>;
+export default function VoteChart({ votes = {}, question }) {
+  if (!question || !question.options || question.options.length === 0) {
+    return <p className="text-gray-500 mt-4">No question provided.</p>;
   }
 
-  const labels = Object.keys(tally);
-  const values = Object.values(tally);
+  // Normalize vote counts to include all options
+  const optionCounts = question.options.reduce((acc, option) => {
+    acc[option] = 0;
+    return acc;
+  }, {});
+
+  Object.values(votes).forEach((vote) => {
+    if (optionCounts.hasOwnProperty(vote)) {
+      optionCounts[vote]++;
+    }
+  });
+
+  const labels = question.options;
+  const values = labels.map((opt) => optionCounts[opt]);
 
   const data = {
     labels,
@@ -26,6 +39,7 @@ export default function VoteChart({ tally }) {
         label: "Votes",
         data: values,
         borderWidth: 1,
+        backgroundColor: "#3b82f6",
       },
     ],
   };
@@ -48,9 +62,15 @@ export default function VoteChart({ tally }) {
     },
   };
 
+  const noVotesYet = Object.values(optionCounts).every((count) => count === 0);
+
   return (
     <div className="max-w-2xl mx-auto mt-6">
-      <Bar data={data} options={options} />
+      {noVotesYet ? (
+        <p className="text-gray-500 mt-4">No votes received yet.</p>
+      ) : (
+        <Bar data={data} options={options} />
+      )}
     </div>
   );
 }
