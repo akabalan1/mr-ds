@@ -4,7 +4,7 @@ import { useGame } from "../GameContext";
 import VoteChart from "../components/VoteChart";
 
 export default function AdminMajority() {
-  const { socket, resetGame, setStep, players, step } = useGame();
+  const { socket, resetGame, setStep, players, leaderboard, step } = useGame();
 
   const [questions] = useState([
     {
@@ -28,6 +28,7 @@ export default function AdminMajority() {
   const [timer, setTimer] = useState(10);
   const [resultsVisible, setResultsVisible] = useState(false);
 
+  // 🔄 Sync live votes
   useEffect(() => {
     if (socket) {
       socket.on("updateVotes", (newVotes) => {
@@ -40,6 +41,7 @@ export default function AdminMajority() {
     }
   }, [socket]);
 
+  // ⏱️ Start timer for each question
   useEffect(() => {
     if (typeof step !== "number" || step === "done") return;
     setTimer(10);
@@ -55,6 +57,7 @@ export default function AdminMajority() {
     return () => clearInterval(countdown);
   }, [step]);
 
+  // ⏳ Show results when timer ends
   useEffect(() => {
     if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
       setFinalVotes({ ...currentVotes });
@@ -94,7 +97,7 @@ export default function AdminMajority() {
     <Layout>
       <h1>Admin Majority Rules</h1>
 
-      {/* ✅ Buttons Row */}
+      {/* ✅ Control Buttons */}
       <div className="admin-controls">
         {step === -1 && (
           <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
@@ -117,25 +120,23 @@ export default function AdminMajority() {
         </button>
       </div>
 
-      {/* ✅ Responsive Two-Column Layout */}
+      {/* ✅ Two-Column Grid Layout */}
       <div className="admin-panel">
+        {/* ⬅️ Left Column: Question + Players */}
         <div className="admin-section">
           {typeof step === "number" && step >= 0 && step !== "done" && (
             <>
               <h2>Current Question:</h2>
-              {questions[currentQuestion] && (
-                <div>
-                  <p>
-                    <strong>Q{currentQuestion + 1}:</strong> {questions[currentQuestion].question}
-                  </p>
-                  <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-                  <ul>
-                    {questions[currentQuestion].options.map((option, i) => (
-                      <li key={i}>{option}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <p>
+                <strong>Q{currentQuestion + 1}:</strong>{" "}
+                {questions[currentQuestion].question}
+              </p>
+              <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
+              <ul>
+                {questions[currentQuestion].options.map((option, i) => (
+                  <li key={i}>{option}</li>
+                ))}
+              </ul>
             </>
           )}
 
@@ -145,6 +146,7 @@ export default function AdminMajority() {
           ))}
         </div>
 
+        {/* ➡️ Right Column: Chart + Leaderboard */}
         <div className="admin-section">
           {resultsVisible && (
             <>
@@ -156,14 +158,15 @@ export default function AdminMajority() {
           {(typeof step === "number" && step >= 1) || step === "done" ? (
             <>
               <h2>Leaderboard:</h2>
-              {players
-                .slice()
-                .sort((a, b) => b.score - a.score)
-                .map((player, index) => (
+              {leaderboard.length > 0 ? (
+                leaderboard.map((player, index) => (
                   <p key={index}>
-                    {player.name}: {player.score} points
+                    {index + 1}. {player.name}: {player.score} points
                   </p>
-                ))}
+                ))
+              ) : (
+                <p>No players to show.</p>
+              )}
             </>
           ) : null}
         </div>
