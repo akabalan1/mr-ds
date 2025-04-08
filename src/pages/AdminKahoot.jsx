@@ -89,11 +89,14 @@ export default function AdminKahoot() {
   };
 
   const handleReset = () => {
-    resetGame();
-    setCurrentQuestionIndex(0);
-    setFinalVotes({});
-    setStep(-1);
-  };
+  resetGame();                      // reset server state
+  setCurrentQuestionIndex(0);      // reset local question index
+  setFinalVotes({});               // clear votes
+  setStep(-1);                     // reset game flow
+  setResultsVisible(false);        // hide chart
+  localStorage.removeItem("playerName"); // 🧼 clear player name like AdminMajority
+};
+
 
   return (
     <Layout>
