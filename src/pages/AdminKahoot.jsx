@@ -136,7 +136,8 @@ export default function AdminKahoot() {
               </p>
               <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
               <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
-                {currentQuestion.rapidFire ? (
+                
+{currentQuestion.rapidFire ? (
   <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
     {currentQuestion.options.map((option, i) => (
       <li key={i} style={{ textAlign: "center" }}>
@@ -152,9 +153,9 @@ export default function AdminKahoot() {
     ))}
   </ul>
 ) : (
-  <ul style={{ listStyle: "disc", paddingLeft: "1.5rem" }}>
+  <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
     {currentQuestion.options.map((option, i) => (
-      <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
+      <li key={i}>{option}</li>
     ))}
   </ul>
 )}
