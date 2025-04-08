@@ -167,16 +167,19 @@ io.on("connection", (socket) => {
 });
 
 function advanceGame() {
-  gameState.currentQuestionIndex++;
-  if (gameState.currentQuestionIndex >= gameState.questions.length) {
+  const nextIndex = gameState.currentQuestionIndex + 1;
+
+  if (nextIndex >= gameState.questions.length) {
     gameState.step = "done";
     gameState.leaderboard = [...gameState.players].sort((a, b) => b.score - a.score);
     io.emit("showResults", gameState);
   } else {
-    gameState.step = gameState.currentQuestionIndex;
+    gameState.currentQuestionIndex = nextIndex;
+    gameState.step = nextIndex;
     io.emit("gameState", gameState);
   }
 }
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
