@@ -105,6 +105,10 @@ export function GameProvider({ children }) {
   socket.on("updateKahootAnswers", (data) => {
     setKahootAnswers(data || {});
   });
+    socket.on("updateVotes", (data) => {
+  console.log("📥 updateVotes received:", data);
+  setVotes(data || {});
+});
   return () => {
     // Only clean up listeners, DO NOT disconnect socket
     socket.off("gameState", handleGameState);
