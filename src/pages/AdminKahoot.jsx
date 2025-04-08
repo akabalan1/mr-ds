@@ -28,16 +28,14 @@ export default function AdminKahoot() {
     correctAnswer: "Paris",
   },
     {
-    question: "Rapid Fire: Who Said It?",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
-    rapidFire: true
+    question: "What is the capital of France?",
+    options: ["Rome", "Berlin", "Paris", "Madrid"],
+    correctAnswer: "Paris",
   },
   {
-    question: "Rapid Fire: Who Said It?",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
-    rapidFire: true
+    question: "What is the capital of France?",
+    options: ["Rome", "Berlin", "Paris", "Madrid"],
+    correctAnswer: "Paris",
   },
 ]);
 
