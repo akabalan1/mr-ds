@@ -56,7 +56,7 @@ export default function AdminKahoot() {
 
   useEffect(() => {
   if (timer === 0 && typeof step === "number") {
-    setFinalVotes(flatVotes); // ✅ This now contains the vote summary per player
+    setFinalVotes(votes); // ✅ This now contains the vote summary per player
     setResultsVisible(true);
   }
 }, [timer, kahootAnswers, step, currentQuestionIndex]);
