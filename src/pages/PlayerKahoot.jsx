@@ -94,29 +94,26 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
   disabled={locked || submitted}
   className="player-button"
   style={{
-    backgroundColor:
-      submitted && option === correctAnswer && selectedOption === option
-        ? "#10b981" // ✅ correct and selected
-        : submitted && option === correctAnswer
-        ? "#10b981" // ✅ correct but not selected
-        : submitted && selectedOption === option && selectedOption !== correctAnswer
-        ? "#ef4444" // ❌ selected but wrong
-        : locked || submitted
-        ? "#ccc" // locked or already submitted
-        : "#fff", // default
-    color:
-      submitted &&
-      (option === correctAnswer || option === selectedOption)
-        ? "#fff"
-        : "#000",
-    fontWeight:
-      submitted &&
-      (option === correctAnswer || option === selectedOption)
-        ? "bold"
-        : "normal",
-    border: "1px solid #ccc",
-    transition: "all 0.3s ease",
-  }}
+  backgroundColor:
+    locked && selectedOption === option && option !== correctAnswer
+      ? "#ef4444" // ❌ red for wrong selection
+      : locked && option === correctAnswer
+      ? "#10b981" // ✅ green for correct answer
+      : selectedOption === option
+      ? "#3b82f6" // highlight selected before lock
+      : "#fff",
+  color:
+    locked && (option === correctAnswer || selectedOption === option)
+      ? "#fff"
+      : "#000",
+  fontWeight:
+    locked && (option === correctAnswer || selectedOption === option)
+      ? "bold"
+      : "normal",
+  border: "1px solid #ccc",
+  transition: "all 0.3s ease",
+}}
+
 >
   {option}
 </button>
