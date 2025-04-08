@@ -64,16 +64,6 @@ export default function AdminKahoot() {
     }
   }, [step]);
 
-  useEffect(() => {
-  if (socket) {
-    const handleVotes = (incomingVotes) => {
-      setFinalVotes(incomingVotes); // for ✅/⏳ display and VoteChart
-    };
-    socket.on("updateVotes", handleVotes);
-    return () => socket.off("updateVotes", handleVotes);
-  }
-}, [socket]);
-
 
   useEffect(() => {
   if (timer === 0 && typeof step === "number") {
