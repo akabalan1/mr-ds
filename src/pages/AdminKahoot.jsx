@@ -128,37 +128,39 @@ export default function AdminKahoot() {
 
       <div className="admin-panel">
         <div className="admin-section">
-          {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
-            <>
-              <h2>Current Question:</h2>
-              <p>
-                <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
-              </p>
-              <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
+
+    {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
+  <>
+    <h2>Current Question:</h2>
+    <p>
+      <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
+    </p>
+    <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
 
     {currentQuestion.rapidFire ? (
-  <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
-    {currentQuestion.options.map((option, i) => (
-      <li key={i} style={{ textAlign: "center" }}>
-        <div className="flex flex-col items-center">
-          <img
-            src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
-            alt={option}
-            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-          />
-          <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
-        </div>
-      </li>
-    ))}
-  </ul>
-) : (
-  <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
-    {currentQuestion.options.map((option, i) => (
-      <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
-    ))}
-  </ul>
+      <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
+        {currentQuestion.options.map((option, i) => (
+          <li key={i} style={{ textAlign: "center" }}>
+            <div className="flex flex-col items-center">
+              <img
+                src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
+                alt={option}
+                style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+              />
+              <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
+        {currentQuestion.options.map((option, i) => (
+          <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
+        ))}
+      </ul>
+    )}
+  </>
 )}
-
 
 
 
