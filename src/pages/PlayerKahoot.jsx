@@ -59,7 +59,7 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
 
     setSelectedOption(option);
     setSubmitted(true);
-    submitKahootAnswer(name, option, answerTime);
+    submitKahootAnswer(name, option, answerTime,questionIndex);
   };
 
   const currentQuestion = questions[questionIndex];
