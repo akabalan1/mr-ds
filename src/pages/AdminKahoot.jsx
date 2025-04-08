@@ -56,7 +56,6 @@ export default function AdminKahoot() {
 
   useEffect(() => {
   if (timer === 0 && typeof step === "number") {
-    const flatVotes = transformKahootVotes(kahootAnswers, currentQuestionIndex);
     setFinalVotes(flatVotes); // ✅ This now contains the vote summary per player
     setResultsVisible(true);
   }
@@ -156,7 +155,7 @@ export default function AdminKahoot() {
   <>
     <h2>Live Answer Breakdown</h2>
     <VoteChart
-      votes={votes}
+      votes={finalVotes}
       question={currentQuestion}
     />
   </>
