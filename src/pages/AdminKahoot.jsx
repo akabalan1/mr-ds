@@ -82,7 +82,7 @@ export default function AdminKahoot() {
   const handleNextQuestion = () => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
-    setFinalVotes({}); // 🧼 clear vote chart between questions
+    
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
       setCurrentQuestionIndex(nextIndex);
