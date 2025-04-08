@@ -17,24 +17,26 @@ const transformKahootVotes = (kahootData, qIndex) => {
 
 export default function AdminKahoot() {
   const {
-    socket,
-    players,
-    leaderboard,
-    step,
-    setStep,
-    resetGame,
-    votes,
-  } = useGame();
+  socket,
+  players,
+  leaderboard,
+  step,
+  setStep,
+  resetGame,
+  votes,
+  kahootAnswers,
+} = useGame();
+
   const [questions] = useState([
   {
     question: "Which planet is known as the Red Planet?",
     options: ["Earth", "Mars", "Jupiter", "Venus"],
-    answer: "Mars",
+    correctAnswer: "Mars",
   },
   {
     question: "What is the capital of France?",
     options: ["Rome", "Berlin", "Paris", "Madrid"],
-    answer: "Paris",
+    correctAnswer: "Paris",
   },
 ]);
 
@@ -158,10 +160,11 @@ export default function AdminKahoot() {
           {resultsVisible && step !== "done" && (
   <>
     <h2>Live Answer Breakdown</h2>
-    <VoteChart
-  votes={transformKahootVotes(finalVotes, currentQuestionIndex)}
+   <VoteChart
+  votes={transformKahootVotes(kahootAnswers, currentQuestionIndex)}
   question={currentQuestion}
 />
+
 
   </>
 )}
