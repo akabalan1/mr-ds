@@ -27,6 +27,18 @@ export default function AdminKahoot() {
     options: ["Rome", "Berlin", "Paris", "Madrid"],
     correctAnswer: "Paris",
   },
+    {
+    question: "Rapid Fire: Who Said It?",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Rapid Fire: Who Said It?",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
 ]);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -124,11 +136,27 @@ export default function AdminKahoot() {
                 <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
               </p>
               <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-              <ul>
-                {currentQuestion.options.map((option, i) => (
-                  <li key={i}>{option}</li>
-                ))}
-              </ul>
+              {currentQuestion.rapidFire ? (
+                <div className="flex justify-around items-center mt-2">
+                  {["Sarah", "Danish"].map((name) => (
+                    <div key={name} className="flex flex-col items-center">
+                      <img
+                        src={name === "Sarah" ? "/sarah.png" : "/danish.png"}
+                        alt={name}
+                        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                      />
+                      <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{name}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <ul>
+                  {currentQuestion.options.map((option, i) => (
+                    <li key={i}>{option}</li>
+                  ))}
+                </ul>
+              )}
+
             </>
           )}
 
