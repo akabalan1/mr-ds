@@ -137,26 +137,25 @@ export default function AdminKahoot() {
                 <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
               </p>
               <p style={{ color: "gray" }}>⏳ Time remaining: {timer}s</p>
-              {currentQuestion.rapidFire ? (
-                <div className="flex justify-around items-center mt-2">
-                  {["Sarah", "Danish"].map((name) => (
-                    <div key={name} className="flex flex-col items-center">
-                      <img
-                        src={name === "Sarah" ? "/sarah.png" : "/danish.png"}
-                        alt={name}
-                        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                      />
-                      <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{name}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <ul>
-                  {currentQuestion.options.map((option, i) => (
-                    <li key={i}>{option}</li>
-                  ))}
-                </ul>
-              )}
+              <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
+                {currentQuestion.options.map((option, i) => (
+                  <li key={i} style={{ textAlign: "center" }}>
+                    {currentQuestion.rapidFire ? (
+                      <div className="flex flex-col items-center">
+                        <img
+                          src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
+                          alt={option}
+                          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                        />
+                        <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
+                      </div>
+                    ) : (
+                      <span>{option}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
 
             </>
           )}
