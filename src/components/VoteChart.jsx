@@ -49,11 +49,8 @@ const labels = question.options.map((opt) =>
       {
         label: "Votes",
         data: values,
-        backgroundColor: labels.map((opt) => {
-  if (question.correctAnswer && opt === question.correctAnswer) {
-    return "#10b981"; // green
-  }
-  return "#3b82f6"; // default blue
+        backgroundColor: question.options.map((opt) => {
+  return opt === correctAnswer ? "#10b981" : "#3b82f6";
 }),
 
         borderRadius: 4,
