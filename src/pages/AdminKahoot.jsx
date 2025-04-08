@@ -180,7 +180,7 @@ export default function AdminKahoot() {
         </div>
 
         <div className="admin-section">
-          {resultsVisible && step !== "done" && !currentQuestion.rapidFire && (
+          {resultsVisible && step !== "done" && (
             <>
               <h2>Live Answer Breakdown</h2>
               <VoteChart
