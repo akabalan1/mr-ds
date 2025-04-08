@@ -183,15 +183,13 @@ export default function AdminKahoot() {
         </div>
 
         <div className="admin-section">
-          {resultsVisible && step !== "done" && (
-            <>
-              <h2>Live Answer Breakdown</h2>
-              <VoteChart
-                votes={finalVotes}
-                question={currentQuestion}
-              />
-            </>
-          )}
+
+          {resultsVisible && Object.keys(finalVotes).length > 0 && step !== "done" && (
+  <>
+    <h2>Live Answer Breakdown</h2>
+    <VoteChart votes={finalVotes} question={currentQuestion} />
+  </>
+)}
 
 
           {(typeof step === "number" && step >= 1) || step === "done" ? (
