@@ -103,12 +103,22 @@ export function GameProvider({ children }) {
   socket.on("gameState", handleGameState);
   socket.on("showResults", handleShowResults);
   socket.on("updateKahootAnswers", (data) => {
-    setKahootAnswers(data || {});
+  setKahootAnswers(data || {});
+    // 🔁 mimic updateVotes for consistency
+    const currentIndex = questionIndex;
+    const votes = {};
+    Object.entries(data || {}).forEach(([name, answers]) => {
+      if (answers[currentIndex] && answers[currentIndex].answer) {
+        votes[name] = answers[currentIndex].answer;
+      }
+    });
+    setVotes(votes); // this ensures AdminKahoot gets the correct votes too
   });
-    socket.on("updateVotes", (data) => {
-  console.log("📥 updateVotes received:", data);
-  setVotes(data || {});
-});
+
+  socket.on("updateVotes", (data) => {
+    console.log("📥 updateVotes received:", data);
+    setVotes(data || {});
+  });
   return () => {
     // Only clean up listeners, DO NOT disconnect socket
     socket.off("gameState", handleGameState);
