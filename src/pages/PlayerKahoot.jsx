@@ -86,42 +86,74 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
               ⏳ Time left: {timer}s
             </div>
 
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {currentQuestion.options.map((option, i) => (
-                <li key={i} style={{ marginBottom: "0.5rem" }}>
+            {currentQuestion.rapidFire ? (
+              <div className="flex justify-around mt-4">
+                {["Sarah", "Danish"].map((name) => (
                   <button
-  onClick={() => handleAnswer(option)}
-  disabled={locked || submitted}
-  className="player-button"
-  style={{
-  backgroundColor:
-    locked && selectedOption === option && option !== correctAnswer
-      ? "#ef4444" // ❌ red for wrong selection
-      : locked && option === correctAnswer
-      ? "#10b981" // ✅ green for correct answer
-      : selectedOption === option
-      ? "#3b82f6" // highlight selected before lock
-      : "#fff",
-  color:
-    locked && (option === correctAnswer || selectedOption === option)
-      ? "#fff"
-      : "#000",
-  fontWeight:
-    locked && (option === correctAnswer || selectedOption === option)
-      ? "bold"
-      : "normal",
-  border: "1px solid #ccc",
-  transition: "all 0.3s ease",
-}}
-
->
-  {option}
-</button>
-
-                </li>
-              ))}
-            </ul>
-
+                    key={name}
+                    onClick={() => handleAnswer(name)}
+                    disabled={locked || submitted}
+                    className="flex flex-col items-center"
+                    style={{
+                      backgroundColor:
+                        locked && selectedOption === name && name !== correctAnswer
+                          ? "#ef4444"
+                          : locked && name === correctAnswer
+                          ? "#10b981"
+                          : selectedOption === name
+                          ? "#3b82f6"
+                          : "#fff",
+                      padding: "1rem",
+                      border: "1px solid #ccc",
+                      borderRadius: "0.5rem",
+                      width: "120px",
+                    }}
+                  >
+                    <img
+                      src={name === "Sarah" ? "/sarah.png" : "/danish.png"}
+                      alt={name}
+                      style={{ width: "60px", height: "60px", marginBottom: "0.5rem" }}
+                    />
+                    <span style={{ fontWeight: "bold" }}>{name}</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                {currentQuestion.options.map((option, i) => (
+                  <li key={i} style={{ marginBottom: "0.5rem" }}>
+                    <button
+                      onClick={() => handleAnswer(option)}
+                      disabled={locked || submitted}
+                      className="player-button"
+                      style={{
+                        backgroundColor:
+                          locked && selectedOption === option && option !== correctAnswer
+                            ? "#ef4444"
+                            : locked && option === correctAnswer
+                            ? "#10b981"
+                            : selectedOption === option
+                            ? "#3b82f6"
+                            : "#fff",
+                        color:
+                          locked && (option === correctAnswer || selectedOption === option)
+                            ? "#fff"
+                            : "#000",
+                        fontWeight:
+                          locked && (option === correctAnswer || selectedOption === option)
+                            ? "bold"
+                            : "normal",
+                        border: "1px solid #ccc",
+                        transition: "all 0.3s ease",
+                      }}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+       
             {submitted && (
               <p style={{ color: "#10b981", fontWeight: "bold" }}>
                 ✅ Answer submitted!
