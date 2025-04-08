@@ -82,6 +82,7 @@ export default function AdminKahoot() {
   const handleNextQuestion = () => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
+    setFinalVotes({}); // 🧼 clear vote chart between questions
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
       setCurrentQuestionIndex(nextIndex);
@@ -179,15 +180,15 @@ export default function AdminKahoot() {
         </div>
 
         <div className="admin-section">
-          {resultsVisible && step !== "done" && (
-  <>
-    <h2>Live Answer Breakdown</h2>
-    <VoteChart
-      votes={finalVotes}
-      question={currentQuestion}
-    />
-  </>
-)}
+          {resultsVisible && step !== "done" && !currentQuestion.rapidFire && (
+            <>
+              <h2>Live Answer Breakdown</h2>
+              <VoteChart
+                votes={finalVotes}
+                question={currentQuestion}
+              />
+            </>
+          )}
 
 
           {(typeof step === "number" && step >= 1) || step === "done" ? (
