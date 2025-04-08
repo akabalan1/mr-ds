@@ -65,11 +65,13 @@ export default function AdminKahoot() {
   }, [step]);
 
   useEffect(() => {
-    if (timer === 0 && typeof step === "number") {
-      setFinalVotes(votes);
-      setResultsVisible(true);
-    }
-  }, [timer, votes, step]);
+  if (timer === 0 && typeof step === "number") {
+    const flatVotes = transformKahootVotes(kahootAnswers, currentQuestionIndex);
+    setFinalVotes(flatVotes); // ✅ This now contains the vote summary per player
+    setResultsVisible(true);
+  }
+}, [timer, kahootAnswers, step, currentQuestionIndex]);
+
 
   const handleStartGame = () => {
     setStep(0);
