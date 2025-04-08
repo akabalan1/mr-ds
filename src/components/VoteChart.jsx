@@ -37,27 +37,27 @@ Object.entries(votes).forEach(([player, vote]) => {
 
 
   const correctAnswer = question.correctAnswer;
-const labels = question.options.map((opt) =>
+  const labels = question.options.map((opt) =>
   opt === correctAnswer ? `${opt} ✅` : opt
 );
 
-  const values = labels.map((opt) => optionCounts[opt]);
+const values = question.options.map((opt) => optionCounts[opt]);
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Votes",
-        data: values,
-        backgroundColor: question.options.map((opt) => {
-  return opt === correctAnswer ? "#10b981" : "#3b82f6";
-}),
+const data = {
+  labels,
+  datasets: [
+    {
+      label: "Votes",
+      data: values,
+      backgroundColor: question.options.map((opt) =>
+        opt === correctAnswer ? "#10b981" : "#3b82f6"
+      ),
+      borderRadius: 4,
+      borderWidth: 1,
+    },
+  ],
+};
 
-        borderRadius: 4,
-        borderWidth: 1,
-      },
-    ],
-  };
 
   const chartOptions = {
     indexAxis: "y",
