@@ -80,6 +80,16 @@ io.on("connection", (socket) => {
       gameState.kahootAnswers[name] = {};
     }
     gameState.kahootAnswers[name][questionIndex] = { answer: option, time };
+    // ✅ Emit updateVotes to simulate submission tally (used for ✅/⏳ icons in Admin UI)
+  const simulatedVotes = {};
+  for (const playerName in gameState.kahootAnswers) {
+    const answerObj = gameState.kahootAnswers[playerName][questionIndex];
+    if (answerObj?.answer) {
+      simulatedVotes[playerName] = answerObj.answer;
+    }
+  }
+
+  io.emit("updateVotes", simulatedVotes);
   });
 
   socket.on("calculateMajorityScores", () => {
