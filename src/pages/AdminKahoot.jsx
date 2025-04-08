@@ -65,6 +65,17 @@ export default function AdminKahoot() {
   }, [step]);
 
   useEffect(() => {
+  if (socket) {
+    const handleVotes = (incomingVotes) => {
+      setFinalVotes(incomingVotes); // for ✅/⏳ display and VoteChart
+    };
+    socket.on("updateVotes", handleVotes);
+    return () => socket.off("updateVotes", handleVotes);
+  }
+}, [socket]);
+
+
+  useEffect(() => {
   if (timer === 0 && typeof step === "number") {
     const flatVotes = transformKahootVotes(kahootAnswers, currentQuestionIndex);
     setFinalVotes(flatVotes); // ✅ This now contains the vote summary per player
@@ -149,11 +160,11 @@ export default function AdminKahoot() {
     {players.map((player, index) => (
       <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         {player.name}
-        {votes?.[player.name] ? (
-          <span style={{ color: "green" }}>✅</span>
-        ) : (
-          <span style={{ color: "gray" }}>⌛</span>
-        )}
+        {kahootAnswers?.[player.name]?.[currentQuestionIndex]?.answer ? (
+      <span style={{ color: "green" }}>✅</span>
+    ) : (
+      <span style={{ color: "gray" }}>⌛</span>
+    )}
       </p>
     ))}
   </>
@@ -165,10 +176,11 @@ export default function AdminKahoot() {
           {resultsVisible && step !== "done" && (
   <>
     <h2>Live Answer Breakdown</h2>
-   <VoteChart
-  votes={votes}
+    <VoteChart
+  votes={transformKahootVotes(kahootAnswers, currentQuestionIndex)}
   question={currentQuestion}
 />
+
 
 
 
