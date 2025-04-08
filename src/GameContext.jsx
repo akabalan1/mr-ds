@@ -129,8 +129,10 @@ export function GameProvider({ children }) {
 };
 
 
-  const submitKahootAnswer = (name, option, time) => {
-    socket.emit("submitKahoot", { name, option, time, questionIndex });
+  const submitKahootAnswer = (name, option, time, index) => {
+    const finalIndex = index ?? questionIndex;
+    console.log("📤 submitKahootAnswer:", { name, option, time, questionIndex: finalIndex });
+    socket.emit("submitKahoot", { name, option, time, questionIndex: finalIndex });
   };
 
   const nextQuestion = () => {
