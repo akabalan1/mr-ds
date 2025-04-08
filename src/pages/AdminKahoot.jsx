@@ -150,11 +150,11 @@ export default function AdminKahoot() {
     {players.map((player, index) => (
       <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         {player.name}
-        {kahootAnswers?.[player.name]?.[currentQuestionIndex]?.answer ? (
-      <span style={{ color: "green" }}>✅</span>
-    ) : (
-      <span style={{ color: "gray" }}>⌛</span>
-    )}
+        {votes?.[player.name] ? (
+            <span style={{ color: "green" }}>✅</span>
+          ) : (
+            <span style={{ color: "gray" }}>⌛</span>
+          )}
       </p>
     ))}
   </>
