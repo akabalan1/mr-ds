@@ -149,7 +149,7 @@ export default function AdminKahoot() {
     {players.map((player, index) => (
       <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         {player.name}
-        {votes[player.name] ? (
+        {votes?.[player.name] ? (
           <span style={{ color: "green" }}>✅</span>
         ) : (
           <span style={{ color: "gray" }}>⌛</span>
@@ -166,9 +166,10 @@ export default function AdminKahoot() {
   <>
     <h2>Live Answer Breakdown</h2>
    <VoteChart
-  votes={transformKahootVotes(kahootAnswers, currentQuestionIndex)}
+  votes={votes}
   question={currentQuestion}
 />
+
 
 
   </>
