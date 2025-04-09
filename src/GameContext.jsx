@@ -43,88 +43,98 @@ export function GameProvider({ children }) {
 
 
 
-  useEffect(() => {
+ useEffect(() => {
   const handleGameState = (state) => {
-    console.log("Game state received from server:", state);
-    console.log("📥 [GameContext] handleGameState received:", state);
-    console.log("🙋 [GameContext] playerName state before update:", playerName);
+    console.log("📥 [GameContext] gameState received:", state);
 
+    // 🔄 Always sync these
     setPlayers(state.players || []);
     setVotes(state.votes || {});
-    setQuestionIndex(state.currentQuestionIndex || 0);
-    setMode(state.gameMode || "majority");
     setQuestions(state.questions || []);
-    if (state.step !== "done") {
-  setLeaderboard((state.players || []).slice().sort((a, b) => b.score - a.score));
-}
+    setMode(state.gameMode || "majority");
+    setQuestionIndex(state.currentQuestionIndex || 0);
 
+    // 🧼 Reset kahootAnswers if server cleared them
+    if (!state.kahootAnswers || Object.keys(state.kahootAnswers).length === 0) {
+      setKahootAnswers({});
+    }
+
+    // 🏆 Only recalculate leaderboard when not done
+    if (state.step !== "done") {
+      setLeaderboard([...state.players].sort((a, b) => b.score - a.score));
+    }
+
+    // 🔁 Full reset case
     if (state.step === -1) {
-      console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
+      console.log("🔄 step === -1 → clearing playerName + local state");
       if (step !== -1 && playerName) {
-        console.log("❌ [GameContext] Resetting playerName due to full reset");
         setPlayerName("");
         localStorage.removeItem("playerName");
       }
       setStep(-1);
-    } else {
-      // ✅ Restore playerName from localStorage if it's missing in memory
-      const stored = localStorage.getItem("playerName");
-      if (!playerName && stored) {
-        console.log("🔄 [GameContext] Restoring playerName from localStorage:", stored);
-        setPlayerName(stored);
-      }
+      return;
+    }
 
-      if (state.step === "done") {
-        setStep("done");
-      } else if (
-        state.questions &&
-        state.questions.length > 0 &&
-        state.currentQuestionIndex >= state.questions.length
-      ) {
-        setStep("done");
-      } else if (typeof state.step === "number") {
-        if (state.step === 0 && (!state.questions || state.questions.length === 0)) {
-          setStep(-1);
-        } else {
-          setStep(state.step);
-        }
+    // 💾 Restore local playerName if missing
+    const storedName = localStorage.getItem("playerName");
+    if (!playerName && storedName) {
+      console.log("🔁 Restoring playerName from localStorage:", storedName);
+      setPlayerName(storedName);
+    }
+
+    // ✅ Set correct game step
+    if (state.step === "done") {
+      setStep("done");
+    } else if (
+      Array.isArray(state.questions) &&
+      state.currentQuestionIndex >= state.questions.length
+    ) {
+      setStep("done");
+    } else if (typeof state.step === "number") {
+      if (state.step === 0 && (!state.questions || state.questions.length === 0)) {
+        setStep(-1); // Invalid ghost start
+      } else {
+        setStep(state.step);
       }
     }
   };
 
   const handleShowResults = (state) => {
-    console.log("🎯 showResults received from server:", state);
+    console.log("🎯 showResults received:", state);
     setPlayers(state.players || []);
     setLeaderboard(state.leaderboard || []);
     setQuestionIndex(state.currentQuestionIndex || 0);
     setStep("done");
   };
 
-  socket.on("gameState", handleGameState);
-  socket.on("showResults", handleShowResults);
-  socket.on("updateKahootAnswers", (data) => {
-  setKahootAnswers(data || {});
-    // 🔁 mimic updateVotes for consistency
+  const handleUpdateKahootAnswers = (data) => {
+    setKahootAnswers(data || {});
     const currentIndex = questionIndex;
-    const votes = {};
+    const syncedVotes = {};
     Object.entries(data || {}).forEach(([name, answers]) => {
-      if (answers[currentIndex] && answers[currentIndex].answer) {
-        votes[name] = answers[currentIndex].answer;
+      if (answers[currentIndex]?.answer) {
+        syncedVotes[name] = answers[currentIndex].answer;
       }
     });
-    setVotes(votes); // this ensures AdminKahoot gets the correct votes too
-  });
+    setVotes(syncedVotes);
+  };
 
+  socket.on("gameState", handleGameState);
+  socket.on("showResults", handleShowResults);
+  socket.on("updateKahootAnswers", handleUpdateKahootAnswers);
   socket.on("updateVotes", (data) => {
     console.log("📥 updateVotes received:", data);
     setVotes(data || {});
   });
+
   return () => {
-    // Only clean up listeners, DO NOT disconnect socket
     socket.off("gameState", handleGameState);
     socket.off("showResults", handleShowResults);
+    socket.off("updateKahootAnswers", handleUpdateKahootAnswers);
+    socket.off("updateVotes");
   };
-}, [playerName]);
+}, [playerName, step, questionIndex]);
+
 
 
   const addPlayer = (name) => {
