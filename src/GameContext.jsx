@@ -104,16 +104,21 @@ export function GameProvider({ children }) {
   socket.on("showResults", handleShowResults);
   socket.on("updateKahootAnswers", (data) => {
   setKahootAnswers(data || {});
-    // 🔁 mimic updateVotes for consistency
-    const currentIndex = questionIndex;
-    const votes = {};
-    Object.entries(data || {}).forEach(([name, answers]) => {
-      if (answers[currentIndex] && answers[currentIndex].answer) {
-        votes[name] = answers[currentIndex].answer;
-      }
-    });
-    setVotes(votes); // this ensures AdminKahoot gets the correct votes too
+  
+  // 👇 Use step instead of local questionIndex to avoid stale state
+  const index = typeof step === "number" ? step : questionIndex;
+
+  const votes = {};
+  Object.entries(data || {}).forEach(([name, answers]) => {
+    const answer = answers?.[index]?.answer;
+    if (answer) {
+      votes[name] = answer;
+    }
   });
+
+  setVotes(votes);
+});
+
 
   socket.on("updateVotes", (data) => {
     console.log("📥 updateVotes received:", data);
