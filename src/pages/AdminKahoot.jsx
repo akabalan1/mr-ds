@@ -80,11 +80,10 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
-  setFinalVotes({}); // Clear votes NOW
-
   setTimeout(() => {
-    setResultsVisible(false); // Hide chart AFTER 3s like Majority
     socket.emit("calculateKahootScores");
+    setResultsVisible(false);
+    setFinalVotes({}); // ✅ Clear after chart is done
 
     if (currentQuestionIndex < questions.length - 1) {
       const nextIndex = currentQuestionIndex + 1;
@@ -93,8 +92,9 @@ export default function AdminKahoot() {
     } else {
       setStep("done");
     }
-  }, 3000);
+  }, 3000); // ⏱ Give 3s for chart display
 };
+
 
 
 
