@@ -129,57 +129,60 @@ io.on("connection", (socket) => {
   });
 
   socket.on("calculateKahootScores", () => {
-  console.log("🎯 Calculating Kahoot scores for Q", gameState.currentQuestionIndex);
-
-  const currentIndex = gameState.currentQuestionIndex;
-  const correctAnswer = gameState.questions[currentIndex]?.correctAnswer;
-
-  if (!correctAnswer) {
-    console.warn("❗ No correct answer defined for current question");
-    return;
-  }
-
-  // Score players
-  gameState.players.forEach((player) => {
-    const answerData = gameState.kahootAnswers[player.name]?.[currentIndex];
-      if (!answerData) return;
+    console.log("🎯 Calculating Kahoot scores for Q", gameState.currentQuestionIndex);
   
-      if (answerData.answer === correctAnswer) {
-        const timeBonus = Math.max(0, Math.min(15, answerData.time));
-        const score = 1000 + timeBonus * 20;
-        player.score += score;
-        console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
-      } else {
-        console.log(`❌ ${player.name} answered incorrectly.`);
-      }
-    });
+    const currentIndex = gameState.currentQuestionIndex;
+    const correctAnswer = gameState.questions[currentIndex]?.correctAnswer;
   
-    // ✅ Emit finalVotes for current question (for chart)
-    const finalVotes = {};
-    for (const playerName in gameState.kahootAnswers) {
-      const answerObj = gameState.kahootAnswers[playerName]?.[currentIndex];
-      if (answerObj?.answer) {
-        finalVotes[playerName] = answerObj.answer;
-      }
+    if (!correctAnswer) {
+      console.warn("❗ No correct answer defined for current question");
+      return;
     }
-    io.emit("updateVotes", finalVotes); // Show the chart
   
-    // 🧼 Emit cleared votes for the next question
-    const nextIndex = currentIndex + 1;
-    const clearedVotes = {};
-    gameState.players.forEach((p) => {
-      clearedVotes[p.name] = null;
+    // Score players
+    gameState.players.forEach((player) => {
+      const answerData = gameState.kahootAnswers[player.name]?.[currentIndex];
+        if (!answerData) return;
+    
+        if (answerData.answer === correctAnswer) {
+          const timeBonus = Math.max(0, Math.min(15, answerData.time));
+          const score = 1000 + timeBonus * 20;
+          player.score += score;
+          console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
+        } else {
+          console.log(`❌ ${player.name} answered incorrectly.`);
+        }
+      });
+    
+      // ✅ Emit finalVotes for current question (for chart)
+      const finalVotes = {};
+      for (const playerName in gameState.kahootAnswers) {
+        const answerObj = gameState.kahootAnswers[playerName]?.[currentIndex];
+        if (answerObj?.answer) {
+          finalVotes[playerName] = answerObj.answer;
+        }
+      }
+      io.emit("updateVotes", finalVotes); // Show the chart
+  
+      // 🧼 Emit cleared votes for the next question
+      const nextIndex = currentIndex + 1;
+      const clearedVotes = {};
+      gameState.players.forEach((p) => {
+        clearedVotes[p.name] = null;
+      });
+      setTimeout(() => {
+        io.emit("updateVotes", clearedVotes); // Clear for next Q after chart shows
+      }, 500); // small delay to allow chart display
+    
+      // Cleanup for next round
+      delete gameState.kahootAnswers;
+      gameState.kahootAnswers = {};
+
+      setTimeout(() => {
+        advanceGame();
+      }, 50);
+
     });
-    setTimeout(() => {
-      io.emit("updateVotes", clearedVotes); // Clear for next Q after chart shows
-    }, 500); // small delay to allow chart display
-  
-    // Cleanup for next round
-    delete gameState.kahootAnswers;
-    gameState.kahootAnswers = {};
-  
-    advanceGame();
-  });
 
 
 
@@ -210,8 +213,16 @@ function advanceGame() {
     gameState.currentQuestionIndex = nextIndex;
     gameState.step = nextIndex;
     io.emit("gameState", gameState);
+
+    // ✅ Clear votes for the next question after broadcasting new step
+    const clearedVotes = {};
+    gameState.players.forEach((p) => {
+      clearedVotes[p.name] = null;
+    });
+    io.emit("updateVotes", clearedVotes);
   }
 }
+
 
 
 const PORT = process.env.PORT || 3001;
