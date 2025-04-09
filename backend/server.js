@@ -142,34 +142,45 @@ io.on("connection", (socket) => {
   // Score players
   gameState.players.forEach((player) => {
     const answerData = gameState.kahootAnswers[player.name]?.[currentIndex];
-    if (!answerData) return;
-
-    if (answerData.answer === correctAnswer) {
-      const timeBonus = Math.max(0, Math.min(15, answerData.time));
-      const score = 1000 + timeBonus * 20;
-      player.score += score;
-      console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
-    } else {
-      console.log(`❌ ${player.name} answered incorrectly.`);
+      if (!answerData) return;
+  
+      if (answerData.answer === correctAnswer) {
+        const timeBonus = Math.max(0, Math.min(15, answerData.time));
+        const score = 1000 + timeBonus * 20;
+        player.score += score;
+        console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
+      } else {
+        console.log(`❌ ${player.name} answered incorrectly.`);
+      }
+    });
+  
+    // ✅ Emit finalVotes for current question (for chart)
+    const finalVotes = {};
+    for (const playerName in gameState.kahootAnswers) {
+      const answerObj = gameState.kahootAnswers[playerName]?.[currentIndex];
+      if (answerObj?.answer) {
+        finalVotes[playerName] = answerObj.answer;
+      }
     }
+    io.emit("updateVotes", finalVotes); // Show the chart
+  
+    // 🧼 Emit cleared votes for the next question
+    const nextIndex = currentIndex + 1;
+    const clearedVotes = {};
+    gameState.players.forEach((p) => {
+      clearedVotes[p.name] = null;
+    });
+    setTimeout(() => {
+      io.emit("updateVotes", clearedVotes); // Clear for next Q after chart shows
+    }, 500); // small delay to allow chart display
+  
+    // Cleanup for next round
+    delete gameState.kahootAnswers;
+    gameState.kahootAnswers = {};
+  
+    advanceGame();
   });
 
-  // 🟢 Emit a fresh updateVotes snapshot before clearing kahootAnswers
-  const finalVotes = {};
-  for (const playerName in gameState.kahootAnswers) {
-    const answerObj = gameState.kahootAnswers[playerName]?.[currentIndex];
-    if (answerObj?.answer) {
-      finalVotes[playerName] = answerObj.answer;
-    }
-  }
-  io.emit("updateVotes", finalVotes); // ✅ Ensure Admin sees final tallied answers
-
-  // 🧼 Cleanup like Majority mode does
-  delete gameState.kahootAnswers;
-  gameState.kahootAnswers = {};
-
-  advanceGame();
-});
 
 
   socket.on("resetGame", () => {
