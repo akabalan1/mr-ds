@@ -154,11 +154,23 @@ io.on("connection", (socket) => {
     }
   });
 
+  // 🟢 Emit a fresh updateVotes snapshot before clearing kahootAnswers
+  const finalVotes = {};
+  for (const playerName in gameState.kahootAnswers) {
+    const answerObj = gameState.kahootAnswers[playerName]?.[currentIndex];
+    if (answerObj?.answer) {
+      finalVotes[playerName] = answerObj.answer;
+    }
+  }
+  io.emit("updateVotes", finalVotes); // ✅ Ensure Admin sees final tallied answers
+
   // 🧼 Cleanup like Majority mode does
-  delete gameState.kahootAnswers; // remove all stored answers after scoring
-  gameState.kahootAnswers = {};   // reinitialize for next question
+  delete gameState.kahootAnswers;
+  gameState.kahootAnswers = {};
+
   advanceGame();
 });
+
 
   socket.on("resetGame", () => {
     console.log("🔄 Resetting game state");
