@@ -19,6 +19,18 @@ export default function AdminMajority() {
       question: "What is your favorite fruit?",
       options: ["Apple", "Banana", "Orange", "Grapes"],
     },
+    {
+      question: "What is your favorite color?",
+      options: ["Red", "Blue", "Green", "Yellow"],
+    },
+    {
+      question: "What is the best type of music?",
+      options: ["Rock", "Pop", "Classical", "Jazz"],
+    },
+    {
+      question: "What is your favorite fruit?",
+      options: ["Apple", "Banana", "Orange", "Grapes"],
+    },
   ]);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
