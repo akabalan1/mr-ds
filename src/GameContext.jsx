@@ -105,19 +105,19 @@ export function GameProvider({ children }) {
   socket.on("updateKahootAnswers", (data) => {
   setKahootAnswers(data || {});
   
-  // 👇 Use step instead of local questionIndex to avoid stale state
-  const index = typeof step === "number" ? step : questionIndex;
+  // Use step instead of questionIndex to ensure sync
+  const currentIndex = typeof step === "number" ? step : questionIndex;
+  const currentVotes = {};
 
-  const votes = {};
   Object.entries(data || {}).forEach(([name, answers]) => {
-    const answer = answers?.[index]?.answer;
-    if (answer) {
-      votes[name] = answer;
+    if (answers[currentIndex] && answers[currentIndex].answer) {
+      currentVotes[name] = answers[currentIndex].answer;
     }
   });
 
-  setVotes(votes);
+  setVotes(currentVotes);
 });
+
 
 
   socket.on("updateVotes", (data) => {
