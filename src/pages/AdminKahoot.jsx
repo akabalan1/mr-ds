@@ -78,17 +78,22 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
+  // Delay score calculation to allow vote chart to display
+  setTimeout(() => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
-    
-    const nextIndex = currentQuestionIndex + 1;
-    if (nextIndex < questions.length) {
+    setFinalVotes({}); // 🧼 Clear votes before next question
+
+    if (currentQuestionIndex < questions.length - 1) {
+      const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
       setStep(nextIndex);
     } else {
       setStep("done");
     }
-  };
+  }, 3000); // ⏱️ Give 3s to display the chart before moving on
+};
+
 
   const handleReset = () => {
   resetGame();                      // reset server state
