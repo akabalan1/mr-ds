@@ -66,15 +66,11 @@ export default function AdminKahoot() {
 
   useEffect(() => {
   if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
-    const currentVotes = {};
-    Object.entries(kahootAnswers || {}).forEach(([name, answers]) => {
-      const answer = answers?.[currentQuestionIndex]?.answer;
-      if (answer) currentVotes[name] = answer;
-    });
-    setFinalVotes(currentVotes);
+    setFinalVotes({ ...votes });
     setResultsVisible(true);
   }
-}, [timer, kahootAnswers, currentQuestionIndex, step]);
+}, [timer, votes, step]);
+
 
 
 
