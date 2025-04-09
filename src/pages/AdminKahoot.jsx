@@ -80,11 +80,11 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
-  // Delay score calculation to allow vote chart to display
+  setFinalVotes({}); // Clear votes NOW
+
   setTimeout(() => {
+    setResultsVisible(false); // Hide chart AFTER 3s like Majority
     socket.emit("calculateKahootScores");
-    setResultsVisible(false);
-    setFinalVotes({}); // 🧼 Clear votes before next question
 
     if (currentQuestionIndex < questions.length - 1) {
       const nextIndex = currentQuestionIndex + 1;
@@ -93,8 +93,9 @@ export default function AdminKahoot() {
     } else {
       setStep("done");
     }
-  }, 3000); // ⏱️ Give 3s to display the chart before moving on
+  }, 3000);
 };
+
 
 
   const handleReset = () => {
