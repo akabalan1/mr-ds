@@ -192,10 +192,14 @@ export default function AdminKahoot() {
 
         <div className="admin-section">
 
-          {resultsVisible && Object.keys(finalVotes).length > 0 && step !== "done" && (
+          {resultsVisible && step !== "done" && (
   <>
     <h2>Live Answer Breakdown</h2>
-    <VoteChart votes={finalVotes} question={currentQuestion} />
+    <VoteChart
+      key={`${step}-${currentQuestionIndex}`}  // 👈 force fresh render
+      votes={finalVotes}
+      question={questions[currentQuestionIndex]} // 👈 match Majority format
+    />
   </>
 )}
 
