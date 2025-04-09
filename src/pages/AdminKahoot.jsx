@@ -84,7 +84,8 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
-  setTimeout(() => {
+    console.log("🧼 handleNextQuestion triggered");
+    setTimeout(() => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
     setFinalVotes({}); // ✅ Clear after chart is done
