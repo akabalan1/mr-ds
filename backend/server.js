@@ -129,26 +129,36 @@ io.on("connection", (socket) => {
   });
 
   socket.on("calculateKahootScores", () => {
-    console.log("🎯 Calculating Kahoot scores for Q", gameState.currentQuestionIndex);
-    const correctAnswer = gameState.questions[gameState.currentQuestionIndex]?.correctAnswer;
-    if (!correctAnswer) {
-      console.warn("❗ No correct answer defined for current question");
-      return;
+  console.log("🎯 Calculating Kahoot scores for Q", gameState.currentQuestionIndex);
+
+  const currentIndex = gameState.currentQuestionIndex;
+  const correctAnswer = gameState.questions[currentIndex]?.correctAnswer;
+
+  if (!correctAnswer) {
+    console.warn("❗ No correct answer defined for current question");
+    return;
+  }
+
+  // Score players
+  gameState.players.forEach((player) => {
+    const answerData = gameState.kahootAnswers[player.name]?.[currentIndex];
+    if (!answerData) return;
+
+    if (answerData.answer === correctAnswer) {
+      const timeBonus = Math.max(0, Math.min(15, answerData.time));
+      const score = 1000 + timeBonus * 20;
+      player.score += score;
+      console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
+    } else {
+      console.log(`❌ ${player.name} answered incorrectly.`);
     }
-    gameState.players.forEach((player) => {
-      const answerData = gameState.kahootAnswers[player.name]?.[gameState.currentQuestionIndex];
-      if (!answerData) return;
-      if (answerData.answer === correctAnswer) {
-        const timeBonus = Math.max(0, Math.min(15, answerData.time));
-        const score = 1000 + timeBonus * 20;
-        player.score += score;
-        console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
-      } else {
-        console.log(`❌ ${player.name} answered incorrectly.`);
-      }
-    });
-    advanceGame();
   });
+
+  // 🧼 Cleanup like Majority mode does
+  delete gameState.kahootAnswers; // remove all stored answers after scoring
+  gameState.kahootAnswers = {};   // reinitialize for next question
+  advanceGame();
+});
 
   socket.on("resetGame", () => {
     console.log("🔄 Resetting game state");
