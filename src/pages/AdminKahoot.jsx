@@ -66,6 +66,10 @@ export default function AdminKahoot() {
 
   useEffect(() => {
   if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
+    console.log("📊 Timer expired, setting finalVotes. Current step:", step);
+    console.log("📊 votes state snapshot:", votes);
+    console.log("📊 currentQuestionIndex:", currentQuestionIndex);
+    
     setFinalVotes({ ...votes });
     setResultsVisible(true);
   }
