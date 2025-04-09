@@ -28,14 +28,22 @@ export default function AdminKahoot() {
     correctAnswer: "Paris",
   },
     {
-    question: "What is the capital of France?",
-    options: ["Rome", "Berlin", "Paris", "Madrid"],
-    correctAnswer: "Paris",
+    question: "Who said it: \"I cannot get the image of John twerking out of my head.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
   },
   {
-    question: "What is the capital of France?",
-    options: ["Rome", "Berlin", "Paris", "Madrid"],
-    correctAnswer: "Paris",
+    question: "Who said it: \"Are we still pretending this is innocent?\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"It’s not the thought, it’s the effort… or the technique.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
   },
 ]);
 
