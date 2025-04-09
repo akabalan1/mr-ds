@@ -123,7 +123,11 @@ export function GameProvider({ children }) {
   socket.on("updateVotes", (data) => {
     console.log("📥 updateVotes received:", data);
     setVotes(data || {});
+    setTimeout(() => {
+      console.log("✅ [GameContext] votes state now:", data);
+    }, 0); // Let React apply setVotes first
   });
+
   return () => {
     // Only clean up listeners, DO NOT disconnect socket
     socket.off("gameState", handleGameState);
