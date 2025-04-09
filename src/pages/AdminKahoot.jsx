@@ -114,14 +114,14 @@ export default function AdminKahoot() {
   return (
     <Layout>
       <h1>Admin Kahoot Mode</h1>
-
+    
       <div className="admin-controls">
         {step === -1 && (
           <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
             Start Kahoot Game
           </button>
         )}
-
+    
         {typeof step === "number" && step >= 0 && step !== "done" && (
           <button
             onClick={handleNextQuestion}
@@ -131,107 +131,94 @@ export default function AdminKahoot() {
             {currentQuestionIndex === questions.length - 1 ? "Finish Game" : "Next Question"}
           </button>
         )}
-
+    
         <button onClick={handleReset} className="game-mode-btn bg-red-600">
           Reset Game
         </button>
       </div>
-
+    
       <div className="admin-panel">
+        {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
+          <div className="admin-section">
+            <h2>Current Question:</h2>
+            <p>
+              <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
+            </p>
+            <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
+    
+            {currentQuestion.rapidFire ? (
+              <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
+                {currentQuestion.options.map((option, i) => (
+                  <li key={i} style={{ textAlign: "center" }}>
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
+                        alt={option}
+                        style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                      />
+                      <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
+                {currentQuestion.options.map((option, i) => (
+                  <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
+                ))}
+              </ul>
+            )}
+    
+            <h2>Answer Tally:</h2>
+            {players.map((player, index) => (
+              <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                {player.name}
+                {votes?.[player.name] ? (
+                  <span style={{ color: "green" }}>✅</span>
+                ) : (
+                  <span style={{ color: "gray" }}>⌛</span>
+                )}
+              </p>
+            ))}
+          </div>
+        )}
+    
         <div className="admin-section">
-
-    {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
-  <>
-    <h2>Current Question:</h2>
-    <p>
-      <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
-    </p>
-    <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
-
-    {currentQuestion.rapidFire ? (
-      <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
-        {currentQuestion.options.map((option, i) => (
-          <li key={i} style={{ textAlign: "center" }}>
-            <div className="flex flex-col items-center">
-              <img
-                src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
-                alt={option}
-                style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-              />
-              <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
-        {currentQuestion.options.map((option, i) => (
-          <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
-        ))}
-      </ul>
-    )}
-  </>
-)}
-
-
-
-          {step !== "done" && (
-  <>
-    <h2>Answer Tally:</h2>
-    {players.map((player, index) => (
-      <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        {player.name}
-        {votes?.[player.name] ? (
-            <span style={{ color: "green" }}>✅</span>
-          ) : (
-            <span style={{ color: "gray" }}>⌛</span>
-          )}
-      </p>
-    ))}
-  </>
-)}
-
-        </div>
-
-        <div className="admin-section">
-
           {resultsVisible && step !== "done" && (
-  <>
-    <h2>Live Answer Breakdown</h2>
-    <VoteChart
-      key={`${step}-${currentQuestionIndex}-${JSON.stringify(finalVotes)}`} // 👈 force fresh render when votes actually change
-      votes={finalVotes}
-      question={questions[currentQuestionIndex]}
-    />
-
-  </>
-)}
-
-
+            <>
+              <h2>Live Answer Breakdown</h2>
+              <VoteChart
+                key={`${step}-${currentQuestionIndex}-${JSON.stringify(finalVotes)}`}
+                votes={finalVotes}
+                question={questions[currentQuestionIndex]}
+              />
+            </>
+          )}
+    
           {(typeof step === "number" && step >= 1) || step === "done" ? (
             <>
-             <h2>Leaderboard:</h2>
-{leaderboard.length > 0 ? (
-  leaderboard.map((player, index) => {
-    const emoji =
-      index === 0 ? "👑" :
-      index === 1 ? "🥈" :
-      index === 2 ? "🥉" :
-      index >= leaderboard.length - 3 ? "😞" : "";
-    return (
-      <p key={index}>
-        {emoji} {index + 1}. {player.name}: {player.score} points
-      </p>
-    );
-  })
-) : (
-  <p>No players to show.</p>
-)}
-
+              <h2>Leaderboard:</h2>
+              {leaderboard.length > 0 ? (
+                leaderboard.map((player, index) => {
+                  const emoji =
+                    index === 0 ? "👑" :
+                    index === 1 ? "🥈" :
+                    index === 2 ? "🥉" :
+                    index >= leaderboard.length - 3 ? "😞" : "";
+                  return (
+                    <p key={index}>
+                      {emoji} {index + 1}. {player.name}: {player.score} points
+                    </p>
+                  );
+                })
+              ) : (
+                <p>No players to show.</p>
+              )}
             </>
           ) : null}
         </div>
       </div>
     </Layout>
+
   );
 }
