@@ -63,25 +63,17 @@ export default function AdminKahoot() {
     }
   }, [step]);
 
-
   useEffect(() => {
-  useEffect(() => {
-  if (
-    timer === 0 &&
-    typeof step === "number" &&
-    step >= 0 &&
-    step !== "done" &&
-    votes &&
-    Object.keys(votes).length > 0
-  ) {
-    console.log("📊 Timer hit 0 — detected valid votes, setting finalVotes:", votes);
-    setFinalVotes({ ...votes });
-    setResultsVisible(true);
+  if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
+    const delay = setTimeout(() => {
+      console.log("📊 [Delayed] Timer expired, setting finalVotes. Step:", step, "Q:", currentQuestionIndex);
+      console.log("📊 [Delayed] votes snapshot:", votes);
+      setFinalVotes({ ...votes });
+      setResultsVisible(true);
+    }, 200); // Wait 200ms to ensure GameContext votes update first
+    return () => clearTimeout(delay);
   }
-}, [votes, timer, step]);
-
-
-
+}, [timer, votes, step]);
 
 
   const handleStartGame = () => {
@@ -207,10 +199,11 @@ export default function AdminKahoot() {
   <>
     <h2>Live Answer Breakdown</h2>
     <VoteChart
-      key={`${step}-${currentQuestionIndex}`}  // 👈 force fresh render
+      key={`${step}-${currentQuestionIndex}-${JSON.stringify(finalVotes)}`} // 👈 force fresh render when votes actually change
       votes={finalVotes}
-      question={questions[currentQuestionIndex]} // 👈 match Majority format
+      question={questions[currentQuestionIndex]}
     />
+
   </>
 )}
 
