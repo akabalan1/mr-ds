@@ -6,28 +6,108 @@ import VoteChart from "../components/VoteChart";
 
 export default function AdminKahoot() {
   const {
-  socket,
-  players,
-  leaderboard,
-  step,
-  setStep,
-  resetGame,
-  votes,
-  kahootAnswers,
-} = useGame();
+    socket,
+    players,
+    leaderboard,
+    step,
+    setStep,
+    resetGame,
+    votes,
+    kahootAnswers,
+  } = useGame();
 
-  const [questions] = useState([
+  const questions = [
   {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Earth", "Mars", "Jupiter", "Venus"],
-    correctAnswer: "Mars",
+    question: "What horrifying breakfast twist did Sarah witness?",
+    options: [
+      "He said “this place could use more masala”",
+      "Danish ordered a burger at 8am",
+      "He put black pepper in orange juice",
+      "He ate pancakes with his hands"
+    ],
+    correctAnswer: "He put black pepper in orange juice"
   },
   {
-    question: "What is the capital of France?",
-    options: ["Rome", "Berlin", "Paris", "Madrid"],
-    correctAnswer: "Paris",
+    question: "What role does Danish play in Sarah’s life?",
+    options: [
+      "Her content editor",
+      "Her hacker boyfriend",
+      "The reason her phone breaks",
+      "Her IT helpdesk"
+    ],
+    correctAnswer: "Her IT helpdesk"
   },
-    {
+  {
+    question: "What does Danish get Sarah every Valentine’s Day?",
+    options: [
+      "Lavender flowers",
+      "Chicken Tikka Masala",
+      "Nothing he is the best gift",
+      "Pregnancy test"
+    ],
+    correctAnswer: "Lavender flowers"
+  },
+  {
+    question: "Who taught who how to cook many of their signature meals?",
+    options: [
+      "ChatGPT",
+      "Danish taught Sarah",
+      "Sarah taught Danish",
+      "They just seduce each other with takeout"
+    ],
+    correctAnswer: "Danish taught Sarah"
+  },
+  {
+    question: "What did Danish ask Sarah just hours after she gave birth?",
+    options: [
+      "Do you want more kids?",
+      "Do you want IHOP?",
+      "The baby has your forehead. I’m so sorry.",
+      "Can I tell my cricket friends I’m free to play tonight?"
+    ],
+    correctAnswer: "Can I tell my cricket friends I’m free to play tonight?"
+  },
+  {
+    question: "Why did Sarah ban appetizers at restaurants?",
+    options: [
+      "Danish keeps over-ordering",
+      "She's morally against mozzarella sticks",
+      "She wants to save room for dessert",
+      "To save money"
+    ],
+    correctAnswer: "Danish keeps over-ordering"
+  },
+  {
+    question: "What savage comment did Danish make to Sarah on their wedding day?",
+    options: [
+      "We did it! I can’t believe we’re married!",
+      "Did you bring snacks?",
+      "You kind of look like a ghost with that makeup",
+      "You look like a Bollywood queen!"
+    ],
+    correctAnswer: "You kind of look like a ghost with that makeup"
+  },
+  {
+    question: "Which K-drama has Sarah made Danish watch so many times he can quote it?",
+    options: [
+      "Goblin",
+      "Crash Landing on You",
+      "50 Shades of Seoul",
+      "Squid Game"
+    ],
+    correctAnswer: "Crash Landing on You"
+  },
+  {
+    question: "What was Danish’s very first flirt move when meeting Sarah?",
+    options: [
+      "I’ve read every book but you",
+      "Wanna see my cricket stats?",
+      "I lost my number… can I have yours?",
+      "You’re a Rizvi, I’m a Rizvi!"
+    ],
+    correctAnswer: "You’re a Rizvi, I’m a Rizvi!"
+  }
+  {
     question: "Who said it: \"I cannot get the image of John twerking out of my head.\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
@@ -45,7 +125,85 @@ export default function AdminKahoot() {
     correctAnswer: "Sarah",
     rapidFire: true
   },
-]);
+  {
+    question: "Who said it: \"It also won't mysteriously overheat randomly a few weeks later.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"That’s a discussion to have behind closed doors.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"Hopefully it is sweeter than you :)\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"The Shiaa actually have already been granted heaven.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"Virgins that will stay virgins.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"If that happens to you I'm going to Mexico City and starting a new life.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"It’s not cheating if you’re in the same zip code.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"You're just grumpy because you haven't been cuddled in 3 hours.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"I prefer spiritual nudity.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"You can either be sexy or you can be on time. You can't be both.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"Was the food as good as the trauma?\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"What makes you think the Quran is not pro-dog?\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"If your hijab falls off I’m not putting it back on.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Danish",
+    rapidFire: true
+  }
+];
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [finalVotes, setFinalVotes] = useState({});
