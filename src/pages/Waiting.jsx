@@ -11,18 +11,15 @@ export default function Waiting() {
 
   useEffect(() => {
   const storedName = localStorage.getItem("playerName");
-  console.log("⌛ [Waiting] step =", step, "| prevStep =", prevStep.current, "| storedName =", storedName);
 
   // 🧨 Case: Trying to reach /waiting without a name
   if (!storedName || storedName.trim() === "") {
-    console.log("[Waiting] No name — redirecting to /join");
     navigate("/join");
     return;
   }
 
   // 🔁 Case: Game was reset while on /waiting → go back to /join
   if (step === -1 && prevStep.current !== -1) {
-    console.log("[Waiting] Game was reset — going back to /join");
     navigate("/join");
     return;
   }
