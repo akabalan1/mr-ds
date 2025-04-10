@@ -106,7 +106,7 @@ export default function AdminKahoot() {
       "You’re a Rizvi, I’m a Rizvi!"
     ],
     correctAnswer: "You’re a Rizvi, I’m a Rizvi!"
-  }
+  },
   {
     question: "Who said it: \"I cannot get the image of John twerking out of my head.\"",
     options: ["Sarah", "Danish"],
