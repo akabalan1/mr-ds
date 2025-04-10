@@ -203,17 +203,21 @@ canvas {
 }
 
 .banner-image {
-  width: 120px;
+  width: 50vw;
+  max-width: 100%;
   height: auto;
   border-radius: 1rem;
-  box-shadow: 0 0 20px #ffb6c1;
+  box-shadow: 0 0 15px rgba(255, 192, 203, 0.5); /* Romantic glow */
+  animation: fadeInSoft 1.5s ease-in-out both;
 }
 
 .romantic-title {
-  color: #ff69b4;
-  font-size: 1.8rem;
+  color: #fff5f7; /* NEW: softer blush white */
+  font-size: 2rem;
   font-weight: bold;
-  text-shadow: 0 0 10px #ff99cc;
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.4),   /* slight dark halo for contrast */
+    0 0 12px #ff99cc;
   animation: fadeIn 2s ease-in-out;
 }
 
@@ -224,10 +228,12 @@ canvas {
 }
 
 .thank-you-image {
-  width: 120px;
+  width: 50vw;
+  max-width: 100%;
   height: auto;
   border-radius: 1rem;
-  box-shadow: 0 0 20px #ffb6c1;
+  box-shadow: 0 0 15px rgba(255, 182, 193, 0.6); /* Softer glow */
+  animation: fadeInSoft 2s ease-in-out both;
 }
 
 .thank-you-message {
