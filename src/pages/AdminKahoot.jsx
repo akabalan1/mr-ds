@@ -56,7 +56,7 @@ export default function AdminKahoot() {
 
   useEffect(() => {
     if (typeof step === "number" && step >= 0 && step !== "done") {
-      setTimer(15);
+      setTimer(currentQuestion?.rapidFire ? 7 : 15);
       setResultsVisible(false);
       const countdown = setInterval(() => {
         setTimer((prev) => {
