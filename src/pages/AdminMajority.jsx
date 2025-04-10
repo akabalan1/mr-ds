@@ -8,48 +8,12 @@ export default function AdminMajority() {
 
   const questions = [
     {
-      question: "What’s actually the sexiest trait in a partner?",
+      question: "What’s actually the sexiest trait in your partner?",
       options: [
         "Confidence",
         "Humor",
         "Intelligence",
         "Looks"
-      ]
-    },
-    {
-      question: "What’s the ultimate couple's code word for “let’s sneak away”?",
-      options: [
-        "“Let’s take a nap”",
-        "“I need help in the kitchen”",
-        "“Can we talk in private?”",
-        "I need to freshen up"
-      ]
-    },
-    {
-      question: "Most likely to initiate something risky in public?",
-      options: [
-        "Danish, with that mischievous smirk",
-        "Sarah, queen of bold moves",
-        "Depends who had more wine",
-        "Both — they’re trouble together"
-      ]
-    },
-    {
-      question: "Sarah gives Danish the 'I'm ready wink'. Danish’s first thought?",
-      options: [
-        "“Cancel all my meetings.”",
-        "“I’m being seduced and I love it.”",
-        "“Play it cool… NOPE CAN’T.”",
-        "“God bless this woman.”"
-      ]
-    },
-    {
-      question: "What’s Danish’s secret move that gets Sarah every time?",
-      options: [
-        "That deep voice whisper",
-        "Neck kisses",
-        "The way he takes charge",
-        "Beard + cologne combo — lethal"
       ]
     },
     {
@@ -86,6 +50,42 @@ export default function AdminMajority() {
         "“We never fight about it.”",
         "“Size doesn’t matter.”",
         "“We’ve never faked it.”"
+      ]
+    },
+    {
+      question: "What’s the ultimate couple's code word for “let’s get some”?",
+      options: [
+        "“Let’s take a nap”",
+        "“I need help in the kitchen”",
+        "“Can we talk in private?”",
+        "I need to freshen up"
+      ]
+    },
+    {
+      question: "Who is most likely to initiate something risky in public?",
+      options: [
+        "Danish, with that mischievous smirk",
+        "Sarah, queen of bold moves",
+        "Depends who had more wine",
+        "Both — they’re trouble together"
+      ]
+    },
+    {
+      question: "Sarah gives Danish the 'I'm ready wink'. Danish’s first thought?",
+      options: [
+        "Cancel all my meetings",
+        "I’m being seduced and I love it",
+        "Play it cool and pretend to be sleepy",
+        "God bless this woman"
+      ]
+    },
+    {
+      question: "What’s Danish’s secret move that gets Sarah every time?",
+      options: [
+        "That deep voice whisper",
+        "Neck kisses",
+        "The way he takes charge",
+        "Beard + cologne combo — lethal"
       ]
     }
   ];
