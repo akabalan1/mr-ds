@@ -17,7 +17,6 @@ export default function PlayerJoin() {
 
   useEffect(() => {
     const stored = localStorage.getItem("playerName");
-    console.log("📦 [PlayerJoin] Auto-loading storedName from localStorage:", stored); // 🔍 ADD THIS
     if (stored) {
       setName(stored);
       setPlayerName(stored);
@@ -29,12 +28,10 @@ export default function PlayerJoin() {
   const handleJoin = () => {
   const cleanName = name.trim();
   if (!cleanName) return;
-console.log("🚀 handleJoin triggered with:", name);
 
   localStorage.setItem("playerName", cleanName);
   setPlayerName(cleanName);
   socket.emit("player-join", cleanName);
-    console.log("🚀 handleJoin triggered with:", name);
   navigate("/waiting");
 };
 
