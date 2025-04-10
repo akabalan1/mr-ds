@@ -25,29 +25,38 @@ export default function AdminHome() {
 
   return (
     <Layout>
-      <div className="admin-home">
-        <h1 className="text-3xl font-bold mb-4">👋 Welcome to Admin Home</h1>
-        <div className="mt-6">
-          <button
-            onClick={handleMajorityGame}
-            className="game-mode-btn bg-blue-600 text-white p-3 rounded mb-4"
-          >
-            Start Majority Rules Game
-          </button>
-          <button
-            onClick={handleKahootGame}
-            className="game-mode-btn bg-green-600 text-white p-3 rounded mb-4"
-          >
-            Start Kahoot Game
-          </button>
-          <button
-            onClick={handleResetGame}
-            className="game-mode-btn bg-red-600 text-white p-3 rounded"
-          >
-            Reset Game
-          </button>
-        </div>
-      </div>
-    </Layout>
+  <div className="admin-home">
+    {/* 🌸 Romantic welcome image */}
+    <img
+      src="/admin-home-banner.png" // ⬅️ replace with your image path
+      alt="Welcome Banner"
+      className="admin-home-image"
+    />
+
+    <h1 className="text-3xl font-bold mb-4">👋 Welcome to Admin Home</h1>
+
+    <div className="mt-6">
+      <button
+        onClick={handleMajorityGame}
+        className="game-mode-btn bg-blue-600 text-white p-3 rounded mb-4"
+      >
+        Start Majority Rules Game
+      </button>
+      <button
+        onClick={handleKahootGame}
+        className="game-mode-btn bg-green-600 text-white p-3 rounded mb-4"
+      >
+        Start Kahoot Game
+      </button>
+      <button
+        onClick={handleResetGame}
+        className="game-mode-btn bg-red-600 text-white p-3 rounded"
+      >
+        Reset Game
+      </button>
+    </div>
+  </div>
+</Layout>
+
   );
 }
