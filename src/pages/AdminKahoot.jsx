@@ -123,7 +123,7 @@ export default function AdminKahoot() {
   <Layout>
     {step === -1 && (
       <div className="romantic-banner">
-        <img src="/sarah-danish.png" alt="Sarah and Danish" className="banner-image" />
+        <img src="/sdkahootw.png" alt="Sarah and Danish" className="banner-image" />
         <h1 className="romantic-title">💖 Sarah & Danish Knowledge Competition 💖</h1>
       </div>
     )}
@@ -225,7 +225,7 @@ export default function AdminKahoot() {
   
         {step === "done" && (
           <div className="thank-you-banner">
-            <img src="/thank-you.png" alt="Thank You" className="thank-you-image" />
+            <img src="/sdkahootb.png" alt="Thank You" className="thank-you-image" />
             <h2 className="thank-you-message">Thank you for playing! 💘</h2>
           </div>
         )}
