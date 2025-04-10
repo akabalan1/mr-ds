@@ -10,26 +10,31 @@ export default function PlayerKahoot() {
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(0); // ✅ init at 0 to avoid flicker
   const [locked, setLocked] = useState(false);
   const [startTime, setStartTime] = useState(null);
 
+  const currentQuestion = questions[questionIndex];
+  const correctAnswer = currentQuestion?.correctAnswer;
+
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
-if (step === -1 && (!storedName || storedName.trim() === "")) {
-  navigate("/join");
-}
+    if (step === -1 && (!storedName || storedName.trim() === "")) {
+      navigate("/join");
+    }
 
     if (step === "done" && mode === "kahoot") {
       navigate("/results");
       return;
     }
 
+    const duration = currentQuestion?.rapidFire ? 7 : 15; // ✅ dynamic duration
+
     setSubmitted(false);
     setSelectedOption(null);
     setLocked(false);
     setStartTime(Date.now());
-    setTimer(15);
+    setTimer(duration);
 
     const countdown = setInterval(() => {
       setTimer((prev) => {
@@ -43,7 +48,7 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
     }, 1000);
 
     return () => clearInterval(countdown);
-  }, [step, mode, navigate]);
+  }, [step, mode, navigate, currentQuestion]);
 
   const handleAnswer = (option) => {
     if (locked || submitted) return;
@@ -54,17 +59,14 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
       return;
     }
 
+    const duration = currentQuestion?.rapidFire ? 7 : 15;
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const answerTime = Math.max(0, 15 - elapsed);
+    const answerTime = Math.max(0, duration - elapsed);
 
     setSelectedOption(option);
     setSubmitted(true);
-    submitKahootAnswer(name, option, answerTime,questionIndex);
+    submitKahootAnswer(name, option, answerTime, questionIndex);
   };
-
-  const currentQuestion = questions[questionIndex];
-  const correctAnswer = currentQuestion?.correctAnswer;
-
 
   return (
     <Layout showAdminLink={false}>
@@ -153,7 +155,7 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
                 ))}
               </ul>
             )}
-       
+
             {submitted && (
               <p style={{ color: "#10b981", fontWeight: "bold" }}>
                 ✅ Answer submitted!
