@@ -18,7 +18,7 @@ export default function AdminKahoot() {
 
   const questions = [
   {
-    question: "What horrifying breakfast twist did Sarah witness?",
+    question: "What horrifying breakfast twist did Sarah witness at IHOP, the first time she went there with Danish?",
     options: [
       "He said “this place could use more masala”",
       "Danish ordered a burger at 8am",
@@ -32,7 +32,7 @@ export default function AdminKahoot() {
     options: [
       "Her content editor",
       "Her hacker boyfriend",
-      "The reason her phone breaks",
+      "Her emotional support pillow",
       "Her IT helpdesk"
     ],
     correctAnswer: "Her IT helpdesk"
@@ -114,15 +114,15 @@ export default function AdminKahoot() {
     rapidFire: true
   },
   {
-    question: "Who said it: \"Are we still pretending this is innocent?\"",
+    question: "Who said it: \"Yeah we were doing non billionaire activities 🙂\"",
     options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    correctAnswer: "Danish",
     rapidFire: true
   },
   {
-    question: "Who said it: \"It’s not the thought, it’s the effort… or the technique.\"",
+    question: "Who said it: \"No sex, intoxication in heaven\"",
     options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    correctAnswer: "Danish",
     rapidFire: true
   },
   {
@@ -132,19 +132,13 @@ export default function AdminKahoot() {
     rapidFire: true
   },
   {
-    question: "Who said it: \"That’s a discussion to have behind closed doors.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
-    rapidFire: true
-  },
-  {
-    question: "Who said it: \"Hopefully it is sweeter than you :)\"",
+    question: "Who said it: \"not everything is sex related 🙄\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
     rapidFire: true
   },
   {
-    question: "Who said it: \"The Shiaa actually have already been granted heaven.\"",
+    question: "Who said it: \"Matt can teach that course\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
     rapidFire: true
@@ -153,6 +147,12 @@ export default function AdminKahoot() {
     question: "Who said it: \"Virgins that will stay virgins.\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Danish",
+    rapidFire: true
+  },
+  {
+    question: "Who said it: \"The Shiaa actually have already been granted heaven.\"",
+    options: ["Sarah", "Danish"],
+    correctAnswer: "Sarah",
     rapidFire: true
   },
   {
@@ -168,37 +168,25 @@ export default function AdminKahoot() {
     rapidFire: true
   },
   {
-    question: "Who said it: \"You're just grumpy because you haven't been cuddled in 3 hours.\"",
+    question: "Who said it: \"Take your time… my knees are just killing me. lol :) 😂\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
     rapidFire: true
   },
   {
-    question: "Who said it: \"I prefer spiritual nudity.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
-    rapidFire: true
-  },
-  {
-    question: "Who said it: \"You can either be sexy or you can be on time. You can't be both.\"",
+    question: "Who said it: \"Let’s do all of the above… brunch, lunch and dinner so it’s inclusive for everyone :)\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Was the food as good as the trauma?\"",
+    question: "Who said it: \"Hopefully it is sweeter than you :)\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Sarah",
     rapidFire: true
   },
   {
-    question: "Who said it: \"What makes you think the Quran is not pro-dog?\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
-    rapidFire: true
-  },
-  {
-    question: "Who said it: \"If your hijab falls off I’m not putting it back on.\"",
+    question: "Who said it: \"Will you convert to Shia to preside over our vows renewal 😁\"",
     options: ["Sarah", "Danish"],
     correctAnswer: "Danish",
     rapidFire: true
