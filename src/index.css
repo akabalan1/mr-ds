@@ -256,4 +256,24 @@ canvas {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+.admin-home-image {
+  width: 50vw;
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 20px rgba(255, 192, 203, 0.4);
+  animation: fadeInSoft 2s ease-in-out both;
+}
+
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
