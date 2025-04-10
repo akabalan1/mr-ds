@@ -39,7 +39,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("gameStart", ({ questions, gameMode }) => {
-    console.log(`🟢 Game starting in "${gameMode}" mode with questions:`, questions);
     gameState.questions = questions;
     gameState.gameMode = gameMode;
     gameState.currentQuestionIndex = 0;
@@ -52,7 +51,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("submitVote", ({ name, option, questionIndex }) => {
-    console.log("🧾 Received vote:", { name, option, questionIndex });
     if (!name || typeof name !== "string" || name.trim() === "") {
       console.warn("⚠️ Invalid vote received with missing name");
       return;
@@ -66,12 +64,10 @@ io.on("connection", (socket) => {
       gameState.votes[questionIndex] = {};
     }
     gameState.votes[questionIndex][name] = option;
-    console.log(`🗳 Vote received for Q${questionIndex}:`, gameState.votes[questionIndex]);
     io.emit("updateVotes", gameState.votes[questionIndex]);
   });
 
   socket.on("submitKahoot", ({ name, option, time, questionIndex }) => {
-    console.log("🧠 Kahoot answer received:", { name, option, time, questionIndex });
     if (!name || !option || typeof time !== "number") {
       console.warn("⚠️ Invalid Kahoot submission");
       return;
@@ -93,7 +89,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("calculateMajorityScores", () => {
-    console.log("📊 Calculating scores for question", gameState.currentQuestionIndex);
     const votes = gameState.votes[gameState.currentQuestionIndex] || {};
     const optionCounts = {};
     gameState.players.forEach((player) => {
@@ -129,7 +124,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("calculateKahootScores", () => {
-    console.log("🎯 Calculating Kahoot scores for Q", gameState.currentQuestionIndex);
   
     const currentIndex = gameState.currentQuestionIndex;
     const correctAnswer = gameState.questions[currentIndex]?.correctAnswer;
@@ -148,7 +142,6 @@ io.on("connection", (socket) => {
           const timeBonus = Math.max(0, Math.min(15, answerData.time));
           const score = 1000 + timeBonus * 20;
           player.score += score;
-          console.log(`✅ ${player.name} answered correctly in ${answerData.time}s, score +${score}`);
         } else {
           console.log(`❌ ${player.name} answered incorrectly.`);
         }
