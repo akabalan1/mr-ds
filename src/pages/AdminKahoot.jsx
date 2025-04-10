@@ -121,133 +121,141 @@ export default function AdminKahoot() {
 
   return (
   <Layout>
-  <div className="romantic-banner">
-    <img src="/sarah-danish.png" alt="Sarah and Danish" className="banner-image" />
-    <h1 className="romantic-title">💖 Sarah & Danish Knowledge Competition 💖</h1>
-  </div>
-
-  <div className="admin-controls">
     {step === -1 && (
-      <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
-        Start Kahoot Game
-      </button>
+      <div className="romantic-banner">
+        <img src="/sarah-danish.png" alt="Sarah and Danish" className="banner-image" />
+        <h1 className="romantic-title">💖 Sarah & Danish Knowledge Competition 💖</h1>
+      </div>
     )}
-
-    {typeof step === "number" && step >= 0 && step !== "done" && (
-      <button
-        onClick={handleNextQuestion}
-        disabled={timer > 0 || !resultsVisible}
-        className="game-mode-btn bg-blue-600"
-      >
-        {currentQuestionIndex === questions.length - 1 ? "Finish Game" : "Next Question"}
-      </button>
-    )}
-
-    <button onClick={handleReset} className="game-mode-btn bg-red-600">
-      Reset Game
-    </button>
-  </div>
-
-  <div className="admin-panel">
-    <div className="admin-section">
+  
+    <div className="admin-controls">
       {step === -1 && (
-        <>
-          <h2>Players Joined:</h2>
-          {players.map((player, index) => (
-            <p key={index} className="fade-in-player">{player.name}</p>
-          ))}
-        </>
+        <button onClick={handleStartGame} className="game-mode-btn bg-green-600">
+          Start Kahoot Game
+        </button>
       )}
-
-      {typeof step === "number" && step >= 0 && step !== "done" && currentQuestion && (
-        <>
-          <h2>Current Question:</h2>
-          <p>
-            <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
-          </p>
-          <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
-
-          {currentQuestion.rapidFire ? (
-            <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
-              {currentQuestion.options.map((option, i) => (
-                <li key={i} style={{ textAlign: "center" }}>
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
-                      alt={option}
-                      style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                    />
-                    <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
-              {currentQuestion.options.map((option, i) => (
-                <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
-              ))}
-            </ul>
-          )}
-
-          <h2>Answer Tally:</h2>
-          {players.map((player, index) => (
-            <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              {player.name}
-              {votes?.[player.name] ? (
-                <span style={{ color: "green" }}>✅</span>
-              ) : (
-                <span style={{ color: "gray" }}>⌛</span>
-              )}
-            </p>
-          ))}
-        </>
+  
+      {typeof step === "number" && step >= 0 && step !== "done" && (
+        <button
+          onClick={handleNextQuestion}
+          disabled={timer > 0 || !resultsVisible}
+          className="game-mode-btn bg-blue-600"
+        >
+          {currentQuestionIndex === questions.length - 1 ? "Finish Game" : "Next Question"}
+        </button>
       )}
+  
+      <button onClick={handleReset} className="game-mode-btn bg-red-600">
+        Reset Game
+      </button>
     </div>
-
-    <div className="admin-section">
-      {resultsVisible && step !== "done" && (
-        <>
-          <h2>Live Answer Breakdown</h2>
-          <VoteChart
-            key={`${step}-${currentQuestionIndex}-${JSON.stringify(finalVotes)}`}
-            votes={finalVotes}
-            question={questions[currentQuestionIndex]}
-          />
-        </>
-      )}
-
-      {step === "done" && (
-        <div className="thank-you-banner">
-          <img src="/thank-you.png" alt="Thank You" className="thank-you-image" />
-          <h2 className="thank-you-message">Thank you for playing! 💘</h2>
+  
+    <div className="admin-panel">
+      {/* ✅ Left box only shows during game */}
+      {typeof step === "number" && step >= 0 && step !== "done" && (
+        <div className="admin-section">
+          {step === -1 && (
+            <>
+              <h2>Players Joined:</h2>
+              {players.map((player, index) => (
+                <p key={index} className="fade-in-player">{player.name}</p>
+              ))}
+            </>
+          )}
+  
+          {currentQuestion && (
+            <>
+              <h2>Current Question:</h2>
+              <p>
+                <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
+              </p>
+              <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
+  
+              {currentQuestion.rapidFire ? (
+                <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
+                  {currentQuestion.options.map((option, i) => (
+                    <li key={i} style={{ textAlign: "center" }}>
+                      <div className="flex flex-col items-center">
+                        <img
+                          src={option === "Sarah" ? "/sarah.png" : "/danish.png"}
+                          alt={option}
+                          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                        />
+                        <span style={{ marginTop: "0.5rem", fontWeight: "bold" }}>{option}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <ul style={{ listStyle: "disc", paddingLeft: "1.5rem", textAlign: "left" }}>
+                  {currentQuestion.options.map((option, i) => (
+                    <li key={i} style={{ marginBottom: "0.5rem" }}>{option}</li>
+                  ))}
+                </ul>
+              )}
+  
+              <h2>Answer Tally:</h2>
+              {players.map((player, index) => (
+                <p key={index} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  {player.name}
+                  {votes?.[player.name] ? (
+                    <span style={{ color: "green" }}>✅</span>
+                  ) : (
+                    <span style={{ color: "gray" }}>⌛</span>
+                  )}
+                </p>
+              ))}
+            </>
+          )}
         </div>
       )}
-
-      {(typeof step === "number" && step >= 1) || step === "done" ? (
-        <>
-          <h2>Leaderboard:</h2>
-          {leaderboard.length > 0 ? (
-            leaderboard.map((player, index) => {
-              const emoji =
-                index === 0 ? "👑" :
-                index === 1 ? "🥈" :
-                index === 2 ? "🥉" :
-                isLast ? "💩" : "😞";
-              return (
-                <p key={index}>
-                  {emoji} {index + 1}. {player.name}: {player.score} points
-                </p>
-              );
-            })
-          ) : (
-            <p>No players to show.</p>
-          )}
-        </>
-      ) : null}
+  
+      {/* ✅ Right side always shows results, leaderboard, etc. */}
+      <div className="admin-section">
+        {resultsVisible && step !== "done" && (
+          <>
+            <h2>Live Answer Breakdown</h2>
+            <VoteChart
+              key={`${step}-${currentQuestionIndex}-${JSON.stringify(finalVotes)}`}
+              votes={finalVotes}
+              question={questions[currentQuestionIndex]}
+            />
+          </>
+        )}
+  
+        {step === "done" && (
+          <div className="thank-you-banner">
+            <img src="/thank-you.png" alt="Thank You" className="thank-you-image" />
+            <h2 className="thank-you-message">Thank you for playing! 💘</h2>
+          </div>
+        )}
+  
+        {(typeof step === "number" && step >= 1) || step === "done" ? (
+          <>
+            <h2>Leaderboard:</h2>
+            {leaderboard.length > 0 ? (
+              leaderboard.map((player, index) => {
+                const isLast = index === leaderboard.length - 1;
+                const emoji =
+                  index === 0 ? "👑" :
+                  index === 1 ? "🥈" :
+                  index === 2 ? "🥉" :
+                  isLast ? "💩" : "😞";
+  
+                return (
+                  <p key={index}>
+                    {emoji} {index + 1}. {player.name}: {player.score} points
+                  </p>
+                );
+              })
+            ) : (
+              <p>No players to show.</p>
+            )}
+          </>
+        ) : null}
+      </div>
     </div>
-  </div>
-</Layout>
+  </Layout>
 
 
   );
