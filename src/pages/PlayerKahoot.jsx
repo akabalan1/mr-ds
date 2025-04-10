@@ -55,7 +55,6 @@ export default function PlayerKahoot() {
 
     const name = playerName || localStorage.getItem("playerName");
     if (!name || name.trim() === "") {
-      console.warn("🚫 No player name found when answering");
       return;
     }
 
