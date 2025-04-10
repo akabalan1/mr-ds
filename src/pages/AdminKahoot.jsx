@@ -336,7 +336,7 @@ export default function AdminKahoot() {
               <p>
                 <strong>Q{currentQuestionIndex + 1}:</strong> {currentQuestion.question}
               </p>
-              <p style={{ color: "gray", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
+              <p style={{ color: "white", marginBottom: "1rem" }}>⏳ Time remaining: {timer}s</p>
   
               {currentQuestion.rapidFire ? (
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", justifyContent: "center", gap: "2rem" }}>
