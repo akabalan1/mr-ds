@@ -220,8 +220,6 @@ export default function AdminKahoot() {
   useEffect(() => {
   if (timer === 0 && typeof step === "number" && step >= 0 && step !== "done") {
     const delay = setTimeout(() => {
-      console.log("📊 [Delayed] Timer expired, setting finalVotes. Step:", step, "Q:", currentQuestionIndex);
-      console.log("📊 [Delayed] votes snapshot:", votes);
       setFinalVotes({ ...votes });
       setResultsVisible(true);
     }, 200); // Wait 200ms to ensure GameContext votes update first
@@ -236,7 +234,6 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
-    console.log("🧼 handleNextQuestion triggered");
     setTimeout(() => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
@@ -251,9 +248,6 @@ export default function AdminKahoot() {
     }
   }, 3000); // ⏱ Give 3s for chart display
 };
-
-
-
 
   const handleReset = () => {
   resetGame();                      // reset server state
