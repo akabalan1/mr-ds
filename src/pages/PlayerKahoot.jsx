@@ -81,7 +81,7 @@ export default function PlayerKahoot() {
               style={{
                 marginBottom: "0.5rem",
                 fontSize: "0.9rem",
-                color: timer <= 3 ? "red" : "gray",
+                color: timer <= 3 ? "red" : "white",
                 fontWeight: timer <= 3 ? "bold" : "normal",
               }}
             >
