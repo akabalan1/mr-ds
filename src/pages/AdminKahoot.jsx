@@ -151,6 +151,15 @@ export default function AdminKahoot() {
     </div>
   
     <div className="admin-panel">
+      {/* ✅ Players before game starts */}
+      {step === -1 && (
+        <div className="admin-section">
+          <h2>Players Joined:</h2>
+          {players.map((player, index) => (
+            <p key={index} className="fade-in-player">{player.name}</p>
+          ))}
+        </div>
+      )}
       {/* ✅ Left box only shows during game */}
       {typeof step === "number" && step >= 0 && step !== "done" && (
         <div className="admin-section">
