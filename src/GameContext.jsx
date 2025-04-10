@@ -20,7 +20,6 @@ export function GameProvider({ children }) {
  useEffect(() => {
   const tryJoin = () => {
     const storedName = localStorage.getItem("playerName");
-    console.log("📞 [GameContext] tryJoin — emitting player-join for:", storedName);
     if (storedName && storedName.trim() !== "") {
       setPlayerName(storedName);
       socket.emit("player-join", storedName);
@@ -45,10 +44,6 @@ export function GameProvider({ children }) {
 
  useEffect(() => {
   const handleGameState = (state) => {
-    console.log("Game state received from server:", state);
-    console.log("📥 [GameContext] handleGameState received:", state);
-    console.log("🙋 [GameContext] playerName state before update:", playerName);
-
     setPlayers(state.players || []);
     setVotes(state.votes || {});
     setQuestionIndex(state.currentQuestionIndex || 0);
@@ -61,7 +56,6 @@ export function GameProvider({ children }) {
     if (state.step === -1) {
       console.log("🔁 [GameContext] step === -1 — checking if playerName should be reset");
       if (step !== -1 && playerName) {
-        console.log("❌ [GameContext] Resetting playerName due to full reset");
         setPlayerName("");
         localStorage.removeItem("playerName");
       }
@@ -70,7 +64,6 @@ export function GameProvider({ children }) {
       // ✅ Restore playerName from localStorage if it's missing in memory
       const stored = localStorage.getItem("playerName");
       if (!playerName && stored) {
-        console.log("🔄 [GameContext] Restoring playerName from localStorage:", stored);
         setPlayerName(stored);
       }
 
@@ -93,7 +86,6 @@ export function GameProvider({ children }) {
   };
 
   const handleShowResults = (state) => {
-    console.log("🎯 showResults received from server:", state);
     setPlayers(state.players || []);
     setLeaderboard(state.leaderboard || []);
     setQuestionIndex(state.currentQuestionIndex || 0);
@@ -121,7 +113,6 @@ export function GameProvider({ children }) {
 
 
   socket.on("updateVotes", (data) => {
-    console.log("📥 updateVotes received:", data);
     setVotes(data || {});
     setTimeout(() => {
       console.log("✅ [GameContext] votes state now:", data);
@@ -155,7 +146,6 @@ export function GameProvider({ children }) {
 
   const submitKahootAnswer = (name, option, time, index) => {
     const finalIndex = index ?? questionIndex;
-    console.log("📤 submitKahootAnswer:", { name, option, time, questionIndex: finalIndex });
     socket.emit("submitKahoot", { name, option, time, questionIndex: finalIndex });
   };
 
