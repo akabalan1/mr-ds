@@ -59,11 +59,8 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
     setPlayerName(name); // sync context state
   }
 
-  console.log("📤 Submitting vote for:", name);
   setSelectedOption(option);
   setSubmitted(true);
-
-  console.log("🗳️ [PlayerMajority] submitting vote → name:", name, "| option:", option, "| step:", step);
 
   socket.emit("submitVote", {
     name,
