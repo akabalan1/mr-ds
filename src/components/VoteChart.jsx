@@ -13,8 +13,6 @@ import {
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function VoteChart({ votes = {}, question }) {
-  console.log("📈 VoteChart rendered for question:", question?.question);
-  console.log("📈 votes received by VoteChart:", votes);
   
   if (!question || !question.options || question.options.length === 0) {
     return <p style={{ color: "#888", marginTop: "1rem" }}>No question provided.</p>;
