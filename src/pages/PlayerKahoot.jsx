@@ -28,7 +28,7 @@ export default function PlayerKahoot() {
       return;
     }
 
-    const duration = currentQuestion?.rapidFire ? 7 : 15; // ✅ dynamic duration
+    const duration = currentQuestion?.rapidFire ? 10 : 20; // ✅ dynamic duration
 
     setSubmitted(false);
     setSelectedOption(null);
