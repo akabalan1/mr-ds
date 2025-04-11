@@ -195,14 +195,14 @@ export default function AdminKahoot() {
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [finalVotes, setFinalVotes] = useState({});
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(20);
   const [resultsVisible, setResultsVisible] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
 
   useEffect(() => {
     if (typeof step === "number" && step >= 0 && step !== "done") {
-      setTimer(currentQuestion?.rapidFire ? 7 : 15);
+      setTimer(currentQuestion?.rapidFire ? 10 : 20);
       setResultsVisible(false);
       const countdown = setInterval(() => {
         setTimer((prev) => {
