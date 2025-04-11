@@ -10,7 +10,7 @@ export default function PlayerMajority() {
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(20);
   const [locked, setLocked] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ if (step === -1 && (!storedName || storedName.trim() === "")) {
     setSubmitted(false);
     setSelectedOption(null);
     setLocked(false);
-    setTimer(15);
+    setTimer(20);
 
     const countdown = setInterval(() => {
       setTimer((prev) => {
