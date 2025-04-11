@@ -95,7 +95,7 @@ export default function AdminMajority() {
   const [currentVotes, setCurrentVotes] = useState({});
   const [finalVotes, setFinalVotes] = useState({});
   const [voteCount, setVoteCount] = useState(0);
-  const [timer, setTimer] = useState(15);
+  const [timer, setTimer] = useState(20);
   const [resultsVisible, setResultsVisible] = useState(false);
 
   // 🔄 Sync live votes
@@ -113,7 +113,7 @@ export default function AdminMajority() {
   // ⏱️ Start timer for each question
   useEffect(() => {
     if (typeof step !== "number" || step === "done") return;
-    setTimer(15);
+    setTimer(20);
     const countdown = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
