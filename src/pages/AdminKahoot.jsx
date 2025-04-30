@@ -234,6 +234,10 @@ export default function AdminKahoot() {
   };
 
   const handleNextQuestion = () => {
+    if (timer > 0 || !resultsVisible) {
+      console.warn("⛔ Next question triggered too early. Ignored.");
+      return;
+    }
     setTimeout(() => {
     socket.emit("calculateKahootScores");
     setResultsVisible(false);
