@@ -141,6 +141,10 @@ export default function AdminMajority() {
   };
 
   const handleNextQuestion = () => {
+    if (timer > 0 || !resultsVisible) {
+      console.warn("⛔ Next question triggered too early. Ignored.");
+      return;
+    }
   // Delay score calculation to allow vote chart to display
   setTimeout(() => {
     socket.emit("calculateMajorityScores");
