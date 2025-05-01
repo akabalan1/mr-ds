@@ -18,177 +18,177 @@ export default function AdminKahoot() {
 
   const questions = [
   {
-    question: "What horrifying breakfast twist did Sarah witness at IHOP, the first time she went there with Danish?",
+    question: "What is Noura's favorite food",
     options: [
-      "He said “this place could use more masala”",
-      "Danish ordered a burger at 8am",
-      "He put black pepper in orange juice",
-      "He ate pancakes with his hands"
+      "Philly cheese steak",
+      "Chicken tikka masala",
+      "Deserts",
+      "Tacos"
     ],
-    correctAnswer: "He put black pepper in orange juice"
+    correctAnswer: "Philly cheese steak"
   },
   {
-    question: "What role does Danish play in Sarah’s life?",
+    question: "What is Noura's job title at her actual job?",
     options: [
-      "Her content editor",
-      "Her hacker boyfriend",
-      "Her emotional support pillow",
-      "Her IT helpdesk"
+      "Sr. Business Analyst",
+      "Finance Manager",
+      "Principal Data Analyst",
+      "Operations Finance Analyst"
     ],
-    correctAnswer: "Her IT helpdesk"
+    correctAnswer: "Principal Data Analyst"
   },
   {
-    question: "What does Danish get Sarah every Valentine’s Day?",
+    question: "What is Noura's actual birthday?",
     options: [
-      "Lavender flowers",
-      "Chicken Tikka Masala",
-      "Nothing he is the best gift",
-      "Pregnancy test"
+      "5/2",
+      "5/3",
+      "5/4",
+      "The day she met Al"
     ],
-    correctAnswer: "Lavender flowers"
+    correctAnswer: "5/3"
   },
   {
-    question: "Who taught who how to cook many of their signature meals?",
+    question: "What is Noura's favorite drink?",
     options: [
-      "ChatGPT",
-      "Danish taught Sarah",
-      "Sarah taught Danish",
-      "They just seduce each other with takeout"
+      "Dirty Martini",
+      "White Wine",
+      "Margaritas",
+      "Bloody Mary"
     ],
-    correctAnswer: "Danish taught Sarah"
+    correctAnswer: "Bloody Mary"
   },
   {
-    question: "What did Danish ask Sarah just hours after she gave birth?",
+    question: "At what age did Noura have Omar?",
     options: [
-      "Do you want more kids?",
-      "Do you want IHOP?",
-      "The baby has your forehead. I’m so sorry.",
-      "Can I tell my cricket friends I’m free to play tonight?"
+      "26",
+      "28",
+      "25",
+      "27"
     ],
-    correctAnswer: "Can I tell my cricket friends I’m free to play tonight?"
+    correctAnswer: "26"
   },
   {
-    question: "Why did Sarah ban appetizers at restaurants?",
+    question: "What is Noura's coffee order?",
     options: [
-      "Danish keeps over-ordering",
-      "She's morally against mozzarella sticks",
-      "She wants to save room for dessert",
-      "To save money"
+      "Vanilla Latte",
+      "Iced oat milk latte with 2 pumps vanilla",
+      "Cold brew with sweet cream",
+      "She doesn't drink coffee"
     ],
-    correctAnswer: "Danish keeps over-ordering"
+    correctAnswer: "Vanilla Latte"
   },
   {
-    question: "What savage comment did Danish make to Sarah on their wedding day?",
+    question: "Who is Noura's super hero crush?",
     options: [
-      "We did it! I can’t believe we’re married!",
-      "Did you bring snacks?",
-      "You kind of look like a ghost with that makeup",
-      "You look like a Bollywood queen!"
+      "Captain America",
+      "Al Kabalan",
+      "Batman",
+      "Thor"
     ],
-    correctAnswer: "You kind of look like a ghost with that makeup"
+    correctAnswer: "Thor"
   },
   {
-    question: "Which K-drama has Sarah made Danish watch so many times he can quote it?",
+    question: "What was Noura's first job?",
     options: [
-      "Goblin",
-      "Crash Landing on You",
-      "50 Shades of Seoul",
-      "Squid Game"
+      "Cashier at Office Max",
+      "Hooters girl",
+      "Clerk at Home Depot",
+      "DSW Shoe Sales"
     ],
-    correctAnswer: "Crash Landing on You"
+    correctAnswer: "Cashier at Office Max"
   },
   {
-    question: "What was Danish’s very first flirt move when meeting Sarah?",
+    question: "What was Noura's nickname in college?",
     options: [
-      "I’ve read every book but you",
-      "Wanna see my cricket stats?",
-      "I lost my number… can I have yours?",
-      "You’re a Rizvi, I’m a Rizvi!"
+      "Bootylicious",
+      "Badonkadonk Babe",
+      "No limit Noura",
+      "Trouble"
     ],
-    correctAnswer: "You’re a Rizvi, I’m a Rizvi!"
+    correctAnswer: "No limit Noura"
   },
   {
-    question: "Who said it: \"I cannot get the image of John twerking out of my head.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "What's Noura's guilty pleasure?"",
+    options: ["Bravo", "Chocolate"],
+    correctAnswer: "Bravo",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Yeah we were doing non billionaire activities 🙂\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "Which city would Noura pick",
+    options: ["Waikiki", "Miami"],
+    correctAnswer: "Waikiki",
     rapidFire: true
   },
   {
-    question: "Who said it: \"No sex, intoxication in heaven\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "Which shoes would Noura pick",
+    options: ["Louboutin", "Channel"],
+    correctAnswer: "Louboutin",
     rapidFire: true
   },
   {
-    question: "Who said it: \"It also won't mysteriously overheat randomly a few weeks later.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "Mountain or Beach",
+    options: ["Mountain", "Beach"],
+    correctAnswer: "Beach",
     rapidFire: true
   },
   {
-    question: "Who said it: \"not everything is sex related 🙄\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "Summer or Winter?",
+    options: ["Summer", "Winter"],
+    correctAnswer: "Summer",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Matt can teach that course\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "Noura loves hot tubs",
+    options: ["True", "False"],
+    correctAnswer: "False",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Virgins that will stay virgins.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "If you're looking at the bed, which side does Noura sleep on?",
+    options: ["Left", "Right"],
+    correctAnswer: "Left",
     rapidFire: true
   },
   {
-    question: "Who said it: \"The Shiaa actually have already been granted heaven.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "Where did Noura get her MBA?",
+    options: ["University of Tennessee", "University of Massachusetts"],
+    correctAnswer: "University of Massachusetts",
     rapidFire: true
   },
   {
-    question: "Who said it: \"If that happens to you I'm going to Mexico City and starting a new life.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "WWat did Noura major in?",
+    options: ["Data Science", "International Finance"],
+    correctAnswer: "International Finance",
     rapidFire: true
   },
   {
-    question: "Who said it: \"It’s not cheating if you’re in the same zip code.\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "What is Noura's biggest pet peeve",
+    options: ["People who are late", "Slurping your drink"],
+    correctAnswer: "People who are late",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Take your time… my knees are just killing me. lol :) 😂\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "Is she a morning person or evening person?",
+    options: ["Evening person", "Neither"],
+    correctAnswer: "Neither",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Let’s do all of the above… brunch, lunch and dinner so it’s inclusive for everyone :)\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "How to get into Noura's heart?",
+    options: ["Food", "Do chores"],
+    correctAnswer: "Food",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Hopefully it is sweeter than you :)\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Sarah",
+    question: "Where does Noura invest her money?",
+    options: ["Municipal Bonds", "Designer Purses"],
+    correctAnswer: "Designer Purses",
     rapidFire: true
   },
   {
-    question: "Who said it: \"Will you convert to Shia to preside over our vows renewal 😁\"",
-    options: ["Sarah", "Danish"],
-    correctAnswer: "Danish",
+    question: "Does Noura prefer doing the dishes or mopping the floor?",
+    options: ["Doing the dishes", "Mopping the floor"],
+    correctAnswer: "Mopping the floor",
     rapidFire: true
   }
 ];
