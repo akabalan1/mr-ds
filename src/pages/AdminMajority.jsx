@@ -8,84 +8,84 @@ export default function AdminMajority() {
 
   const questions = [
     {
-      question: "What’s actually the sexiest trait in your partner?",
+      question: "What’s Noura most likely to say when something goes wrong?",
       options: [
-        "Confidence",
-        "Humor",
-        "Intelligence",
-        "Looks"
+        "It is what it is.",
+        "Noooo way!",
+        "We’ll figure it out.",
+        "A silent death stare"
       ]
     },
     {
-      question: "What’s the hottest kind of kiss?",
+      question: "What’s Noura’s hidden talent?",
       options: [
-        "Slow and teasing",
-        "Up against the wall",
-        "Morning bedhead kiss",
-        "We don't kiss"
+        "Singing",
+        "Doing celebrity impressions",
+        "Parallel parking like a pro",
+        "Remembering everyone’s birthday"
       ]
     },
     {
-      question: "What’s a guaranteed way to ruin the mood?",
+      question: "What’s Noura’s biggest fear?",
       options: [
-        "Bringing up chores",
-        "Talk about the kids",
-        "Cold feet",
-        "Talk about parents or siblings"
+        "Spiders",
+        "Bare feet",
+        "Packing last minute and being late to the airport",
+        "Heights"
       ]
     },
     {
-      question: "In bed — what’s most important?",
+      question: "If Noura were a drink, what would she be?",
       options: [
-        "Communication",
-        "Creativity",
-        "Endurance",
-        "Size"
+        "A triple-shot espresso with attitude",
+        "A glass of chilled rosé on a yacht",
+        "A green juice that costs $18",
+        "Tap water... but only in a reusable bottle"
       ]
     },
     {
-      question: "What’s the biggest lie people tell about their sex life?",
+      question: "How would Noura survive a zombie apocalypse?",
       options: [
-        "“We do it all the time.”",
-        "“We never fight about it.”",
-        "“Size doesn’t matter.”",
-        "“We’ve never faked it.”"
+        "Charm the zombies into sparing her",
+        "Join them and become their queen",
+        "Bribe them with skincare products",
+        "She wouldn’t—too busy taking a selfie"
       ]
     },
     {
-      question: "What’s the ultimate couple's code word for “let’s get some”?",
+      question: "Which song would play when Noura walks into a room?",
       options: [
-        "“Let’s take a nap”",
-        "“I need help in the kitchen”",
-        "“Can we talk in private?”",
-        "I need to freshen up"
+        "“Boss B*tch” – Doja Cat",
+        "“Savage” – Megan Thee Stallion",
+        "“Unwritten” – Natasha Bedingfield",
+        "Dramatic orchestral entrance music"
       ]
     },
     {
-      question: "Who is most likely to initiate something risky in public?",
+      question: "What’s most likely to make Noura ghost you?",
       options: [
-        "Danish, with that mischievous smirk",
-        "Sarah, queen of bold moves",
-        "Depends who had more wine",
-        "Both — they’re trouble together"
+        "You forgot her birthday",
+        "You called brunch “overrated”",
+        "You said astrology is fake",
+        "You said reality TV is dumb"
       ]
     },
     {
-      question: "Sarah gives Danish the 'I'm ready wink'. Danish’s first thought?",
+      question: "If Noura were to start drama at a wedding, how would she do it?",
       options: [
-        "Cancel all my meetings",
-        "I’m being seduced and I love it",
-        "Play it cool and pretend to be sleepy",
-        "God bless this woman"
+        "Subtle eye rolls and whispered commentary",
+        "“Accidentally” wearing white",
+        "Roasting the groom in her speech",
+        "Bitch slapping the bride"
       ]
     },
     {
-      question: "What’s Danish’s secret move that gets Sarah every time?",
+      question: "What’s Noura’s ultimate power move in an argument?",
       options: [
-        "That deep voice whisper",
-        "Neck kisses",
-        "The way he takes charge",
-        "Beard + cologne combo — lethal"
+        "The silent treatment",
+        "Sarcastic one-liner",
+        "Dramatic walkaway",
+        "Passive-aggressive meme drop"
       ]
     }
   ];
