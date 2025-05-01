@@ -267,8 +267,8 @@ export default function AdminKahoot() {
   <Layout>
     {step === -1 && (
       <div className="romantic-banner">
-        <img src="/sdkahootw.png" alt="Sarah and Danish" className="banner-image" />
-        <h1 className="romantic-title">💖 Sarah & Danish Knowledge Competition 💖</h1>
+        <img src="/sdkahootw.png" alt="Noura" className="banner-image" />
+        <h1 className="romantic-title">💖 Noura's Knowledge Challenge 💖</h1>
       </div>
     )}
   
