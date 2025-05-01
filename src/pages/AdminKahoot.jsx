@@ -108,7 +108,7 @@ export default function AdminKahoot() {
     correctAnswer: "No limit Noura"
   },
   {
-    question: "What's Noura's guilty pleasure?"",
+    question: "What's Noura's guilty pleasure?",
     options: ["Bravo", "Chocolate"],
     correctAnswer: "Bravo",
     rapidFire: true
